@@ -1,0 +1,50 @@
+.pageContainer {
+  //display: flex;
+}
+
+.flex-fill-space {
+  flex: 1 1 auto;
+}
+
+.pageTitleBar {
+  color: green;
+  font-size: larger;
+  text-decoration: underline;
+  font-weight: bold;
+  display: flex;
+  width: 100%;
+  margin: 10px 0 10px 0;
+}
+
+.row-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.column-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.nowrap {
+  flex-wrap: nowrap;
+}
+
+.default-btn {
+  display: inline-block;
+  font-size: 10px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  background-color: transparent;
+  border: none;
+  box-shadow: 0 1px #999;
+  padding: 0;
+}
+
+.default-btn:hover {
+  background-color: #d5ded7;
+}
