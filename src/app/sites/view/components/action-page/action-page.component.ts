@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import ViewUtils from 'src/app/other/view-utils';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-action-page',
@@ -8,13 +8,15 @@ import ViewUtils from 'src/app/other/view-utils';
 })
 export class ActionPageComponent implements OnInit {
 
-  constructor() {
+  constructor(
+    private route: ActivatedRoute
+  ) {
   }
 
   ngOnInit(): void {
   }
 
-  getFieldWidth(): number {
-    return ViewUtils.getFieldWidth(2, 10, 100);
+  isViewSelected(): boolean {
+    return this.route.snapshot.queryParams.view;
   }
 }
