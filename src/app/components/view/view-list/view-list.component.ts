@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {RestService} from '../../../../services/rest/rest.service';
-import {BasicView} from '../../../../interfaces/basic-view';
+import {RestService} from '../../../services/rest/rest.service';
+import {BasicView} from '../../../interfaces/basic-view';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-view-list',
@@ -11,7 +12,8 @@ export class ViewListComponent implements OnInit {
   views: BasicView[];
 
   constructor(
-    private rest: RestService
+    private rest: RestService,
+    private router: Router
   ) {
   }
 
@@ -21,6 +23,10 @@ export class ViewListComponent implements OnInit {
         this.views = data.views;
       },
     );
+  }
+
+  onPressed(viewId: number, edit: boolean) {
+    this.router.navigate([], {queryParams: {view: viewId, edit}});
   }
 
 }

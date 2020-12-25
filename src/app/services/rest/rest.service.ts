@@ -3,6 +3,7 @@ import {HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '
 import {environment} from '../../../environments/environment';
 import {Observable} from 'rxjs';
 import {ViewListResponse} from '../../interfaces/response/view-list-response';
+import {FullView} from '../../interfaces/full-view';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,10 @@ export class RestService implements HttpInterceptor {
   }
 
   getViewList(): Observable<ViewListResponse> {
-    return this.http.get<any>(`view/all`);
+    return this.http.get<ViewListResponse>(`view/all`);
+  }
+
+  getView(viewId: number): Observable<FullView> {
+    return this.http.get<FullView>(`view/${viewId}`);
   }
 }
