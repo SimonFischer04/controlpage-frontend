@@ -20,11 +20,13 @@ export class ActionPageComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParamMap.subscribe(
       () => {
-        this.rest.getView(this.getSelectedViewId()).subscribe(
-          v => {
-            this.selectedView = v;
-          }
-        );
+        if (this.getSelectedViewId()) {
+          this.rest.getView(this.getSelectedViewId()).subscribe(
+            v => {
+              this.selectedView = v;
+            }
+          );
+        }
       }
     );
   }

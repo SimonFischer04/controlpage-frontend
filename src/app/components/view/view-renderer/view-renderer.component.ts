@@ -18,4 +18,11 @@ export class ViewRendererComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  getView(): FullView {
+    return this.view || this.viewUtils.getDummyView();
+  }
+
+  test(): void {
+    console.log('rendering view: ', this.view);
+  }
 }
