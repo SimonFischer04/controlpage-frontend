@@ -1,0 +1,5 @@
+<p>action-page works!</p>
+<app-view-list *ngIf="!isViewSelected()"></app-view-list>
+<!--<app-view-renderer [view]="selectedView" *ngIf="isViewSelected() && !isEditMode()"></app-view-renderer>-->
+<app-view-action [view]="selectedView" *ngIf="isViewSelected() && !isEditMode()"></app-view-action>
+<app-view-edit [view]="selectedView" *ngIf="isViewSelected() && isEditMode()"></app-view-edit>

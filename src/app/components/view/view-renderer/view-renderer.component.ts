@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {ViewUtilsService} from '../../../services/view-utils/view-utils.service';
 import {FullView} from '../../../interfaces/full-view';
 
@@ -9,6 +9,8 @@ import {FullView} from '../../../interfaces/full-view';
 })
 export class ViewRendererComponent implements OnInit {
   @Input() view: FullView;
+  @Input() isEditMode: boolean;
+  @ViewChild('fieldContainer') fieldContainerRed: ElementRef;
 
   constructor(
     private viewUtils: ViewUtilsService
@@ -16,13 +18,25 @@ export class ViewRendererComponent implements OnInit {
   }
 
   ngOnInit(): void {
-  }
-
-  getView(): FullView {
-    return this.view || this.viewUtils.getDummyView();
+    console.log('rendering view-init: ', this.view);
   }
 
   test(): void {
     console.log('rendering view: ', this.view);
+  }
+
+  /*
+    Utils
+   */
+  getView(): FullView {
+    return this.view || this.viewUtils.getDummyView();
+  }
+
+  getFieldWidth(): number {
+    return 100;
+  }
+
+  getFieldHeight(): number {
+    return 100;
   }
 }

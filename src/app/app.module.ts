@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app-component/app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ActionPageComponent } from './sites/action-page/action-page.component';
+import { ViewPageComponent } from './sites/view-page/view-page.component';
 import { HomePageComponent } from './sites/home-page/home-page.component';
 import { TopBarComponent } from './components/top-bar/top-bar.component';
 import { ViewRendererComponent } from './components/view/view-renderer/view-renderer.component';
@@ -18,16 +18,18 @@ import {RestService} from './services/rest/rest.service';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
 import { ViewEditComponent } from './components/view/view-edit/view-edit.component';
+import { ViewActionComponent } from './components/view/view-action/view-action.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ActionPageComponent,
+    ViewPageComponent,
     HomePageComponent,
     TopBarComponent,
     ViewRendererComponent,
     ViewListComponent,
-    ViewEditComponent
+    ViewEditComponent,
+    ViewActionComponent
   ],
   imports: [
     BrowserModule,

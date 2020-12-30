@@ -5,10 +5,10 @@ import {RestService} from '../../services/rest/rest.service';
 
 @Component({
   selector: 'app-action-page',
-  templateUrl: './action-page.component.html',
-  styleUrls: ['./action-page.component.scss']
+  templateUrl: './view-page.component.html',
+  styleUrls: ['./view-page.component.scss']
 })
-export class ActionPageComponent implements OnInit {
+export class ViewPageComponent implements OnInit {
   selectedView: FullView;
 
   constructor(
