@@ -1,2 +1,16 @@
-<p>view-edit works!</p>
-<app-view-renderer [view]="view" isEditMode="true"></app-view-renderer>
+<div>view-edit works!</div>
+<div class="row-wrapper">
+  <div id="editViewDisplay">
+    <app-view-renderer [view]="view" [isEditMode]="true"></app-view-renderer>
+  </div>
+
+  <span class="flex-fill-space"></span>
+
+  <div id="editSection">
+
+  </div>
+</div>
+<div>
+  <div>Preview</div>
+  <app-view-renderer [view]="view" [isEditMode]="false"></app-view-renderer>
+</div>

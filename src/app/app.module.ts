@@ -19,6 +19,8 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
 import { ViewEditComponent } from './components/view/view-edit/view-edit.component';
 import { ViewActionComponent } from './components/view/view-action/view-action.component';
+import { EditFieldRenderComponent } from './components/field/edit-field-render/edit-field-render.component';
+import { ActionFieldRenderComponent } from './components/field/action-field-render/action-field-render.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { ViewActionComponent } from './components/view/view-action/view-action.c
     ViewRendererComponent,
     ViewListComponent,
     ViewEditComponent,
-    ViewActionComponent
+    ViewActionComponent,
+    EditFieldRenderComponent,
+    ActionFieldRenderComponent
   ],
   imports: [
     BrowserModule,

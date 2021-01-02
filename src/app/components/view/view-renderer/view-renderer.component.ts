@@ -19,10 +19,19 @@ export class ViewRendererComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('rendering view-init: ', this.view);
+    console.log('edit? ', this.isEditMode);
   }
 
   test(): void {
+    console.log('[ViewRender]test');
     console.log('rendering view: ', this.view);
+    console.log('edit? ', this.isEditMode);
+  }
+
+  getEdit(): boolean {
+    console.log('f-edit? ', this.isEditMode);
+    console.log(typeof this.isEditMode);
+    return this.isEditMode;
   }
 
   /*
