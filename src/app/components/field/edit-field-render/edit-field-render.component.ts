@@ -14,8 +14,4 @@ export class EditFieldRenderComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
-  rand(): number {
-    return Math.floor(Math.random() * 100);
-  }
 }

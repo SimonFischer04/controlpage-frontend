@@ -24,7 +24,7 @@ export class ViewEditComponent implements OnInit {
   addRow(): void {
     const ar: Field[] = [];
     for (let i = 0; i < this.viewUtils.getViewWidth(this.view); i++) {
-      ar.push(this.viewUtils.getDummyField());
+      ar.push(this.viewUtils.getDummyField(true));
     }
     this.view.fields.push(ar);
   }
