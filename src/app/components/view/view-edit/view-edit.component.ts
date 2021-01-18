@@ -30,19 +30,25 @@ export class ViewEditComponent implements OnInit {
   }
 
   removeRow(): void {
-    if (confirm('Do you really wnat to delete last row?')) {
+    if (confirm('Do you really what to delete last row?')) {
       this.view.fields.splice(this.view.fields.length - 1, 1);
     }
   }
 
   addColumn(): void {
-    // TODO: implement this
-    console.error('addColumn - not implemented yet');
+    this.view.fields.forEach(row => {
+      row.push(this.viewUtils.getDummyField(true));
+    });
   }
 
   removeColumn(): void {
-    // TODO: implement this
-    console.error('removeColumn - not implemented yet');
+    if (confirm('Do you really what to delete last row?')) {
+      this.view.fields.forEach(row => {
+        if (row.length > 0) {
+          row.splice(row.length - 1, 1);
+        }
+      });
+    }
   }
 
   test(): void {
