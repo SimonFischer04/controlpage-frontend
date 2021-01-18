@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
 import {UserPreferencesService} from '../user-preferences/user-preferences.service';
 import {FullView} from '../../interfaces/full-view';
+import {Size} from '../../interfaces/size';
+import {Field} from '../../interfaces/field';
 
 @Injectable({
   providedIn: 'root'
@@ -35,5 +37,33 @@ export class ViewUtilsService {
 
   getDummyView(): FullView {
     return {id: -1, name: '', group: {id: -1, childGroups: [], name: '', parentGroup: null}, fields: []};
+  }
+
+  getDummyField(): Field {
+    return {id: -1, colspan: 1, rowspan: 1};
+  }
+
+  getViewWidth(view: FullView): number {
+    if (view.fields.length === 0) {
+      return 0;
+    }
+    let width = 0;
+    view.fields[0].forEach(field => {
+        width += field.colspan;
+      }
+    );
+    return width;
+  }
+
+  getViewHeight(view: FullView): number {
+    let height = 0;
+    view.fields.forEach(row => {
+      height += (row.length > 1 ? row[0].rowspan : 1);
+    });
+    return height;
+  }
+
+  getViewSize(view: FullView): Size {
+    return {width: this.getViewWidth(view), height: this.getViewHeight(view)};
   }
 }

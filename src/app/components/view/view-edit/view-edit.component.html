@@ -7,7 +7,22 @@
   <span class="flex-fill-space"></span>
 
   <div id="editSection">
+    <!--    Section with some basic features like swapping fields, swap rows, adding row, ...-->
+    <div id="toolsSection">
+      <button mat-button (click)="addRow()">Add Row</button>
+      <button mat-button (click)="removeRow()">Delete Row</button>
+      <button mat-button (click)="addColumn()">Add Column</button>
+      <button mat-button (click)="removeColumn()">Delete Column</button>
+      <button mat-button (click)="test()">Test</button>
+    </div>
 
+    <!--    Section where to edit field-->
+    <div id="fieldEditSection">
+
+    </div>
+
+    <div style="background-color: red" *ngIf="changed">unsaved-changes!!!</div>
+    <button mat-button>Save</button>
   </div>
 </div>
 <div>

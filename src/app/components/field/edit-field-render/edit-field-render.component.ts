@@ -9,9 +9,13 @@ import {Field} from '../../../interfaces/field';
 export class EditFieldRenderComponent implements OnInit {
   @Input() field: Field;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }
 
+  rand(): number {
+    return Math.floor(Math.random() * 100);
+  }
 }
