@@ -30,7 +30,7 @@ export class ViewEditComponent implements OnInit {
   }
 
   removeRow(): void {
-    if (confirm('Do you really what to delete last row?')) {
+    if (confirm('Do you really want to delete last row?')) {
       this.view.fields.splice(this.view.fields.length - 1, 1);
     }
   }
@@ -42,7 +42,7 @@ export class ViewEditComponent implements OnInit {
   }
 
   removeColumn(): void {
-    if (confirm('Do you really what to delete last row?')) {
+    if (confirm('Do you really want to delete last row?')) {
       this.view.fields.forEach(row => {
         if (row.length > 0) {
           row.splice(row.length - 1, 1);
