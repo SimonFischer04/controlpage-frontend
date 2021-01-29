@@ -22,7 +22,7 @@
     </div>
 
     <div style="background-color: red" *ngIf="changed">unsaved-changes!!!</div>
-    <button mat-button>Save</button>
+    <button mat-button (click)="save()">Save</button>
   </div>
 </div>
 <div>

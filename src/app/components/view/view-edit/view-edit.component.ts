@@ -3,6 +3,7 @@ import {FullView} from '../../../interfaces/full-view';
 import {ViewUtilsService} from '../../../services/view-utils/view-utils.service';
 import {Field} from '../../../interfaces/field';
 import {error} from '@angular/compiler/src/util';
+import {RestService} from '../../../services/rest/rest.service';
 
 @Component({
   selector: 'app-view-edit',
@@ -14,7 +15,8 @@ export class ViewEditComponent implements OnInit {
   changed = false;
 
   constructor(
-    private viewUtils: ViewUtilsService
+    private viewUtils: ViewUtilsService,
+    private rest: RestService
   ) {
   }
 
@@ -49,6 +51,11 @@ export class ViewEditComponent implements OnInit {
         }
       });
     }
+  }
+
+  save(): void {
+    this.rest.saveView(this.view).subscribe();
+    // this.rest.saveField(this.view.fields[0][0]).subscribe();
   }
 
   test(): void {

@@ -4,6 +4,7 @@ import {environment} from '../../../environments/environment';
 import {Observable} from 'rxjs';
 import {ViewListResponse} from '../../interfaces/response/view-list-response';
 import {FullView} from '../../interfaces/full-view';
+import {Field} from '../../interfaces/field';
 
 @Injectable({
   providedIn: 'root'
@@ -28,5 +29,13 @@ export class RestService implements HttpInterceptor {
 
   getView(viewId: number): Observable<FullView> {
     return this.http.get<FullView>(`view/${viewId}`);
+  }
+
+  saveView(view: FullView): Observable<any> {
+    return this.http.post(`view`, view);
+  }
+
+  saveField(field: Field): Observable<any> {
+    return this.http.post(`field`, field);
   }
 }
