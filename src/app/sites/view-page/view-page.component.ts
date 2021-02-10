@@ -18,6 +18,10 @@ export class ViewPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadView();
+  }
+
+  loadView(): void {
     this.route.queryParamMap.subscribe(
       () => {
         if (this.getSelectedViewId()) {
