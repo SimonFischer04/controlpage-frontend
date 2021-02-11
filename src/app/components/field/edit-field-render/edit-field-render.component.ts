@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Field} from '../../../interfaces/field';
+import {EditFieldRendererParameter} from '../../../interfaces/field-renderer-parameter/edit-field-renderer-parameter';
 
 @Component({
   selector: 'app-edit-field-render',
@@ -8,10 +9,19 @@ import {Field} from '../../../interfaces/field';
 })
 export class EditFieldRenderComponent implements OnInit {
   @Input() field: Field;
+  @Input() params: EditFieldRendererParameter;
 
   constructor() {
   }
 
   ngOnInit(): void {
+  }
+
+  isSelected(): boolean {
+    return this.field === this.params.selectedField;
+  }
+
+  getColor(): string {
+    return this.isSelected() ? '#56cc49' : '#ffffff';
   }
 }

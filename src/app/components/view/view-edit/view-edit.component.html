@@ -1,7 +1,8 @@
 <div>view-edit works!</div>
 <div class="row-wrapper">
   <div id="editViewDisplay">
-    <app-view-renderer [view]="view" [isEditMode]="true"></app-view-renderer>
+    <app-view-renderer [view]="view" [isEditMode]="true" (fieldPress)="selectedFieldChange($event)"
+                       [fieldRenderParameter]="fieldParams"></app-view-renderer>
   </div>
 
   <span class="flex-fill-space"></span>

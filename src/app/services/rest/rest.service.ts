@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {Observable} from 'rxjs';
-import {ViewListResponse} from '../../interfaces/response/view-list-response';
+import {ViewListResponse} from '../../interfaces/rest/view-list-response';
 import {FullView} from '../../interfaces/full-view';
 import {Field} from '../../interfaces/field';
 

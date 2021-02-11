@@ -1,6 +1,9 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {ViewUtilsService} from '../../../services/view-utils/view-utils.service';
 import {FullView} from '../../../interfaces/full-view';
+import {Field} from '../../../interfaces/field';
+import {ActionFieldRendererParameter} from '../../../interfaces/field-renderer-parameter/action-field-renderer-parameter';
+import {EditFieldRendererParameter} from '../../../interfaces/field-renderer-parameter/edit-field-renderer-parameter';
 
 @Component({
   selector: 'app-view-renderer',
@@ -8,6 +11,8 @@ import {FullView} from '../../../interfaces/full-view';
   styleUrls: ['./view-renderer.component.scss']
 })
 export class ViewRendererComponent implements OnInit {
+  @Output() fieldPress: EventEmitter<Field> = new EventEmitter();
+  @Input() fieldRenderParameter: ActionFieldRendererParameter | EditFieldRendererParameter;
   @Input() view: FullView;
   @Input() isEditMode: boolean;
   @ViewChild('fieldContainer') fieldContainerRed: ElementRef;
@@ -47,5 +52,9 @@ export class ViewRendererComponent implements OnInit {
 
   getFieldHeight(): number {
     return 100;
+  }
+
+  onFieldPress(field: Field): void {
+    this.fieldPress.emit(field);
   }
 }

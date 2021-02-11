@@ -5,6 +5,7 @@ import {Field} from '../../../interfaces/field';
 import {error} from '@angular/compiler/src/util';
 import {RestService} from '../../../services/rest/rest.service';
 import {Router} from '@angular/router';
+import {EditFieldRendererParameter} from '../../../interfaces/field-renderer-parameter/edit-field-renderer-parameter';
 
 @Component({
   selector: 'app-view-edit',
@@ -14,7 +15,9 @@ import {Router} from '@angular/router';
 export class ViewEditComponent implements OnInit {
   @Output() requestRefresh: EventEmitter<any> = new EventEmitter();
   @Input() view: FullView;
+  selectedField: Field;
   changed = false;
+  fieldParams: EditFieldRendererParameter = {selectedField: null};
 
   constructor(
     private viewUtils: ViewUtilsService,
@@ -24,6 +27,15 @@ export class ViewEditComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  selectedFieldChange(field: Field): void {
+    this.selectedField = field;
+    this.fieldParams.selectedField = field;
+  }
+
+  /*
+    Editing Section
+   */
 
   addRow(): void {
     this.changed = true;
@@ -77,4 +89,10 @@ export class ViewEditComponent implements OnInit {
   test(): void {
     console.log(this.view.fields);
   }
+
+  /*
+    Utils
+   */
+
+
 }
