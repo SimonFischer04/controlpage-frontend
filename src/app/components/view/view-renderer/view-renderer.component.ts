@@ -47,10 +47,12 @@ export class ViewRendererComponent implements OnInit {
   }
 
   getFieldWidth(): number {
+    // TODO
     return 100;
   }
 
   getFieldHeight(): number {
+    // TODO
     return 100;
   }
 

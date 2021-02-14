@@ -5,6 +5,7 @@ import {Observable} from 'rxjs';
 import {ViewListResponse} from '../../interfaces/rest/view-list-response';
 import {FullView} from '../../interfaces/full-view';
 import {Field} from '../../interfaces/field';
+import {Image} from '../../interfaces/image';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +36,10 @@ export class RestService implements HttpInterceptor {
     return this.http.post(`view`, view);
   }
 
-  saveField(field: Field): Observable<any> {
-    return this.http.post(`field`, field);
+  saveFile(file: File): Observable<Image> {
+    const data = new FormData();
+    data.append('imageFile', file, file.name);
+
+    return this.http.post<Image>(`image`, data);
   }
 }

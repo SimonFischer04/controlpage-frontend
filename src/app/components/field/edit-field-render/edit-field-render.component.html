@@ -1,4 +1,6 @@
-<div [ngStyle]="{backgroundColor: getColor()}" id="editFieldRendererContainer">
+<div [ngStyle]="{backgroundColor: getColor(), backgroundImage: imageUtils.getBackgroundImgStringByImage(field.background)}"
+     id="editFieldRendererContainer">
+  <p>{{field.id}}</p>
   <p>edit-field-render works!</p>
   <p *ngIf="field.title">{{field.title}}</p>
 </div>

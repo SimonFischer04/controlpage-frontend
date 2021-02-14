@@ -11,7 +11,7 @@ import { ViewRendererComponent } from './components/view/view-renderer/view-rend
 import { ViewListComponent } from './components/view/view-list/view-list.component';
 import {MatButtonModule} from '@angular/material/button';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule} from '@angular/material/form-field';
 import {MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {RestService} from './services/rest/rest.service';
@@ -21,6 +21,8 @@ import { ViewEditComponent } from './components/view/view-edit/view-edit.compone
 import { ViewActionComponent } from './components/view/view-action/view-action.component';
 import { EditFieldRenderComponent } from './components/field/edit-field-render/edit-field-render.component';
 import { ActionFieldRenderComponent } from './components/field/action-field-render/action-field-render.component';
+import {FormsModule} from '@angular/forms';
+import {MatInput, MatInputModule} from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -43,7 +45,10 @@ import { ActionFieldRenderComponent } from './components/field/action-field-rend
     MatToolbarModule,
     MatIconModule,
     MatCardModule,
-    HttpClientModule
+    HttpClientModule,
+    MatFormFieldModule,
+    FormsModule,
+    MatInputModule
   ],
   providers: [
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {floatLabel: 'auto'}},

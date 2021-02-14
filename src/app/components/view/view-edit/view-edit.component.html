@@ -1,3 +1,4 @@
+<!--suppress HtmlFormInputWithoutLabel -->
 <div>view-edit works!</div>
 <div class="row-wrapper">
   <div id="editViewDisplay">
@@ -18,12 +19,29 @@
     </div>
 
     <!--    Section where to edit field-->
-    <div id="fieldEditSection">
+    <div id="fieldEditSection" *ngIf="selectedField" #fieldEditingSection>
+      <div class="editItem">Id: {{selectedField.id}}</div>
 
+      <div id="actionSection" class="editItem">
+        Action:
+      </div>
+
+      <mat-form-field class="editItem">
+        <mat-label>Title</mat-label>
+        <input matInput type="text" [(ngModel)]="selectedField.title">
+      </mat-form-field>
+
+      <div class="editItem">
+        <p>Background:</p>
+        <img [src]="getBackgroundSrcString(selectedField)" alt="No Background"/>
+        <div>
+          <input type="file" (change)="onFileChanged($event, this.selectedField)">
+        </div>
+      </div>
     </div>
 
-    <div style="background-color: red" *ngIf="changed">unsaved-changes!!!</div>
-    <button mat-button (click)="save()">Save</button>
+    <!--    <div style="background-color: red" *ngIf="viewChanged">unsaved-view-changes!!!</div>-->
+    <button mat-button (click)="save()">Save View</button>
   </div>
 </div>
 <div>

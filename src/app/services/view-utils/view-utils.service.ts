@@ -15,18 +15,18 @@ export class ViewUtilsService {
   }
 
   // sizing fields so that there is a fixed amount of space between them
-  getFieldWidth(fieldCount: number, containerElement: HTMLElement): number {
-    return (containerElement.clientWidth - this.pref.getSpaceBetweenFields()) / fieldCount - this.pref.getSpaceBetweenFields();
+  getFieldWidth(view: FullView, containerElement: HTMLElement): number {
+    return (containerElement.clientWidth - this.pref.getSpaceBetweenFields()) / this.getViewWidth(view) - this.pref.getSpaceBetweenFields();
   }
 
   /*
     - preference-fieldStyle === 'square': use same height as width => shrink/extend space
-    - preference-fieldStyle === 'rectangle': use fixed space => shrink/extend height
+    - preference-fieldStyle === 'rectangle': use fixed space => shrink/extend height (dump idea? -> backgroundImage would get stretched?)
    */
-  getFieldHeight(fieldCount: number, containerElement: HTMLElement): number {
+  getFieldHeight(view: FullView, containerElement: HTMLElement): number {
     switch (this.pref.getFieldStyle()) {
       case 'square': {
-        return this.getFieldWidth(fieldCount, containerElement);
+        return this.getFieldWidth(view, containerElement);
       }
       case 'rectangle': {
         // TODO
