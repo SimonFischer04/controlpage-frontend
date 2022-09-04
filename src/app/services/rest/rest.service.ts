@@ -4,7 +4,6 @@ import {environment} from '../../../environments/environment';
 import {Observable} from 'rxjs';
 import {ViewListResponse} from '../../interfaces/rest/view-list-response';
 import {FullView} from '../../interfaces/full-view';
-import {Field} from '../../interfaces/field';
 import {Image} from '../../interfaces/image';
 
 @Injectable({
@@ -16,7 +15,7 @@ export class RestService implements HttpInterceptor {
   constructor(
     private http: HttpClient,
   ) {
-    this.urlPrefix = `${environment.apiUrl}/api/`;
+    this.urlPrefix = `${environment.host}/api/`;
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -36,10 +35,11 @@ export class RestService implements HttpInterceptor {
     return this.http.post(`view`, view);
   }
 
-  saveFile(file: File): Observable<Image> {
+  // returns id
+  saveFile(file: File): Observable<number> {
     const data = new FormData();
     data.append('imageFile', file, file.name);
 
-    return this.http.post<Image>(`image`, data);
+    return this.http.post<number>(`image`, data);
   }
 }

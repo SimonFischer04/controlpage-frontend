@@ -1,6 +1,11 @@
-<div [ngStyle]="{backgroundColor: getColor(), backgroundImage: imageUtils.getBackgroundImgStringByImage(field.background)}"
-     id="editFieldRendererContainer">
-  <p>{{field.id}}</p>
-  <p>edit-field-render works!</p>
-  <p *ngIf="field.title">{{field.title}}</p>
+<div id="editFieldRendererContainer">
+  <div class="edit-field-renderer-content" *ngIf="hasBackground()">
+    <img [src]="getBackgroundImage()" alt="" width="100%" height="100%">
+  </div>
+  <div class="edit-field-renderer-content" *ngIf="isSelected()" [ngStyle]="{backgroundColor: SELECTED_COLOR}"></div>
+  <div class="edit-field-renderer-content">
+    <p>{{field.id}}</p>
+    <p>edit-field-render works!</p>
+    <p *ngIf="field.title">{{field.title}}</p>
+  </div>
 </div>

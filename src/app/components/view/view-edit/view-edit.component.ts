@@ -1,14 +1,10 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FullView} from '../../../interfaces/full-view';
 import {ViewUtilsService} from '../../../services/view-utils/view-utils.service';
 import {Field} from '../../../interfaces/field';
-import {error} from '@angular/compiler/src/util';
 import {RestService} from '../../../services/rest/rest.service';
-import {Router} from '@angular/router';
 import {EditFieldRendererParameter} from '../../../interfaces/field-renderer-parameter/edit-field-renderer-parameter';
 import {ImageUtilsService} from '../../../services/image-utils/image-utils.service';
-import {Image} from '../../../interfaces/image';
-import {FileChangeEvent} from '@angular/compiler-cli/src/perform_watch';
 
 @Component({
   selector: 'app-view-edit',
@@ -122,8 +118,8 @@ export class ViewEditComponent implements OnInit {
   save(): void {
     this.changedFiles.forEach((file, fieldId) => {
       this.rest.saveFile(file).subscribe(
-        image => {
-          this.getFieldById(fieldId).background = image;
+        (imageId: number): void => {
+          this.getFieldById(fieldId).backgroundId = imageId;
           this.changedFiles.delete(fieldId);
           this.saveView();
         }
@@ -150,7 +146,10 @@ export class ViewEditComponent implements OnInit {
   }
 
   getBackgroundSrcString(field: Field): string {
-    return this.imageUtils.getSrcStringByImage(field.background);
+    if (field.background) {
+      return this.imageUtils.getSrcStringByImage(field.background);
+    }
+    return this.imageUtils.getRemoteImageSrc(field);
   }
 
   changeSelectedField(field: Field): void {

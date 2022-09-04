@@ -6,6 +6,7 @@ export interface Field {
   action?: Action;
   title?: string;
   background?: Image;
+  backgroundId?: number;
   rowspan: number;
   colspan: number;
 }
