@@ -11,16 +11,30 @@ export class ImageUtilsService {
   constructor() {
   }
 
-  public getRemoteImageSrc(field: Field): string {
+  public hasBackground(field: Field): boolean {
+    return !!field.background || field.backgroundId > 0;
+  }
+
+  public getBackgroundImage(field: Field): string {
+    // "backgroundImage" is only set in "unsaved-state", server will only respond with "backgroundId"
+    if (field.background) {
+      return this.getBackgroundImgString(field);
+    }
+    if (field.backgroundId > 0) {
+      return this.getRemoteImageSrc(field);
+    }
+    return '';
+  }
+
+  private getRemoteImageSrc(field: Field): string {
     return `${environment.host}/api/image/${field.backgroundId}`;
   }
 
-  public getBackgroundImgString(field: Field): string {
+  private getBackgroundImgString(field: Field): string {
     return `${this.getSrcStringByImage(field.background)}`;
   }
 
-  // Used in edit-section to display currently selected file
-  public getSrcStringByImage(image: Image): string {
+  private getSrcStringByImage(image: Image): string {
     if (!image) {
       return ``;
     }

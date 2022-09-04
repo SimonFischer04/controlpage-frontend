@@ -146,10 +146,7 @@ export class ViewEditComponent implements OnInit {
   }
 
   getBackgroundSrcString(field: Field): string {
-    if (field.background) {
-      return this.imageUtils.getSrcStringByImage(field.background);
-    }
-    return this.imageUtils.getRemoteImageSrc(field);
+    return this.imageUtils.getBackgroundImage(field);
   }
 
   changeSelectedField(field: Field): void {

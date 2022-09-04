@@ -30,17 +30,10 @@ export class EditFieldRenderComponent implements OnInit {
   }
 
   public hasBackground(): boolean {
-    return !!this.field.background || this.field.backgroundId > 0;
+    return this.imageUtils.hasBackground(this.field);
   }
 
   public getBackgroundImage(): string {
-    // "backgroundImage" is only set in "unsaved-state", server will only respond with "backgroundId"
-    if (this.field.background) {
-      return this.imageUtils.getBackgroundImgString(this.field);
-    }
-    if (this.field.backgroundId > 0) {
-      return this.imageUtils.getRemoteImageSrc(this.field);
-    }
-    return '';
+    return this.imageUtils.getBackgroundImage(this.field);
   }
 }
