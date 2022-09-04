@@ -35,7 +35,7 @@
         <p>Background:</p>
         <img [src]="getBackgroundSrcString(selectedField)" alt="No Background" width="100%" height="100%"/>
         <div>
-          <input type="file" (change)="onFileChanged($event, this.selectedField)">
+          <input type="file" accept="image/*" (change)="onFileChanged($event, this.selectedField)">
         </div>
       </div>
     </div>
