@@ -6,6 +6,13 @@ import {RestService} from '../../../services/rest/rest.service';
 import {EditFieldRendererParameter} from '../../../interfaces/field-renderer-parameter/edit-field-renderer-parameter';
 import {ImageUtilsService} from '../../../services/image-utils/image-utils.service';
 import deepEqual from 'deep-equal';
+import {ActionType} from '../../../enums/action-type';
+import {getEnumKeyNames} from '../../../utils/enum-utils';
+import {DummyUtils} from "../../../utils/dummy-utils";
+import {RestAction} from "../../../interfaces/action/rest-action";
+import {Action} from "../../../interfaces/action/action";
+import {RunPolicy} from "../../../enums/run-policy";
+import {RestType} from "../../../enums/rest-type";
 
 @Component({
   selector: 'app-view-edit',
@@ -51,7 +58,8 @@ export class ViewEditComponent implements OnInit {
     Editing Section - Field
    */
 
-  public onFileChanged(event: any, field: Field): void {
+  public onFileChanged(event: any): void {
+    const field = this.getSelectedField();
     console.log('fileChangeEvent: ', event);
     if (event.target.files && event.target.files[0]) {
       const file: File = event.target.files[0];
@@ -70,9 +78,43 @@ export class ViewEditComponent implements OnInit {
     }
   }
 
-  public removeBackground(field: Field): void {
+  public removeBackground(): void {
+    const field: Field = this.getSelectedField();
     field.backgroundId = -1;
     field.background = undefined;
+  }
+
+  public hasBackground(): boolean {
+    return this.imageUtils.hasBackground(this.getSelectedField());
+  }
+
+  public getBackgroundSrcString(): string {
+    return this.imageUtils.getBackgroundImage(this.getSelectedField());
+  }
+
+  /*
+    Editing Section - Action
+  */
+
+  public isRestAction(): boolean {
+    return this.getAction()?.type === ActionType.REST;
+  }
+
+  public getRestAction(): RestAction {
+    const action: Action = this.getAction();
+    if (action.type !== ActionType.REST) {
+      console.error('NOT A REST TYPE!!!');
+      return undefined;
+    }
+    return action as RestAction;
+  }
+
+  public getAction(): Action {
+    const field: Field = this.getSelectedField();
+    if (!field.action) {
+      field.action = DummyUtils.getDummyAction();
+    }
+    return field.action;
   }
 
   /*
@@ -123,35 +165,52 @@ export class ViewEditComponent implements OnInit {
   }
 
   public test(): void {
-    console.log(this.view.fields);
-  }
-
-  public getSelectedField(): Field {
-    return this.fieldParams.selectedField;
+    console.log(this.view);
   }
 
   /*
    Utils
   */
 
+  public getSelectedField(): Field {
+    return this.fieldParams.selectedField;
+  }
+
+  public getActionTypes(): string[] {
+    return getEnumKeyNames(ActionType);
+  }
+
+  public getRunPolicies(): string[] {
+    return getEnumKeyNames(RunPolicy);
+  }
+
+  public getRestTypes(): string[] {
+    return getEnumKeyNames(RestType);
+  }
+
   public hasUnsavedChanges(): boolean {
     return !deepEqual(this.view, this.savedView);
   }
 
-  public getBackgroundSrcString(field: Field): string {
-    return this.imageUtils.getBackgroundImage(field);
-  }
-
-  public hasBackground(field: Field): boolean {
-    return this.imageUtils.hasBackground(field);
-  }
+  // ---
 
   private saveView(): void {
     if (this.changedFiles.size === 0) {
       const view: FullView = structuredClone(this.view);
+
+      // filter out undefined-dummy-actions again
+      view.fields.forEach((row: Field[]): void => {
+        row.forEach((field: Field): void => {
+          if (field.action && field.action.type === ActionType.UNDEFINED) {
+            field.action = null;
+          }
+        });
+      });
+
       this.rest.saveView(view).subscribe(
         () => {
           this.savedView = view;
+          this.changedFiles.clear();
           /*
             Send Event to trigger reload (re-fetch from server) in "view-page-component".
             Yes, I know, I could skip this step but this should prevent inconsistent ("saved")-data between frontend and backend.

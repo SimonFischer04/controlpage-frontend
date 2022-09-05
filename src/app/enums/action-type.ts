@@ -1,3 +1,5 @@
 export enum ActionType {
-  REST, VIEW
+  UNDEFINED = 'UNDEFINED',
+  REST = 'REST',
+  VIEW = 'VIEW'
 }

@@ -23,6 +23,7 @@ import { EditFieldRenderComponent } from './components/field/edit-field-render/e
 import { ActionFieldRenderComponent } from './components/field/action-field-render/action-field-render.component';
 import {FormsModule} from '@angular/forms';
 import {MatInput, MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from "@angular/material/select";
 
 @NgModule({
   declarations: [
@@ -37,19 +38,20 @@ import {MatInput, MatInputModule} from '@angular/material/input';
     EditFieldRenderComponent,
     ActionFieldRenderComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MatButtonModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatCardModule,
-    HttpClientModule,
-    MatFormFieldModule,
-    FormsModule,
-    MatInputModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        MatButtonModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatCardModule,
+        HttpClientModule,
+        MatFormFieldModule,
+        FormsModule,
+        MatInputModule,
+        MatSelectModule
+    ],
   providers: [
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {floatLabel: 'auto'}},
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}},

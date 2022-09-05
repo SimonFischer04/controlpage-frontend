@@ -19,11 +19,50 @@
     </div>
 
     <!--    Section where to edit field-->
-    <div id="fieldEditSection" *ngIf="getSelectedField()" #fieldEditingSection>
+    <div id="fieldEditSection" *ngIf="getSelectedField()">
       <div class="editItem">Id: {{getSelectedField().id}}</div>
 
       <div id="actionSection" class="editItem">
-        Action:
+        <p>Action:</p>
+
+        <mat-form-field>
+          <mat-label>ActionType</mat-label>
+          <mat-select [(ngModel)]="getAction().type">
+            <mat-option *ngFor="let actionType of getActionTypes()" [value]="actionType">{{actionType}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div style="border: 1px solid black; margin: 1px">
+          <p>General Action Settings</p>
+          <div>ID: {{getAction().id}}</div>
+          <mat-form-field>
+            <mat-label>RunPolicy</mat-label>
+            <mat-select [(ngModel)]="getAction().runPolicy">
+              <mat-option *ngFor="let runPolicy of getRunPolicies()" [value]="runPolicy">{{runPolicy}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="isRestAction()" style="border: 1px solid black; margin: 1px">
+          <p>REST-Action editing section</p>
+
+          <mat-form-field>
+            <mat-label>RestType</mat-label>
+            <mat-select [(ngModel)]="getRestAction().restType">
+              <mat-option *ngFor="let restType of getRestTypes()" [value]="restType">{{restType}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <br>
+
+          <mat-form-field>
+            <input matInput type="text" placeholder="URL" [ngModel]="getRestAction().url">
+          </mat-form-field>
+          <br>
+
+          <mat-form-field>
+            <input matInput type="text" placeholder="Body" [ngModel]="getRestAction().body">
+          </mat-form-field>
+        </div>
       </div>
 
       <mat-form-field class="editItem">
@@ -33,10 +72,10 @@
 
       <div class="editItem">
         <p>Background:</p>
-        <img [src]="getBackgroundSrcString(getSelectedField())" alt="No Background" width="100%" height="100%"/>
+        <img [src]="getBackgroundSrcString()" alt="No Background" width="100%" height="100%"/>
         <div>
-          <input type="file" accept="image/*" (change)="onFileChanged($event, getSelectedField())">
-          <button mat-icon-button *ngIf="hasBackground(getSelectedField())" (click)="removeBackground(getSelectedField())">
+          <input type="file" accept="image/*" (change)="onFileChanged($event)">
+          <button mat-icon-button *ngIf="hasBackground()" (click)="removeBackground()">
             <mat-icon>delete</mat-icon>
           </button>
         </div>
