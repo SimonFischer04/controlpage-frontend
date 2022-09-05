@@ -72,7 +72,7 @@
 
       <div class="editItem">
         <p>Background:</p>
-        <img [src]="getBackgroundSrcString()" alt="No Background" width="100%" height="100%"/>
+        <img [src]="getBackgroundSrcString()" alt="No Background" style="max-width: 100%"/>
         <div>
           <input type="file" accept="image/*" (change)="onFileChanged($event)">
           <button mat-icon-button *ngIf="hasBackground()" (click)="removeBackground()">
