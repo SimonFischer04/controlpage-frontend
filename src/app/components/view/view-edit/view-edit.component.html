@@ -20,9 +20,33 @@
 
     <!--    Section where to edit field-->
     <div id="fieldEditSection" *ngIf="getSelectedField()">
-      <div class="editItem">Id: {{getSelectedField().id}}</div>
+      <div class="editItem">
+        <P>General Field Settings</P>
 
-      <div id="actionSection" class="editItem">
+        <div class="editItem">Id: {{getSelectedField().id}}</div>
+
+        <mat-form-field class="editItem">
+          <input matInput type="text" placeholder="Title" [(ngModel)]="getSelectedField().title">
+        </mat-form-field>
+        <br>
+
+        <mat-form-field class="editItem" style="width: 100%">
+          <input matInput type="text" placeholder="Description" [(ngModel)]="getSelectedField().description">
+        </mat-form-field>
+      </div>
+
+      <div class="editItem">
+        <p>Background:</p>
+        <img [src]="getBackgroundSrcString()" alt="No Background" style="max-width: 100%"/>
+        <div>
+          <input type="file" accept="image/*" (change)="onFileChanged($event)">
+          <button mat-icon-button *ngIf="hasBackground()" (click)="removeBackground()">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="editItem">
         <p>Action:</p>
 
         <mat-form-field>
@@ -62,22 +86,6 @@
           <mat-form-field>
             <input matInput type="text" placeholder="Body" [ngModel]="getRestAction().body">
           </mat-form-field>
-        </div>
-      </div>
-
-      <mat-form-field class="editItem">
-        <mat-label>Title</mat-label>
-        <input matInput type="text" [(ngModel)]="getSelectedField().title">
-      </mat-form-field>
-
-      <div class="editItem">
-        <p>Background:</p>
-        <img [src]="getBackgroundSrcString()" alt="No Background" style="max-width: 100%"/>
-        <div>
-          <input type="file" accept="image/*" (change)="onFileChanged($event)">
-          <button mat-icon-button *ngIf="hasBackground()" (click)="removeBackground()">
-            <mat-icon>delete</mat-icon>
-          </button>
         </div>
       </div>
     </div>
