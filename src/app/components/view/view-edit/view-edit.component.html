@@ -88,5 +88,5 @@
 </div>
 <div>
   <div>Preview</div>
-  <app-view-renderer [view]="view" [isEditMode]="false"></app-view-renderer>
+  <app-view-renderer [view]="view" [isEditMode]="false" (fieldPress)="onActionFieldPress($event)"></app-view-renderer>
 </div>

@@ -1,3 +1,4 @@
 export enum RestType {
-  GET, POST
+  GET = 'GET',
+  POST = 'POST'
 }

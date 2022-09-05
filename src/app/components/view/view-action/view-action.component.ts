@@ -1,5 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FullView} from '../../../interfaces/full-view';
+import {Field} from '../../../interfaces/field';
+import {ActionService} from '../../../services/action/action.service';
 
 @Component({
   selector: 'app-view-action',
@@ -9,9 +11,15 @@ import {FullView} from '../../../interfaces/full-view';
 export class ViewActionComponent implements OnInit {
   @Input() view: FullView;
 
-  constructor() { }
+  constructor(
+    private readonly actionService: ActionService
+  ) {
+  }
 
   ngOnInit(): void {
   }
 
+  public onFieldPress(field: Field): void {
+    this.actionService.executeAction(field.action);
+  }
 }

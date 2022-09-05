@@ -8,11 +8,12 @@ import {ImageUtilsService} from '../../../services/image-utils/image-utils.servi
 import deepEqual from 'deep-equal';
 import {ActionType} from '../../../enums/action-type';
 import {getEnumKeyNames} from '../../../utils/enum-utils';
-import {DummyUtils} from "../../../utils/dummy-utils";
-import {RestAction} from "../../../interfaces/action/rest-action";
-import {Action} from "../../../interfaces/action/action";
-import {RunPolicy} from "../../../enums/run-policy";
-import {RestType} from "../../../enums/rest-type";
+import {DummyUtils} from '../../../utils/dummy-utils';
+import {RestAction} from '../../../interfaces/action/rest-action';
+import {Action} from '../../../interfaces/action/action';
+import {RunPolicy} from '../../../enums/run-policy';
+import {RestType} from '../../../enums/rest-type';
+import {ActionService} from '../../../services/action/action.service';
 
 @Component({
   selector: 'app-view-edit',
@@ -35,7 +36,8 @@ export class ViewEditComponent implements OnInit {
   constructor(
     private readonly viewUtils: ViewUtilsService,
     private readonly rest: RestService,
-    private readonly imageUtils: ImageUtilsService
+    private readonly imageUtils: ImageUtilsService,
+    private readonly actionService: ActionService
   ) {
   }
 
@@ -166,6 +168,14 @@ export class ViewEditComponent implements OnInit {
 
   public test(): void {
     console.log(this.view);
+  }
+
+  /*
+    Other
+   */
+
+  public onActionFieldPress(field: Field) {
+    this.actionService.executeAction(field.action);
   }
 
   /*
