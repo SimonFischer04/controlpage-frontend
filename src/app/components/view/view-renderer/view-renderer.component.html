@@ -3,17 +3,18 @@
   <div id="fieldContainer" #fieldContainer>
     <div class="column-wrapper" *ngFor="let fields of getView().fields">
       <div class="row-wrapper ">
-        <div class="field" *ngFor="let field of fields"
-             [ngStyle]="{'width': getFieldWidth() + 'px', 'height': getFieldHeight() + 'px'}">
+        <div class="field" *ngFor="let field of fields" [ngStyle]="{'width': getFieldWidth() + 'px', 'height': getFieldHeight() + 'px'}">
           <app-edit-field-render
-            [field]="field" *ngIf="isEditMode"
+            *ngIf="isEditMode"
+            [field]="field"
             (click)="onFieldPress(field)"
             [params]="fieldRenderParameter"
             class="renderComponent"
           ></app-edit-field-render>
 
           <app-action-field-render
-            [field]="field" *ngIf="!isEditMode"
+            *ngIf="!isEditMode"
+            [field]="field"
             (click)="onFieldPress(field)"
             [params]="fieldRenderParameter"
             class="renderComponent"

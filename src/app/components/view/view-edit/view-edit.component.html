@@ -19,8 +19,8 @@
     </div>
 
     <!--    Section where to edit field-->
-    <div id="fieldEditSection" *ngIf="selectedField" #fieldEditingSection>
-      <div class="editItem">Id: {{selectedField.id}}</div>
+    <div id="fieldEditSection" *ngIf="getSelectedField()" #fieldEditingSection>
+      <div class="editItem">Id: {{getSelectedField().id}}</div>
 
       <div id="actionSection" class="editItem">
         Action:
@@ -28,19 +28,22 @@
 
       <mat-form-field class="editItem">
         <mat-label>Title</mat-label>
-        <input matInput type="text" [(ngModel)]="selectedField.title">
+        <input matInput type="text" [(ngModel)]="getSelectedField().title">
       </mat-form-field>
 
       <div class="editItem">
         <p>Background:</p>
-        <img [src]="getBackgroundSrcString(selectedField)" alt="No Background" width="100%" height="100%"/>
+        <img [src]="getBackgroundSrcString(getSelectedField())" alt="No Background" width="100%" height="100%"/>
         <div>
-          <input type="file" accept="image/*" (change)="onFileChanged($event, this.selectedField)">
+          <input type="file" accept="image/*" (change)="onFileChanged($event, getSelectedField())">
+          <button mat-icon-button *ngIf="hasBackground(getSelectedField())" (click)="removeBackground(getSelectedField())">
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
       </div>
     </div>
 
-    <!--    <div style="background-color: red" *ngIf="viewChanged">unsaved-view-changes!!!</div>-->
+    <div style="background-color: red" *ngIf="hasUnsavedChanges()">unsaved-view-changes!!!</div>
     <button mat-button (click)="save()">Save View</button>
   </div>
 </div>

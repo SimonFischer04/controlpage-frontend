@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {FullView} from '../../interfaces/full-view';
 import {RestService} from '../../services/rest/rest.service';
@@ -9,6 +9,7 @@ import {RestService} from '../../services/rest/rest.service';
   styleUrls: ['./view-page.component.scss']
 })
 export class ViewPageComponent implements OnInit {
+  @Output() selectedViewChanged: EventEmitter<FullView> = new EventEmitter();
   selectedView: FullView;
 
   constructor(
@@ -26,8 +27,9 @@ export class ViewPageComponent implements OnInit {
       () => {
         if (this.getSelectedViewId()) {
           this.rest.getView(this.getSelectedViewId()).subscribe(
-            v => {
+            (v: FullView) => {
               this.selectedView = v;
+              this.selectedViewChanged.emit(v);
             }
           );
         }

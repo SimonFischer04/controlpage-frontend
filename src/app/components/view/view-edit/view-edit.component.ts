@@ -5,6 +5,7 @@ import {Field} from '../../../interfaces/field';
 import {RestService} from '../../../services/rest/rest.service';
 import {EditFieldRendererParameter} from '../../../interfaces/field-renderer-parameter/edit-field-renderer-parameter';
 import {ImageUtilsService} from '../../../services/image-utils/image-utils.service';
+import deepEqual from 'deep-equal';
 
 @Component({
   selector: 'app-view-edit',
@@ -12,29 +13,37 @@ import {ImageUtilsService} from '../../../services/image-utils/image-utils.servi
   styleUrls: ['./view-edit.component.scss']
 })
 export class ViewEditComponent implements OnInit {
-  @Output() requestRefresh: EventEmitter<any> = new EventEmitter();
+  @Output() requestRefresh: EventEmitter<FullView> = new EventEmitter();
+  @Input() selectedViewChanged: EventEmitter<FullView> = new EventEmitter();
   @Input() view: FullView;
-  selectedField: Field;
-  viewChanged = false;
+
+  // save copy of view to be able to check if something changed -> f.e. display "unsaved-infos"
+  savedView?: FullView;
+
   fieldParams: EditFieldRendererParameter = {selectedField: null};
+
   // Map<fieldId, File>
   changedFiles: Map<number, File> = new Map<number, File>();
 
   constructor(
-    private viewUtils: ViewUtilsService,
-    private rest: RestService,
-    private imageUtils: ImageUtilsService
+    private readonly viewUtils: ViewUtilsService,
+    private readonly rest: RestService,
+    private readonly imageUtils: ImageUtilsService
   ) {
   }
 
   ngOnInit(): void {
+    this.selectedViewChanged.subscribe((view: FullView) => {
+      console.log('view changed: ', view);
+      this.savedView = structuredClone(view);
+    });
   }
 
-  selectedFieldChange(field: Field): void {
+  public selectedFieldChange(field: Field): void {
     // Unselect Field if pressed 2nd time
-    this.changeSelectedField(field === this.selectedField ? null : field);
+    this.changeSelectedField(field === this.getSelectedField() ? null : field);
 
-    console.log('editing Field: ', this.selectedField);
+    console.log('editing Field: ', this.getSelectedField());
   }
 
 
@@ -42,7 +51,7 @@ export class ViewEditComponent implements OnInit {
     Editing Section - Field
    */
 
-  onFileChanged(event: any, field: Field): void {
+  public onFileChanged(event: any, field: Field): void {
     console.log('fileChangeEvent: ', event);
     if (event.target.files && event.target.files[0]) {
       const file: File = event.target.files[0];
@@ -61,12 +70,16 @@ export class ViewEditComponent implements OnInit {
     }
   }
 
+  public removeBackground(field: Field): void {
+    field.backgroundId = -1;
+    field.background = undefined;
+  }
+
   /*
     Editing Section - General
    */
 
-  addRow(): void {
-    this.viewChanged = true;
+  public addRow(): void {
     const ar: Field[] = [];
     for (let i = 0; i < this.viewUtils.getViewWidth(this.view); i++) {
       ar.push(this.viewUtils.getDummyField(true));
@@ -74,22 +87,19 @@ export class ViewEditComponent implements OnInit {
     this.view.fields.push(ar);
   }
 
-  removeRow(): void {
-    this.viewChanged = true;
+  public removeRow(): void {
     if (confirm('Do you really want to delete last row?')) {
       this.view.fields.splice(this.view.fields.length - 1, 1);
     }
   }
 
-  addColumn(): void {
-    this.viewChanged = true;
+  public addColumn(): void {
     this.view.fields.forEach(row => {
       row.push(this.viewUtils.getDummyField(true));
     });
   }
 
-  removeColumn(): void {
-    this.viewChanged = true;
+  public removeColumn(): void {
     if (confirm('Do you really want to delete last row?')) {
       this.view.fields.forEach(row => {
         if (row.length > 0) {
@@ -99,23 +109,7 @@ export class ViewEditComponent implements OnInit {
     }
   }
 
-  private saveView(): void {
-    if (this.changedFiles.size === 0) {
-      this.rest.saveView(this.view).subscribe(
-        () => {
-          this.viewChanged = false;
-          /*
-            Send Event to trigger reload (re-fetch from server) in "view-page-component".
-            Yes, I know, I could skip this step but this should prevent inconsistent ("saved")-data between frontend and backend.
-            And ... I think this is negligible because it is only part of "the editing". (wouldn't do such things in "the using expierence")
-           */
-          this.requestRefresh.emit();
-        }
-      );
-    }
-  }
-
-  save(): void {
+  public save(): void {
     this.changedFiles.forEach((file, fieldId) => {
       this.rest.saveFile(file).subscribe(
         (imageId: number): void => {
@@ -128,14 +122,52 @@ export class ViewEditComponent implements OnInit {
     this.saveView();
   }
 
-  test(): void {
+  public test(): void {
     console.log(this.view.fields);
   }
 
+  public getSelectedField(): Field {
+    return this.fieldParams.selectedField;
+  }
+
   /*
-    Utils
-   */
-  getFieldById(id: number): Field {
+   Utils
+  */
+
+  public hasUnsavedChanges(): boolean {
+    return !deepEqual(this.view, this.savedView);
+  }
+
+  public getBackgroundSrcString(field: Field): string {
+    return this.imageUtils.getBackgroundImage(field);
+  }
+
+  public hasBackground(field: Field): boolean {
+    return this.imageUtils.hasBackground(field);
+  }
+
+  private saveView(): void {
+    if (this.changedFiles.size === 0) {
+      const view: FullView = structuredClone(this.view);
+      this.rest.saveView(view).subscribe(
+        () => {
+          this.savedView = view;
+          /*
+            Send Event to trigger reload (re-fetch from server) in "view-page-component".
+            Yes, I know, I could skip this step but this should prevent inconsistent ("saved")-data between frontend and backend.
+            And ... I think this is negligible because it is only part of "the editing". (wouldn't do such things in "the using expierence")
+           */
+          this.requestRefresh.emit();
+        }
+      );
+    }
+  }
+
+  private changeSelectedField(field: Field): void {
+    this.fieldParams.selectedField = field;
+  }
+
+  private getFieldById(id: number): Field {
     for (const row of this.view.fields) {
       for (const field of row) {
         if (field.id === id) {
@@ -143,14 +175,5 @@ export class ViewEditComponent implements OnInit {
         }
       }
     }
-  }
-
-  getBackgroundSrcString(field: Field): string {
-    return this.imageUtils.getBackgroundImage(field);
-  }
-
-  changeSelectedField(field: Field): void {
-    this.selectedField = field;
-    this.fieldParams.selectedField = field;
   }
 }
