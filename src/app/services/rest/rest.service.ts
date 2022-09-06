@@ -32,7 +32,7 @@ export class RestService implements HttpInterceptor {
    */
 
   public getDesktopAutomationFunctions(): Observable<ControlPageFunctionsResponse> {
-    return this.http.get<ControlPageFunctionsResponse>(`${this.preferencesService.getDesktopAutomationPrefix()}function`);
+    return this.http.get<ControlPageFunctionsResponse>(`${this.preferencesService.desktopAutomationPrefix}function`);
   }
 
   /*

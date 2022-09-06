@@ -4,18 +4,22 @@ import {Injectable} from '@angular/core';
   providedIn: 'root'
 })
 export class UserPreferencesService {
+  private readonly DESKTOP_AUTOMATION_HOST_KEY = 'DESKTOP_AUTOMATION_HOST';
   private readonly validFieldStyles: string[] = ['square', 'rectangle'];
 
   constructor() {
-    UserPreferencesService.checkDefaults();
+    this.checkDefaults();
   }
 
-  private static checkDefaults(): void {
+  private checkDefaults(): void {
     if (!localStorage.getItem('spaceBetween')) {
       localStorage.setItem('spaceBetween', String(10));
     }
     if (!localStorage.getItem('fieldStyle')) {
       localStorage.setItem('fieldStyle', 'square');
+    }
+    if (!this.desktopAutomationHost) {
+      this.desktopAutomationHost = 'localhost';
     }
   }
 
@@ -38,11 +42,16 @@ export class UserPreferencesService {
     return localStorage.getItem('fieldStyle');
   }
 
-  public getDesktopAutomationHost(): string {
-    return 'http://localhost:42069';
+  public get desktopAutomationHost(): string {
+    return localStorage.getItem(this.DESKTOP_AUTOMATION_HOST_KEY);
   }
 
-  public getDesktopAutomationPrefix(): string {
-    return `${this.getDesktopAutomationHost()}/api/controlPageInterface/`;
+  public set desktopAutomationHost(value: string) {
+    localStorage.setItem(this.DESKTOP_AUTOMATION_HOST_KEY, value);
+  }
+
+  public get desktopAutomationPrefix(): string {
+    // noinspection HttpUrlsUsage
+    return `http://${this.desktopAutomationHost}:42069/api/controlPageInterface/`;
   }
 }

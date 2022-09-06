@@ -6,7 +6,7 @@ export class DesktopAutomationExecutor extends ActionExecutor<DesktopAutomationA
   public executeAction(preferences: UserPreferencesService, action: DesktopAutomationAction): void {
     console.log('DesktopAutomationAction: ', action);
 
-    const url = `${preferences.getDesktopAutomationPrefix()}function/${action.functionName}`;
+    const url = `${preferences.desktopAutomationPrefix}function/${action.functionName}`;
 
     fetch(url, {
       method: 'POST',
