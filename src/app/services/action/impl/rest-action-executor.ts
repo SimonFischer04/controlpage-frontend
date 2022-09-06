@@ -2,7 +2,7 @@ import {ActionExecutor} from '../action-executor';
 import {RestAction} from '../../../interfaces/action/rest-action';
 
 export class RestActionExecutor extends ActionExecutor<RestAction> {
-  public executeAction(action: RestAction): void {
+  public executeAction(_, action: RestAction): void {
     console.log('rest-action: ', action);
     fetch(action.url, {
       method: action.restType,

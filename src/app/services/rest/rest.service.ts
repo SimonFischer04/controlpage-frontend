@@ -4,7 +4,8 @@ import {environment} from '../../../environments/environment';
 import {Observable} from 'rxjs';
 import {ViewListResponse} from '../../interfaces/rest/view-list-response';
 import {FullView} from '../../interfaces/full-view';
-import {Image} from '../../interfaces/image';
+import {ControlPageFunctionsResponse} from '../../interfaces/desktop-automation-interface/ControlPageFunctionsResponse';
+import {UserPreferencesService} from '../user-preferences/user-preferences.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,15 +14,30 @@ export class RestService implements HttpInterceptor {
   readonly urlPrefix;
 
   constructor(
-    private http: HttpClient,
+    private readonly http: HttpClient,
+    private readonly preferencesService: UserPreferencesService
   ) {
     this.urlPrefix = `${environment.host}/api/`;
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    request = request.clone({url: `${this.urlPrefix}${request.url}`});
+    if (!request.url.startsWith('http')) {
+      request = request.clone({url: `${this.urlPrefix}${request.url}`});
+    }
     return next.handle(request);
   }
+
+  /*
+    Desktop-Automation Interface
+   */
+
+  public getDesktopAutomationFunctions(): Observable<ControlPageFunctionsResponse> {
+    return this.http.get<ControlPageFunctionsResponse>(`${this.preferencesService.getDesktopAutomationPrefix()}function`);
+  }
+
+  /*
+    Backend
+   */
 
   getViewList(): Observable<ViewListResponse> {
     return this.http.get<ViewListResponse>(`view/all`);

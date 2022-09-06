@@ -1,5 +1,6 @@
 export enum ActionType {
   UNDEFINED = 'UNDEFINED',
   REST = 'REST',
-  VIEW = 'VIEW'
+  VIEW = 'VIEW',
+  DESKTOP_AUTOMATION = 'DESKTOP_AUTOMATION'
 }

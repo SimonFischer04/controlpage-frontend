@@ -37,4 +37,12 @@ export class UserPreferencesService {
   getFieldStyle(): string {
     return localStorage.getItem('fieldStyle');
   }
+
+  public getDesktopAutomationHost(): string {
+    return 'http://localhost:42069';
+  }
+
+  public getDesktopAutomationPrefix(): string {
+    return `${this.getDesktopAutomationHost()}/api/controlPageInterface/`;
+  }
 }

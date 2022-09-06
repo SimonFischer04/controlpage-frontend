@@ -14,6 +14,9 @@ import {Action} from '../../../interfaces/action/action';
 import {RunPolicy} from '../../../enums/run-policy';
 import {RestType} from '../../../enums/rest-type';
 import {ActionService} from '../../../services/action/action.service';
+import {DesktopAutomationAction} from '../../../interfaces/action/desktop-automation-action';
+import {ControlPageFunctionsResponse} from '../../../interfaces/desktop-automation-interface/ControlPageFunctionsResponse';
+import {ControlPageFunction} from '../../../interfaces/desktop-automation-interface/ControlPageFunction';
 
 @Component({
   selector: 'app-view-edit',
@@ -21,17 +24,18 @@ import {ActionService} from '../../../services/action/action.service';
   styleUrls: ['./view-edit.component.scss']
 })
 export class ViewEditComponent implements OnInit {
-  @Output() requestRefresh: EventEmitter<FullView> = new EventEmitter();
-  @Input() selectedViewChanged: EventEmitter<FullView> = new EventEmitter();
-  @Input() view: FullView;
+  @Output() public requestRefresh: EventEmitter<FullView> = new EventEmitter();
+  @Input() public selectedViewChanged: EventEmitter<FullView> = new EventEmitter();
+  @Input() public view: FullView;
+  public fieldParams: EditFieldRendererParameter = {selectedField: null};
 
   // save copy of view to be able to check if something changed -> f.e. display "unsaved-infos"
-  savedView?: FullView;
-
-  fieldParams: EditFieldRendererParameter = {selectedField: null};
+  private savedView?: FullView;
 
   // Map<fieldId, File>
-  changedFiles: Map<number, File> = new Map<number, File>();
+  private changedFiles: Map<number, File> = new Map<number, File>();
+
+  private desktopAutomationFunctions: ControlPageFunction[] = [];
 
   constructor(
     private readonly viewUtils: ViewUtilsService,
@@ -42,9 +46,12 @@ export class ViewEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.selectedViewChanged.subscribe((view: FullView) => {
+    this.selectedViewChanged.subscribe((view: FullView): void => {
       console.log('view changed: ', view);
       this.savedView = structuredClone(view);
+    });
+    this.rest.getDesktopAutomationFunctions().subscribe((response: ControlPageFunctionsResponse): void => {
+      this.desktopAutomationFunctions = response.functions;
     });
   }
 
@@ -102,13 +109,16 @@ export class ViewEditComponent implements OnInit {
     return this.getAction()?.type === ActionType.REST;
   }
 
+  public isDesktopAutomationAction(): boolean {
+    return this.getAction()?.type === ActionType.DESKTOP_AUTOMATION;
+  }
+
+  public getDesktopAutomationAction(): DesktopAutomationAction {
+    return this.getTypedAction<DesktopAutomationAction>(ActionType.DESKTOP_AUTOMATION);
+  }
+
   public getRestAction(): RestAction {
-    const action: Action = this.getAction();
-    if (action.type !== ActionType.REST) {
-      console.error('NOT A REST TYPE!!!');
-      return undefined;
-    }
-    return action as RestAction;
+    return this.getTypedAction<RestAction>(ActionType.REST);
   }
 
   public getAction(): Action {
@@ -202,7 +212,20 @@ export class ViewEditComponent implements OnInit {
     return !deepEqual(this.view, this.savedView);
   }
 
+  public getDesktopAutomationFunctions(): ControlPageFunction[] {
+    return this.desktopAutomationFunctions;
+  }
+
   // ---
+
+  private getTypedAction<T extends Action>(typeParam: ActionType): T {
+    const action: Action = this.getAction();
+    if (action.type !== typeParam) {
+      console.error(`NOT A ${typeParam} TYPE!!!`);
+      return undefined;
+    }
+    return action as T;
+  }
 
   private saveView(): void {
     if (this.changedFiles.size === 0) {

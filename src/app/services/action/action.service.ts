@@ -2,16 +2,26 @@ import {Injectable} from '@angular/core';
 import {Action} from '../../interfaces/action/action';
 import {RestActionExecutor} from './impl/rest-action-executor';
 import {ActionType} from '../../enums/action-type';
+import {DesktopAutomationExecutor} from './impl/desktop-automation-executor';
+import {ActionExecutor} from './action-executor';
+import {UserPreferencesService} from '../user-preferences/user-preferences.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ActionService {
-  readonly executors = {
-    [ActionType.REST]: new RestActionExecutor()
-  };
+  readonly executors:
+    {
+      [key: string]: ActionExecutor<any>
+    } =
+    {
+      [ActionType.REST]: new RestActionExecutor(),
+      [ActionType.DESKTOP_AUTOMATION]: new DesktopAutomationExecutor()
+    };
 
-  constructor() {
+  constructor(
+    private readonly preferences: UserPreferencesService
+  ) {
   }
 
   public executeAction(action: Action) {
@@ -23,7 +33,7 @@ export class ActionService {
     if (!executor) {
       console.error(`No executor for type '${action.type}' found!`);
     }
-    executor.executeAction(action);
+    executor.executeAction(this.preferences, action);
   }
 }
 
