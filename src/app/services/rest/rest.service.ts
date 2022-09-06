@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
-import {Observable} from 'rxjs';
+import {catchError, map, Observable, retry, throwError} from 'rxjs';
 import {ViewListResponse} from '../../interfaces/rest/view-list-response';
 import {FullView} from '../../interfaces/full-view';
 import {ControlPageFunctionsResponse} from '../../interfaces/desktop-automation-interface/ControlPageFunctionsResponse';
@@ -24,7 +24,26 @@ export class RestService implements HttpInterceptor {
     if (!request.url.startsWith('http')) {
       request = request.clone({url: `${this.urlPrefix}${request.url}`});
     }
-    return next.handle(request);
+    return next.handle(request).pipe(
+      // map((event: HttpEvent<any>) => {
+      //   console.error("FJKDSFJK")
+      //   if (event instanceof HttpResponse) {
+      //     console.error("JFKDSJF", event.status !== 200, event);
+      //     // event = event.clone({body: this.modifyBody(event.body)});
+      //     if (event.status !== 200 && this.preferencesService.shouldDisplayErrorAlert) {
+      //       console.error("fgklsdfjgdlkfg")
+      //       alert(`HTTP-Error: ${event.statusText}`);
+      //     }
+      //   }
+      //   return event;
+      // }),
+      catchError((error: HttpErrorResponse) => {
+        if (this.preferencesService.shouldDisplayErrorAlert) {
+          alert(`REST-Service: ${error.message}`);
+        }
+        return throwError(() => error);
+      })
+    );
   }
 
   /*

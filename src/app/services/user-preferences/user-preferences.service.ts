@@ -5,6 +5,7 @@ import {Injectable} from '@angular/core';
 })
 export class UserPreferencesService {
   private readonly DESKTOP_AUTOMATION_HOST_KEY = 'DESKTOP_AUTOMATION_HOST';
+  private readonly ERROR_ALERT_KEY = 'ERROR_ALERT';
   private readonly validFieldStyles: string[] = ['square', 'rectangle'];
 
   constructor() {
@@ -20,6 +21,9 @@ export class UserPreferencesService {
     }
     if (!this.desktopAutomationHost) {
       this.desktopAutomationHost = 'localhost';
+    }
+    if (this.shouldDisplayErrorAlert ?? false) {
+      this.shouldDisplayErrorAlert = true;
     }
   }
 
@@ -53,5 +57,13 @@ export class UserPreferencesService {
   public get desktopAutomationPrefix(): string {
     // noinspection HttpUrlsUsage
     return `http://${this.desktopAutomationHost}:42069/api/controlPageInterface/`;
+  }
+
+  public get shouldDisplayErrorAlert(): boolean {
+    return localStorage.getItem(this.ERROR_ALERT_KEY) === 'true';
+  }
+
+  public set shouldDisplayErrorAlert(value: boolean) {
+    localStorage.setItem(this.ERROR_ALERT_KEY, value ? 'true' : 'false');
   }
 }

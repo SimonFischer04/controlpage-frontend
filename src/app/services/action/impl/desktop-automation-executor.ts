@@ -16,6 +16,8 @@ export class DesktopAutomationExecutor extends ActionExecutor<DesktopAutomationA
       return result.text();
     }).then((value: any) => {
       console.log('fetch-result: ', value);
+    }).catch((error: any) => {
+      alert(`DesktopAutomationAction-Error: ${error}`);
     });
   }
 }

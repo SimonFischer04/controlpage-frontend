@@ -11,6 +11,8 @@ export class RestActionExecutor extends ActionExecutor<RestAction> {
       return result.json();
     }).then((value: any) => {
       console.log('fetch-result: ', value);
+    }).catch((error: any) => {
+      alert(`RestAction-Error: ${error}`);
     });
   }
 }
