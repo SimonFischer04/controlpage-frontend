@@ -1,2 +1,5 @@
 <p>view-action works!</p>
-<app-view-renderer [view]="view" [isEditMode]="false" (fieldPress)="onFieldPress($event)"></app-view-renderer>
+<button mat-button (click)="fullScreen()">Fullscreen</button>
+<div #viewRendererRefWrapper>
+  <app-view-renderer [view]="view" [isEditMode]="false" (fieldPress)="onFieldPress($event)"></app-view-renderer>
+</div>
