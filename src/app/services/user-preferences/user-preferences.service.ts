@@ -6,6 +6,8 @@ import {Injectable} from '@angular/core';
 export class UserPreferencesService {
   private readonly DESKTOP_AUTOMATION_HOST_KEY = 'DESKTOP_AUTOMATION_HOST';
   private readonly ERROR_ALERT_KEY = 'ERROR_ALERT';
+  private readonly BACKEND_HOST_KEY = 'BACKEND_HOST';
+
   private readonly validFieldStyles: string[] = ['square', 'rectangle'];
 
   constructor() {
@@ -19,11 +21,14 @@ export class UserPreferencesService {
     if (!localStorage.getItem('fieldStyle')) {
       localStorage.setItem('fieldStyle', 'square');
     }
-    if (!this.desktopAutomationHost) {
+    if (!localStorage.getItem(this.DESKTOP_AUTOMATION_HOST_KEY)) {
       this.desktopAutomationHost = 'localhost';
     }
-    if (this.shouldDisplayErrorAlert ?? false) {
+    if (!(localStorage.getItem(this.ERROR_ALERT_KEY) ?? false)) {
       this.shouldDisplayErrorAlert = true;
+    }
+    if (!localStorage.getItem(this.BACKEND_HOST_KEY)) {
+      this.backendHost = `${window.location.protocol}//${window.location.host.split(':')[0]}:42000`;
     }
   }
 
@@ -47,6 +52,7 @@ export class UserPreferencesService {
   }
 
   public get desktopAutomationHost(): string {
+    this.checkDefaults();
     return localStorage.getItem(this.DESKTOP_AUTOMATION_HOST_KEY);
   }
 
@@ -60,10 +66,20 @@ export class UserPreferencesService {
   }
 
   public get shouldDisplayErrorAlert(): boolean {
+    this.checkDefaults();
     return localStorage.getItem(this.ERROR_ALERT_KEY) === 'true';
   }
 
   public set shouldDisplayErrorAlert(value: boolean) {
     localStorage.setItem(this.ERROR_ALERT_KEY, value ? 'true' : 'false');
+  }
+
+  public get backendHost(): string {
+    this.checkDefaults();
+    return localStorage.getItem(this.BACKEND_HOST_KEY);
+  }
+
+  public set backendHost(value: string) {
+    localStorage.setItem(this.BACKEND_HOST_KEY, value);
   }
 }

@@ -11,18 +11,19 @@ import {UserPreferencesService} from '../user-preferences/user-preferences.servi
   providedIn: 'root'
 })
 export class RestService implements HttpInterceptor {
-  readonly urlPrefix;
+  // readonly urlPrefix;
 
   constructor(
     private readonly http: HttpClient,
     private readonly preferencesService: UserPreferencesService
   ) {
-    this.urlPrefix = `${environment.host}/api/`;
+    // this.urlPrefix = `${environment.host}/api/`;
+    // this.urlPrefix = `${environment.protocol}://${window.location.host.split(":")[0]}:${environment.apiPort}/api/`;
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (!request.url.startsWith('http')) {
-      request = request.clone({url: `${this.urlPrefix}${request.url}`});
+      request = request.clone({url: `${this.preferencesService.backendHost}/api/${request.url}`});
     }
     return next.handle(request).pipe(
       // map((event: HttpEvent<any>) => {

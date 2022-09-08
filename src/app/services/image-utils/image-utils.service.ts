@@ -1,14 +1,16 @@
 import {Injectable} from '@angular/core';
 import {Image} from '../../interfaces/image';
 import {Field} from '../../interfaces/field';
-import {environment} from '../../../environments/environment';
+import {UserPreferencesService} from '../user-preferences/user-preferences.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ImageUtilsService {
 
-  constructor() {
+  constructor(
+    private readonly preferences: UserPreferencesService
+  ) {
   }
 
   public hasBackground(field: Field): boolean {
@@ -27,7 +29,7 @@ export class ImageUtilsService {
   }
 
   private getRemoteImageSrc(field: Field): string {
-    return `${environment.host}/api/image/${field.backgroundId}`;
+    return `${this.preferences.backendHost}/api/image/${field.backgroundId}`;
   }
 
   private getBackgroundImgString(field: Field): string {
