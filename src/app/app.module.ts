@@ -26,6 +26,8 @@ import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {SettingsPageComponent} from './sites/settings-page/settings-page.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import { DesktopAutomationFunctionSelectComponent } from './components/view/view-edit/desktop-automation-function-select/desktop-automation-function-select.component';
+import {MatSelectSearchModule} from "mat-select-search";
 
 @NgModule({
   declarations: [
@@ -39,7 +41,8 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     ViewActionComponent,
     EditFieldRenderComponent,
     ActionFieldRenderComponent,
-    SettingsPageComponent
+    SettingsPageComponent,
+    DesktopAutomationFunctionSelectComponent
   ],
   imports: [
     BrowserModule,
@@ -54,7 +57,8 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     FormsModule,
     MatInputModule,
     MatSelectModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatSelectSearchModule
   ],
   providers: [
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {floatLabel: 'auto'}},

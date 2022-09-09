@@ -2,8 +2,9 @@
 <div>view-edit works!</div>
 <div class="row-wrapper">
   <div id="editViewDisplay">
-    <app-view-renderer [view]="view" [isEditMode]="true" (fieldPress)="selectedFieldChange($event)"
+    <app-view-renderer [view]="view" [isEditMode]="true" (fieldPress)="onFieldPress($event)"
                        [fieldRenderParameter]="fieldParams"></app-view-renderer>
+    {{getSelectedField()?.action | json}}
   </div>
 
   <span class="flex-fill-space"></span>
@@ -91,12 +92,7 @@
         <div *ngIf="isDesktopAutomationAction()" style="border: 1px solid black; margin: 1px">
           <p>Desktop-Automation editing section</p>
 
-          <mat-form-field>
-            <mat-label>Function-Name</mat-label>
-            <mat-select [(ngModel)]="getDesktopAutomationAction().functionName">
-              <mat-option *ngFor="let func of getDesktopAutomationFunctions()" [value]="func.name">{{func.name}}</mat-option>
-            </mat-select>
-          </mat-form-field>
+          <app-desktop-automation-function-select [action]="getDesktopAutomationAction()" [functions]="getDesktopAutomationFunctions()"></app-desktop-automation-function-select>
         </div>
       </div>
     </div>

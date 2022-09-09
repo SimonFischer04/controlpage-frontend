@@ -1,0 +1,22 @@
+<mat-form-field>
+  <mat-label>Select a Function</mat-label>
+  <mat-select #functionSelect [(ngModel)]="action.functionName">
+    <mat-select-trigger>{{functionSelect.value}}</mat-select-trigger>
+
+    <mat-option>
+      <lib-mat-select-search
+        [list]="getFunctions()"
+        [searchProperties]="['name']"
+        (filtered)="filteredFunctions = $event"
+        fixOnTop="true"
+      >
+      </lib-mat-select-search>
+    </mat-option>
+
+    <mat-option *ngFor="let func of filteredFunctions" [value]="func.name">
+      <div class="function-container">
+        <span>{{func.name}}</span>
+      </div>
+    </mat-option>
+  </mat-select>
+</mat-form-field>

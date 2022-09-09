@@ -9,7 +9,7 @@ import {RestService} from '../../services/rest/rest.service';
   styleUrls: ['./view-page.component.scss']
 })
 export class ViewPageComponent implements OnInit {
-  @Output() selectedViewChanged: EventEmitter<FullView> = new EventEmitter();
+  selectedViewChanged: EventEmitter<FullView> = new EventEmitter();
   selectedView: FullView;
 
   constructor(

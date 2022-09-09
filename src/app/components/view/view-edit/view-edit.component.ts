@@ -26,7 +26,7 @@ import {ControlPageFunction} from '../../../interfaces/desktop-automation-interf
 export class ViewEditComponent implements OnInit {
   @Output() public requestRefresh: EventEmitter<FullView> = new EventEmitter();
   @Input() public selectedViewChanged: EventEmitter<FullView> = new EventEmitter();
-  @Input() public view: FullView;
+  public view: FullView;
   public fieldParams: EditFieldRendererParameter = {selectedField: null};
 
   // save copy of view to be able to check if something changed -> f.e. display "unsaved-infos"
@@ -48,14 +48,16 @@ export class ViewEditComponent implements OnInit {
   ngOnInit(): void {
     this.selectedViewChanged.subscribe((view: FullView): void => {
       console.log('view changed: ', view);
+      this.changeSelectedField(null);
       this.savedView = structuredClone(view);
+      this.view = view;
     });
     this.rest.getDesktopAutomationFunctions().subscribe((response: ControlPageFunctionsResponse): void => {
       this.desktopAutomationFunctions = response.functions;
     });
   }
 
-  public selectedFieldChange(field: Field): void {
+  public onFieldPress(field: Field): void {
     // Unselect Field if pressed 2nd time
     this.changeSelectedField(field === this.getSelectedField() ? null : field);
 
@@ -169,7 +171,7 @@ export class ViewEditComponent implements OnInit {
         (imageId: number): void => {
           this.getFieldById(fieldId).backgroundId = imageId;
           this.changedFiles.delete(fieldId);
-          this.saveView();
+          this.save();
         }
       );
     });
@@ -228,31 +230,36 @@ export class ViewEditComponent implements OnInit {
   }
 
   private saveView(): void {
-    if (this.changedFiles.size === 0) {
-      const view: FullView = structuredClone(this.view);
-
-      // filter out undefined-dummy-actions again
-      view.fields.forEach((row: Field[]): void => {
-        row.forEach((field: Field): void => {
-          if (field.action && field.action.type === ActionType.UNDEFINED) {
-            field.action = null;
-          }
-        });
-      });
-
-      this.rest.saveView(view).subscribe(
-        () => {
-          this.savedView = view;
-          this.changedFiles.clear();
-          /*
-            Send Event to trigger reload (re-fetch from server) in "view-page-component".
-            Yes, I know, I could skip this step but this should prevent inconsistent ("saved")-data between frontend and backend.
-            And ... I think this is negligible because it is only part of "the editing". (wouldn't do such things in "the using expierence")
-           */
-          this.requestRefresh.emit();
-        }
-      );
+    if (this.changedFiles.size > 0) {
+      console.error('saveView called without saving all files beforehand');
+      return;
     }
+
+    const view: FullView = structuredClone(this.view);
+    console.log('saveView: ', view);
+
+    // filter out undefined-dummy-actions again
+    view.fields.forEach((row: Field[]): void => {
+      row.forEach((field: Field): void => {
+        if (field.action && field.action.type === ActionType.UNDEFINED) {
+          field.action = null;
+        }
+      });
+    });
+
+    this.rest.saveView(view).subscribe(
+      () => {
+        this.savedView = view;
+        this.changedFiles.clear();
+        /*
+          Send Event to trigger reload (re-fetch from server) in "view-page-component".
+          Yes, I know, I could skip this step but this should prevent inconsistent ("saved")-data between frontend and backend.
+          And ... I think this is negligible because it is only part of "the editing". (wouldn't do such things in "the using expierence")
+         */
+        this.requestRefresh.emit();
+      }
+    );
+
   }
 
   private changeSelectedField(field: Field): void {
