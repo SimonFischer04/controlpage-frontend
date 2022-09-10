@@ -1,0 +1,23 @@
+@use "src/app/components/top-bar/top-bar.component" as topBar;
+@use "src/app/components/bottom-bar/bottom-bar.component" as bottomBar;
+
+$fullscreenButtonHeight: 50px;
+
+#fullscreenButton {
+  height: $fullscreenButtonHeight;
+}
+
+#viewRendererWrapper {
+  $rendererMargin: 10px;
+  //height: topBar.$topBar-height;
+  margin: $rendererMargin;
+  height: calc(
+    100% -
+    #{topBar.$topBar-height} -
+    #{$rendererMargin} -
+    #{$fullscreenButtonHeight} -
+      /*viewRenderer*/#{0px} -
+    #{$rendererMargin} -
+    #{bottomBar.$bottomBar-height}
+  );
+}

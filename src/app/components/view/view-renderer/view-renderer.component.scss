@@ -1,4 +1,4 @@
-.renderComponent{
+.renderComponent {
   width: 100%;
   height: 100%;
 }
@@ -7,6 +7,12 @@
   border: 1px solid black;
 }
 
-#fieldContainer{
+#fieldContainer {
   border: 1px solid green;
+}
+
+#viewRendererContainer {
+  height: 100%;
+  background-color: #424242;
+  padding: 10px;
 }

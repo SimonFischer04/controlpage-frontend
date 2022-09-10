@@ -28,6 +28,7 @@ export class ViewPageComponent implements OnInit {
         if (this.getSelectedViewId()) {
           this.rest.getView(this.getSelectedViewId()).subscribe(
             (v: FullView) => {
+              console.log('loadView: ', v);
               this.selectedView = v;
               this.selectedViewChanged.emit(v);
             }

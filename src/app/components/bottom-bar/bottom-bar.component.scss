@@ -1,0 +1,9 @@
+$bottomBar-height: 20px;
+
+#bottomBar {
+  height: $bottomBar-height;
+  background-color: #111111;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}

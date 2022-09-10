@@ -1,14 +1,16 @@
-<mat-card>
+<div id="viewRendererContainer">
+  <!--<mat-card>-->
   {{getView().name}}
-  <div id="fieldContainer" #fieldContainer>
-    <div class="column-wrapper" *ngFor="let fields of getView().fields">
-      <div class="row-wrapper ">
-        <div class="field" *ngFor="let field of fields" [ngStyle]="{'width': getFieldWidth() + 'px', 'height': getFieldHeight() + 'px'}">
+  <!--  <div id="fieldContainer" #fieldContainer>-->
+  <div id="fieldContainer">
+    <div class="column-wrapper">
+      <div class="row-wrapper" *ngFor="let fields of getView().fields">
+        <div class="field" *ngFor="let field of fields" [ngStyle]="{'width.px': getFieldWidth(), 'height.px': getFieldHeight()}">
           <app-edit-field-render
             *ngIf="isEditMode"
             [field]="field"
             (click)="onFieldPress(field)"
-            [params]="fieldRenderParameter"
+            [params]="getEditFieldRendererParameter()"
             class="renderComponent"
           ></app-edit-field-render>
 
@@ -16,11 +18,12 @@
             *ngIf="!isEditMode"
             [field]="field"
             (click)="onFieldPress(field)"
-            [params]="fieldRenderParameter"
+            [params]="getActionFieldRendererParameter()"
             class="renderComponent"
           ></app-action-field-render>
         </div>
       </div>
     </div>
   </div>
-</mat-card>
+  <!--</mat-card>-->
+</div>

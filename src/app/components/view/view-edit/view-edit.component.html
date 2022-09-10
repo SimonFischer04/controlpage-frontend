@@ -1,107 +1,127 @@
 <!--suppress HtmlFormInputWithoutLabel -->
-<div>view-edit works!</div>
-<div class="row-wrapper">
-  <div id="editViewDisplay">
-    <app-view-renderer [view]="view" [isEditMode]="true" (fieldPress)="onFieldPress($event)"
-                       [fieldRenderParameter]="fieldParams"></app-view-renderer>
-    {{getSelectedField()?.action | json}}
-  </div>
-
-  <span class="flex-fill-space"></span>
-
-  <div id="editSection">
-    <!--    Section with some basic features like swapping fields, swap rows, adding row, ...-->
-    <div id="toolsSection">
-      <button mat-button (click)="addRow()">Add Row</button>
-      <button mat-button (click)="removeRow()">Delete Row</button>
-      <button mat-button (click)="addColumn()">Add Column</button>
-      <button mat-button (click)="removeColumn()">Delete Column</button>
-      <button mat-button (click)="test()">Test</button>
+<!--<div>view-edit works!</div>-->
+<div id="viewEditContent">
+  <div class="row-wrapper">
+    <div id="editViewDisplay" #editRendererWrapper>
+      <app-view-renderer
+        *ngIf="view"
+        [view]="view"
+        [isEditMode]="true"
+        (fieldPress)="onEditFieldPress($event)"
+        [fieldRenderParameter]="fieldParams"
+        [containerSize]="getEditViewContainerSize()"
+        [reInitEvent]="reDrawEvent"
+      ></app-view-renderer>
     </div>
 
-    <!--    Section where to edit field-->
-    <div id="fieldEditSection" *ngIf="getSelectedField()">
-      <div class="editItem">
-        <P>General Field Settings</P>
+    <span class="flex-fill-space"></span>
 
-        <div class="editItem">Id: {{getSelectedField().id}}</div>
-
-        <mat-form-field class="editItem">
-          <input matInput type="text" placeholder="Title" [(ngModel)]="getSelectedField().title">
-        </mat-form-field>
-        <br>
-
-        <mat-form-field class="editItem" style="width: 100%">
-          <input matInput type="text" placeholder="Description" [(ngModel)]="getSelectedField().description">
-        </mat-form-field>
+    <div id="editSection">
+      <!--    Section with some basic features like swapping fields, swap rows, adding row, ...-->
+      <div id="toolsSection">
+        <button mat-button (click)="addRow()">Add Row</button>
+        <button mat-button (click)="removeRow()">Delete Row</button>
+        <button mat-button (click)="addColumn()">Add Column</button>
+        <button mat-button (click)="removeColumn()">Delete Column</button>
+        <button mat-button (click)="test()">Test</button>
       </div>
 
-      <div class="editItem">
-        <p>Background:</p>
-        <img [src]="getBackgroundSrcString()" alt="No Background" style="max-width: 100%"/>
-        <div>
-          <input type="file" accept="image/*" (change)="onFileChanged($event)">
-          <button mat-icon-button *ngIf="hasBackground()" (click)="removeBackground()">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </div>
-      </div>
+      <!--    Section where to edit field-->
+      <div id="fieldEditSection" *ngIf="getSelectedField()">
+        <div class="editItem">
+          <P>General Field Settings</P>
 
-      <div class="editItem">
-        <p>Action:</p>
+          <div class="editItem">Id: {{getSelectedField().id}}</div>
 
-        <mat-form-field>
-          <mat-label>ActionType</mat-label>
-          <mat-select [(ngModel)]="getAction().type">
-            <mat-option *ngFor="let actionType of getActionTypes()" [value]="actionType">{{actionType}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <div style="border: 1px solid black; margin: 1px">
-          <p>General Action Settings</p>
-          <div>ID: {{getAction().id}}</div>
-          <mat-form-field>
-            <mat-label>RunPolicy</mat-label>
-            <mat-select [(ngModel)]="getAction().runPolicy">
-              <mat-option *ngFor="let runPolicy of getRunPolicies()" [value]="runPolicy">{{runPolicy}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-
-        <div *ngIf="isRestAction()" style="border: 1px solid black; margin: 1px">
-          <p>REST-Action editing section</p>
-
-          <mat-form-field>
-            <mat-label>RestType</mat-label>
-            <mat-select [(ngModel)]="getRestAction().restType">
-              <mat-option *ngFor="let restType of getRestTypes()" [value]="restType">{{restType}}</mat-option>
-            </mat-select>
+          <mat-form-field class="editItem">
+            <input matInput type="text" placeholder="Title" [(ngModel)]="getSelectedField().title">
           </mat-form-field>
           <br>
 
-          <mat-form-field>
-            <input matInput type="text" placeholder="URL" [(ngModel)]="getRestAction().url">
-          </mat-form-field>
-          <br>
-
-          <mat-form-field>
-            <input matInput type="text" placeholder="Body" [(ngModel)]="getRestAction().body">
+          <mat-form-field class="editItem" style="width: 100%">
+            <input matInput type="text" placeholder="Description" [(ngModel)]="getSelectedField().description">
           </mat-form-field>
         </div>
 
-        <div *ngIf="isDesktopAutomationAction()" style="border: 1px solid black; margin: 1px">
-          <p>Desktop-Automation editing section</p>
+        <div class="editItem">
+          <p>Background:</p>
+          <img [src]="getBackgroundSrcString()" alt="No Background" style="max-width: 100%"/>
+          <div>
+            <input type="file" accept="image/*" (change)="onFileChanged($event)">
+            <button mat-icon-button *ngIf="hasBackground()" (click)="removeBackground()">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
 
-          <app-desktop-automation-function-select [action]="getDesktopAutomationAction()" [functions]="getDesktopAutomationFunctions()"></app-desktop-automation-function-select>
+        <div class="editItem">
+          <p>Action:</p>
+
+          <mat-form-field>
+            <mat-label>ActionType</mat-label>
+            <mat-select [(ngModel)]="getAction().type">
+              <mat-option *ngFor="let actionType of getActionTypes()" [value]="actionType">{{actionType}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div style="border: 1px solid black; margin: 1px">
+            <p>General Action Settings</p>
+            <div>ID: {{getAction().id}}</div>
+            <mat-form-field>
+              <mat-label>RunPolicy</mat-label>
+              <mat-select [(ngModel)]="getAction().runPolicy">
+                <mat-option *ngFor="let runPolicy of getRunPolicies()" [value]="runPolicy">{{runPolicy}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div *ngIf="isRestAction()" style="border: 1px solid black; margin: 1px">
+            <p>REST-Action editing section</p>
+
+            <mat-form-field>
+              <mat-label>RestType</mat-label>
+              <mat-select [(ngModel)]="getRestAction().restType">
+                <mat-option *ngFor="let restType of getRestTypes()" [value]="restType">{{restType}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <br>
+
+            <mat-form-field>
+              <input matInput type="text" placeholder="URL" [(ngModel)]="getRestAction().url">
+            </mat-form-field>
+            <br>
+
+            <mat-form-field>
+              <input matInput type="text" placeholder="Body" [(ngModel)]="getRestAction().body">
+            </mat-form-field>
+          </div>
+
+          <div *ngIf="isDesktopAutomationAction()" style="border: 1px solid black; margin: 1px">
+            <p>Desktop-Automation editing section</p>
+
+            <app-desktop-automation-function-select [action]="getDesktopAutomationAction()" [functions]="getDesktopAutomationFunctions()"></app-desktop-automation-function-select>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div style="background-color: red" *ngIf="hasUnsavedChanges()">unsaved-view-changes!!!</div>
-    <button mat-button (click)="save()">Save View</button>
+      <div style="background-color: red" *ngIf="hasUnsavedChanges()">unsaved-view-changes!!!</div>
+      <button mat-button (click)="save()">Save View</button>
+    </div>
   </div>
-</div>
-<div>
-  <div>Preview</div>
-  <app-view-renderer [view]="view" [isEditMode]="false" (fieldPress)="onActionFieldPress($event)"></app-view-renderer>
+
+  <div style="height: 50px"></div>
+
+  <div>
+    <div>Preview</div>
+    <div #previewRendererWrapper>
+      <app-view-renderer
+        *ngIf="view"
+        [view]="view"
+        [isEditMode]="false"
+        (fieldPress)="onActionFieldPress($event)"
+        [containerSize]="getPreviewContainerSize()"
+        [reInitEvent]="reDrawEvent"
+      ></app-view-renderer>
+    </div>
+  </div>
 </div>

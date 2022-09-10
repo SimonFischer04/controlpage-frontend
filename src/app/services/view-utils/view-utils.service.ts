@@ -3,6 +3,7 @@ import {UserPreferencesService} from '../user-preferences/user-preferences.servi
 import {FullView} from '../../interfaces/full-view';
 import {Size} from '../../interfaces/size';
 import {Field} from '../../interfaces/field';
+import {DummyUtils} from '../../utils/dummy-utils';
 
 @Injectable({
   providedIn: 'root'
@@ -14,19 +15,27 @@ export class ViewUtilsService {
   ) {
   }
 
-  // sizing fields so that there is a fixed amount of space between them
-  getFieldWidth(view: FullView, containerElement: HTMLElement): number {
-    return (containerElement.clientWidth - this.pref.getSpaceBetweenFields()) / this.getViewWidth(view) - this.pref.getSpaceBetweenFields();
+  public getFieldWidth(view: FullView, containerSize: Size): number {
+    // switch (this.pref.getFieldStyle()) {
+    //   case 'square': {
+    //     return this.getFieldWidth(view, containerSize);
+    //   }
+    //   case 'rectangle': {
+    //     // TODO
+    //     return -1;
+    //   }
+    // }
+    return this.getMaxFieldWidth(view, containerSize);
   }
 
   /*
     - preference-fieldStyle === 'square': use same height as width => shrink/extend space
     - preference-fieldStyle === 'rectangle': use fixed space => shrink/extend height (dump idea? -> backgroundImage would get stretched?)
    */
-  getFieldHeight(view: FullView, containerElement: HTMLElement): number {
+  public getFieldHeight(view: FullView, containerSize: Size): number {
     switch (this.pref.getFieldStyle()) {
       case 'square': {
-        return this.getFieldWidth(view, containerElement);
+        return this.getMaxFieldHeight(view, containerSize);
       }
       case 'rectangle': {
         // TODO
@@ -35,38 +44,54 @@ export class ViewUtilsService {
     }
   }
 
-  getDummyView(): FullView {
-    return {id: -1, name: '', group: {id: -1, childGroups: [], name: '', parentGroup: null}, fields: []};
+  /*
+    Utils
+   */
+
+  public getDummyView(): FullView {
+    return DummyUtils.getDummyView();
   }
 
-  getDummyField(randomTitle = false): Field {
-    if (!randomTitle) {
-      return {id: -1, colspan: 1, rowspan: 1};
+  public getDummyField(randomTitle = false): Field {
+    return DummyUtils.getDummyField(randomTitle);
+  }
+
+  public addDummyRow(view: FullView): void {
+    const ar: Field[] = [];
+    for (let i = 0; i < this.getViewWidthCount(view); i++) {
+      ar.push(this.getDummyField(true));
     }
-    return {id: -1, colspan: 1, rowspan: 1, title: `testField ${Math.floor(Math.random() * 255)}`};
+    view.fields.push(ar);
   }
 
-  getViewWidth(view: FullView): number {
-    if (view.fields.length === 0) {
-      return 0;
-    }
-    let width = 0;
-    view.fields[0].forEach(field => {
-        width += field.colspan;
-      }
-    );
-    return width;
-  }
-
-  getViewHeight(view: FullView): number {
-    let height = 0;
+  public addDummyColumn(view: FullView): void {
     view.fields.forEach(row => {
-      height += (row.length > 1 ? row[0].rowspan : 1);
+      row.push(this.getDummyField(true));
     });
-    return height;
   }
 
-  getViewSize(view: FullView): Size {
-    return {width: this.getViewWidth(view), height: this.getViewHeight(view)};
+  // -------------
+
+  // sizing fields so that there is a fixed amount of space between them
+  private getMaxFieldWidth(view: FullView, containerSize: Size): number {
+    // console.log('getMaxFieldWidth: ', view, containerSize);
+    return (containerSize.width - this.pref.getSpaceBetweenFields()) / this.getViewWidthCount(view) - this.pref.getSpaceBetweenFields();
+  }
+
+  private getMaxFieldHeight(view: FullView, containerSize: Size): number {
+    // console.log('getMaxFieldHeight: ', view, containerSize);
+    return (containerSize.height - this.pref.getSpaceBetweenFields()) / this.getViewHeightCount(view) - this.pref.getSpaceBetweenFields();
+  }
+
+  private getViewWidthCount(view: FullView): number {
+    return view.fields[0]?.reduce((prev, curr) => prev + curr.colspan, 0);
+  }
+
+  private getViewHeightCount(view: FullView): number {
+    return view.fields.reduce((prev, curr) => prev + Math.max(1, curr[0]?.rowspan), 0);
+  }
+
+  private getViewSize(view: FullView): Size {
+    return {width: this.getViewWidthCount(view), height: this.getViewHeightCount(view)};
   }
 }

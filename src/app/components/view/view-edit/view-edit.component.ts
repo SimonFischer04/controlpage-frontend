@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {FullView} from '../../../interfaces/full-view';
 import {ViewUtilsService} from '../../../services/view-utils/view-utils.service';
 import {Field} from '../../../interfaces/field';
@@ -17,6 +17,7 @@ import {ActionService} from '../../../services/action/action.service';
 import {DesktopAutomationAction} from '../../../interfaces/action/desktop-automation-action';
 import {ControlPageFunctionsResponse} from '../../../interfaces/desktop-automation-interface/ControlPageFunctionsResponse';
 import {ControlPageFunction} from '../../../interfaces/desktop-automation-interface/ControlPageFunction';
+import {Size} from '../../../interfaces/size';
 
 @Component({
   selector: 'app-view-edit',
@@ -36,6 +37,9 @@ export class ViewEditComponent implements OnInit {
   private changedFiles: Map<number, File> = new Map<number, File>();
 
   private desktopAutomationFunctions: ControlPageFunction[] = [];
+  @ViewChild('previewRendererWrapper', {static: true}) previewRendererWrapperRef: ElementRef;
+  @ViewChild('editRendererWrapper', {static: true}) editRendererWrapperRef: ElementRef;
+  public reDrawEvent: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(
     private readonly viewUtils: ViewUtilsService,
@@ -46,6 +50,7 @@ export class ViewEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('view-edit: init', this.selectedViewChanged);
     this.selectedViewChanged.subscribe((view: FullView): void => {
       console.log('view changed: ', view);
       this.changeSelectedField(null);
@@ -57,10 +62,9 @@ export class ViewEditComponent implements OnInit {
     });
   }
 
-  public onFieldPress(field: Field): void {
+  public onEditFieldPress(field: Field): void {
     // Unselect Field if pressed 2nd time
     this.changeSelectedField(field === this.getSelectedField() ? null : field);
-
     console.log('editing Field: ', this.getSelectedField());
   }
 
@@ -136,23 +140,20 @@ export class ViewEditComponent implements OnInit {
    */
 
   public addRow(): void {
-    const ar: Field[] = [];
-    for (let i = 0; i < this.viewUtils.getViewWidth(this.view); i++) {
-      ar.push(this.viewUtils.getDummyField(true));
-    }
-    this.view.fields.push(ar);
+    this.viewUtils.addDummyRow(this.view);
+    this.reDrawEvent.emit();
   }
 
   public removeRow(): void {
     if (confirm('Do you really want to delete last row?')) {
       this.view.fields.splice(this.view.fields.length - 1, 1);
+      this.reDrawEvent.emit();
     }
   }
 
   public addColumn(): void {
-    this.view.fields.forEach(row => {
-      row.push(this.viewUtils.getDummyField(true));
-    });
+    this.viewUtils.addDummyColumn(this.view);
+    this.reDrawEvent.emit();
   }
 
   public removeColumn(): void {
@@ -160,6 +161,7 @@ export class ViewEditComponent implements OnInit {
       this.view.fields.forEach(row => {
         if (row.length > 0) {
           row.splice(row.length - 1, 1);
+          this.reDrawEvent.emit();
         }
       });
     }
@@ -193,6 +195,20 @@ export class ViewEditComponent implements OnInit {
   /*
    Utils
   */
+
+  public getEditViewContainerSize(): Size {
+    return {
+      width: this.editRendererWrapperRef.nativeElement?.clientWidth,
+      height: 500
+    };
+  }
+
+  public getPreviewContainerSize(): Size {
+    return {
+      width: this.previewRendererWrapperRef.nativeElement?.clientWidth,
+      height: 500
+    };
+  }
 
   public getSelectedField(): Field {
     return this.fieldParams.selectedField;

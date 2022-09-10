@@ -28,6 +28,7 @@ import {SettingsPageComponent} from './sites/settings-page/settings-page.compone
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import { DesktopAutomationFunctionSelectComponent } from './components/view/view-edit/desktop-automation-function-select/desktop-automation-function-select.component';
 import {MatSelectSearchModule} from "mat-select-search";
+import { BottomBarComponent } from './components/bottom-bar/bottom-bar.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import {MatSelectSearchModule} from "mat-select-search";
     EditFieldRenderComponent,
     ActionFieldRenderComponent,
     SettingsPageComponent,
-    DesktopAutomationFunctionSelectComponent
+    DesktopAutomationFunctionSelectComponent,
+    BottomBarComponent
   ],
   imports: [
     BrowserModule,
