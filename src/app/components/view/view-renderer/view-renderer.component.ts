@@ -1,10 +1,11 @@
-import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ViewUtilsService} from '../../../services/view-utils/view-utils.service';
 import {FullView} from '../../../interfaces/full-view';
 import {Field} from '../../../interfaces/field';
 import {ActionFieldRendererParameter} from '../../../interfaces/field-renderer-parameter/action-field-renderer-parameter';
 import {EditFieldRendererParameter} from '../../../interfaces/field-renderer-parameter/edit-field-renderer-parameter';
 import {Size} from '../../../interfaces/size';
+import {UserPreferencesService} from '../../../services/user-preferences/user-preferences.service';
 
 @Component({
   selector: 'app-view-renderer',
@@ -19,13 +20,14 @@ export class ViewRendererComponent implements OnInit {
   // @ViewChild('fieldContainer', {static: true}) fieldContainerRef: ElementRef;
   @Input() reInitEvent: EventEmitter<void> = new EventEmitter<void>();
 
-  @Input() containerSize: Size;
+  @Input() private readonly containerSize: Size;
 
   private fieldWidth = 100;
   private fieldHeight = 100;
 
   constructor(
-    private viewUtils: ViewUtilsService
+    private readonly viewUtils: ViewUtilsService,
+    private readonly preferencesService: UserPreferencesService
   ) {
   }
 
@@ -36,7 +38,7 @@ export class ViewRendererComponent implements OnInit {
     this.init();
   }
 
-  init(): void {
+  private init(): void {
     console.log('view-renderer init: (view, isEdit): ', this.view, this.isEditMode);
 
     // cache field size calculation
@@ -44,28 +46,22 @@ export class ViewRendererComponent implements OnInit {
     this.fieldHeight = this.viewUtils.getFieldHeight(this.getView(), this.getFieldContainerSize());
   }
 
-  test(): void {
-    console.log('[ViewRender]test');
-    console.log('rendering view: ', this.view);
-    console.log('edit? ', this.isEditMode);
-  }
-
   /*
     Utils
    */
-  getView(): FullView {
+  public getView(): FullView {
     return this.view || this.viewUtils.getDummyView();
   }
 
-  getFieldWidth(): number {
+  public getFieldWidth(): number {
     return this.fieldWidth;
   }
 
-  getFieldHeight(): number {
+  public getFieldHeight(): number {
     return this.fieldHeight;
   }
 
-  getFieldContainerSize(): Size {
+  private getFieldContainerSize(): Size {
     // return {
     //   width: this.fieldContainerRef.nativeElement.clientWidth,
     //   height: this.fieldContainerRef.nativeElement.clientHeight,
@@ -73,11 +69,11 @@ export class ViewRendererComponent implements OnInit {
     return this.containerSize;
   }
 
-  onFieldPress(field: Field): void {
+  public onFieldPress(field: Field): void {
     this.fieldPress.emit(field);
   }
 
-  getEditFieldRendererParameter(): EditFieldRendererParameter {
+  public getEditFieldRendererParameter(): EditFieldRendererParameter {
     if (!this.isEditMode) {
       console.error('getEditFieldRendererParameter: not edit mode!!!');
       return undefined;
@@ -85,11 +81,15 @@ export class ViewRendererComponent implements OnInit {
     return this.fieldRenderParameter as EditFieldRendererParameter;
   }
 
-  getActionFieldRendererParameter(): ActionFieldRendererParameter {
+  public getActionFieldRendererParameter(): ActionFieldRendererParameter {
     if (this.isEditMode) {
       console.error('getEditFieldRendererParameter: not Action mode!!!');
       return undefined;
     }
     return this.fieldRenderParameter as ActionFieldRendererParameter;
+  }
+
+  public get prefs(): UserPreferencesService {
+    return this.preferencesService;
   }
 }
