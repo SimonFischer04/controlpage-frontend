@@ -4,6 +4,7 @@ import {FullView} from '../../interfaces/full-view';
 import {Size} from '../../interfaces/size';
 import {Field} from '../../interfaces/field';
 import {DummyUtils} from '../../utils/dummy-utils';
+import {FieldStyle} from '../../enums/field-style';
 
 @Injectable({
   providedIn: 'root'
@@ -16,16 +17,14 @@ export class ViewUtilsService {
   }
 
   public getFieldWidth(view: FullView, containerSize: Size): number {
-    // switch (this.pref.getFieldStyle()) {
-    //   case 'square': {
-    //     return this.getFieldWidth(view, containerSize);
-    //   }
-    //   case 'rectangle': {
-    //     // TODO
-    //     return -1;
-    //   }
-    // }
-    return this.getMaxFieldWidth(view, containerSize);
+    switch (this.pref.fieldStyle) {
+      case FieldStyle.SQUARE: {
+        return Math.min(this.getMaxFieldWidth(view, containerSize), this.getMaxFieldHeight(view, containerSize));
+      }
+      case FieldStyle.RECTANGLE: {
+        return this.getMaxFieldWidth(view, containerSize);
+      }
+    }
   }
 
   /*
@@ -33,13 +32,12 @@ export class ViewUtilsService {
     - preference-fieldStyle === 'rectangle': use fixed space => shrink/extend height (dump idea? -> backgroundImage would get stretched?)
    */
   public getFieldHeight(view: FullView, containerSize: Size): number {
-    switch (this.pref.getFieldStyle()) {
-      case 'square': {
-        return this.getMaxFieldHeight(view, containerSize);
+    switch (this.pref.fieldStyle) {
+      case FieldStyle.SQUARE: {
+        return Math.min(this.getMaxFieldHeight(view, containerSize), this.getMaxFieldWidth(view, containerSize));
       }
-      case 'rectangle': {
-        // TODO
-        return -1;
+      case FieldStyle.RECTANGLE: {
+        return this.getMaxFieldHeight(view, containerSize);
       }
     }
   }
@@ -75,12 +73,12 @@ export class ViewUtilsService {
   // sizing fields so that there is a fixed amount of space between them
   private getMaxFieldWidth(view: FullView, containerSize: Size): number {
     // console.log('getMaxFieldWidth: ', view, containerSize);
-    return (containerSize.width - this.pref.getSpaceBetweenFields()) / this.getViewWidthCount(view) - this.pref.getSpaceBetweenFields();
+    return (containerSize.width - this.pref.spaceBetweenFields) / this.getViewWidthCount(view) - this.pref.spaceBetweenFields;
   }
 
   private getMaxFieldHeight(view: FullView, containerSize: Size): number {
     // console.log('getMaxFieldHeight: ', view, containerSize);
-    return (containerSize.height - this.pref.getSpaceBetweenFields()) / this.getViewHeightCount(view) - this.pref.getSpaceBetweenFields();
+    return (containerSize.height - this.pref.spaceBetweenFields) / this.getViewHeightCount(view) - this.pref.spaceBetweenFields;
   }
 
   private getViewWidthCount(view: FullView): number {

@@ -13,4 +13,18 @@
     <mat-label>Backend Host</mat-label>
     <input matInput [(ngModel)]="preferences.backendHost">
   </mat-form-field>
+  <br>
+
+  <mat-form-field class="settings-field">
+    <mat-label>Field-Style</mat-label>
+    <mat-select [(ngModel)]="preferences.fieldStyle">
+      <mat-option *ngFor="let fieldStyle of fieldStyles" [value]="fieldStyle">{{fieldStyle}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br>
+
+  <mat-form-field class="settings-field">
+    <mat-label>Space Between Fields</mat-label>
+    <input matInput type="number" [(ngModel)]="preferences.spaceBetweenFields">
+  </mat-form-field>
 </mat-card>
