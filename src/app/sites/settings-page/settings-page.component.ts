@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {UserPreferencesService} from '../../services/user-preferences/user-preferences.service';
 import {getEnumKeyNames} from "../../utils/enum-utils";
-import {FieldStyle} from "../../enums/field-style";
+import {FieldStyle} from "../../types/view/field/field-style";
 
 @Component({
   selector: 'app-settings-page',

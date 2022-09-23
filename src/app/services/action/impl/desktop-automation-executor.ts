@@ -1,5 +1,5 @@
 import {ActionExecutor} from '../action-executor';
-import {DesktopAutomationAction} from '../../../interfaces/action/desktop-automation-action';
+import {DesktopAutomationAction} from '../../../types/view/action/impl/desktop-automation-action';
 import {UserPreferencesService} from '../../user-preferences/user-preferences.service';
 
 export class DesktopAutomationExecutor extends ActionExecutor<DesktopAutomationAction> {

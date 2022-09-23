@@ -1,0 +1,15 @@
+<!--    Section with some basic features like swapping fields, swap rows, adding row, ...-->
+<div id="editViewSection">
+  <div>
+    <button mat-button (click)="addRow()">Add Row</button>
+    <button mat-button (click)="removeRow()">Delete Row</button>
+    <button mat-button (click)="addColumn()">Add Column</button>
+    <button mat-button (click)="removeColumn()">Delete Column</button>
+  </div>
+
+  <div style="background-color: red" *ngIf="hasUnsavedChanges()">unsaved-view-changes!!!</div>
+
+  <div>
+    <button mat-button (click)="save()">Save View</button>
+  </div>
+</div>

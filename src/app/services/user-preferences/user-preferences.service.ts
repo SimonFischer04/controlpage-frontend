@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {FieldStyle} from '../../enums/field-style';
+import {FieldStyle} from '../../types/view/field/field-style';
 
 @Injectable({
   providedIn: 'root'

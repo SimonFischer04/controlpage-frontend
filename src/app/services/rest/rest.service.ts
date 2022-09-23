@@ -2,9 +2,9 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {catchError, map, Observable, retry, throwError} from 'rxjs';
-import {ViewListResponse} from '../../interfaces/rest/view-list-response';
-import {FullView} from '../../interfaces/full-view';
-import {ControlPageFunctionsResponse} from '../../interfaces/desktop-automation-interface/ControlPageFunctionsResponse';
+import {ViewListResponse} from '../../types/rest/view-list-response';
+import {FullView} from '../../types/view/full-view';
+import {ControlPageFunctionsResponse} from '../../types/desktop-automation-interface/ControlPageFunctionsResponse';
 import {UserPreferencesService} from '../user-preferences/user-preferences.service';
 
 @Injectable({

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {Image} from '../../interfaces/image';
-import {Field} from '../../interfaces/field';
+import {Image} from '../../types/view/image';
+import {Field} from '../../types/view/field/field';
 import {UserPreferencesService} from '../user-preferences/user-preferences.service';
 
 @Injectable({
@@ -14,12 +14,12 @@ export class ImageUtilsService {
   }
 
   public hasBackground(field: Field): boolean {
-    return !!field.background || field.backgroundId > 0;
+    return !!field.backgroundImage || field.backgroundId > 0;
   }
 
   public getBackgroundImage(field: Field): string {
     // "backgroundImage" is only set in "unsaved-state", server will only respond with "backgroundId"
-    if (field.background) {
+    if (field.backgroundImage) {
       return this.getBackgroundImgString(field);
     }
     if (field.backgroundId > 0) {
@@ -33,7 +33,7 @@ export class ImageUtilsService {
   }
 
   private getBackgroundImgString(field: Field): string {
-    return `${this.getSrcStringByImage(field.background)}`;
+    return `${this.getSrcStringByImage(field.backgroundImage)}`;
   }
 
   private getSrcStringByImage(image: Image): string {

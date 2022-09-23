@@ -1,0 +1,79 @@
+<!--    Section where to edit field-->
+<div id="fieldEditSection">
+  <div class="editItem">
+    <P>General Field Settings</P>
+
+    <div class="editItem">Id: {{selectedField.id}}</div>
+
+    <mat-form-field class="editItem">
+      <input matInput type="text" placeholder="Title" [(ngModel)]="selectedField.title">
+    </mat-form-field>
+    <br>
+
+    <mat-form-field class="editItem" style="width: 100%">
+      <input matInput type="text" placeholder="Description" [(ngModel)]="selectedField.description">
+    </mat-form-field>
+  </div>
+
+  <div class="editItem">
+    <p>Background:</p>
+    <img [src]="getBackgroundSrcString()" alt="No Background" style="max-width: 100%"/>
+    <div>
+      <input type="file" accept="image/*" (change)="onFileChanged($event)">
+      <button mat-icon-button *ngIf="hasBackground()" (click)="removeBackground()">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="editItem">
+    <p>Action:</p>
+
+    <mat-form-field>
+      <mat-label>ActionType</mat-label>
+      <mat-select [(ngModel)]="action.type">
+        <mat-option *ngFor="let actionType of getActionTypes()" [value]="actionType">{{actionType}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div style="border: 1px solid black; margin: 1px">
+      <p>General Action Settings</p>
+      <div>ID: {{action.id}}</div>
+      <mat-form-field>
+        <mat-label>RunPolicy</mat-label>
+        <mat-select [(ngModel)]="action.runPolicy">
+          <mat-option *ngFor="let runPolicy of getRunPolicies()" [value]="runPolicy">{{runPolicy}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="isRestAction()" style="border: 1px solid black; margin: 1px">
+      <p>REST-Action editing section</p>
+
+      <mat-form-field>
+        <mat-label>RestType</mat-label>
+        <mat-select [(ngModel)]="getRestAction().restType">
+          <mat-option *ngFor="let restType of getRestTypes()" [value]="restType">{{restType}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <br>
+
+      <mat-form-field>
+        <input matInput type="text" placeholder="URL" [(ngModel)]="getRestAction().url">
+      </mat-form-field>
+      <br>
+
+      <mat-form-field>
+        <input matInput type="text" placeholder="Body" [(ngModel)]="getRestAction().body">
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="isDesktopAutomationAction()" style="border: 1px solid black; margin: 1px">
+      <p>Desktop-Automation editing section</p>
+
+      <app-desktop-automation-function-select [action]="getDesktopAutomationAction()"></app-desktop-automation-function-select>
+    </div>
+  </div>
+</div>
+
+

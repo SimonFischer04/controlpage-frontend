@@ -1,5 +1,5 @@
 import {ActionExecutor} from '../action-executor';
-import {RestAction} from '../../../interfaces/action/rest-action';
+import {RestAction} from '../../../types/view/action/impl/rest-action';
 
 export class RestActionExecutor extends ActionExecutor<RestAction> {
   public executeAction(_, action: RestAction): void {

@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {FullView} from '../../interfaces/full-view';
+import {FullView} from '../../types/view/full-view';
 import {RestService} from '../../services/rest/rest.service';
 
 @Component({
@@ -9,7 +9,6 @@ import {RestService} from '../../services/rest/rest.service';
   styleUrls: ['./view-page.component.scss']
 })
 export class ViewPageComponent implements OnInit {
-  selectedViewChanged: EventEmitter<FullView> = new EventEmitter();
   selectedView: FullView;
 
   constructor(
@@ -25,12 +24,11 @@ export class ViewPageComponent implements OnInit {
   loadView(): void {
     this.route.queryParamMap.subscribe(
       () => {
-        if (this.getSelectedViewId()) {
-          this.rest.getView(this.getSelectedViewId()).subscribe(
+        if (this.isViewSelected()) {
+          this.rest.getView(this.selectedViewId).subscribe(
             (v: FullView) => {
               console.log('loadView: ', v);
               this.selectedView = v;
-              this.selectedViewChanged.emit(v);
             }
           );
         }
@@ -39,7 +37,7 @@ export class ViewPageComponent implements OnInit {
   }
 
   isViewSelected(): boolean {
-    return this.getSelectedViewId();
+    return this.selectedViewId > -1;
   }
 
   isEditMode(): boolean {
@@ -50,7 +48,7 @@ export class ViewPageComponent implements OnInit {
     Utils
    */
 
-  private getSelectedViewId() {
+  private get selectedViewId() {
     return this.route.snapshot.queryParams.view;
   }
 }

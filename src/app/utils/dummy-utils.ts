@@ -1,8 +1,8 @@
-import {Action} from '../interfaces/action/action';
-import {ActionType} from '../enums/action-type';
-import {RunPolicy} from '../enums/run-policy';
-import {FullView} from '../interfaces/full-view';
-import {Field} from '../interfaces/field';
+import {Action} from '../types/view/action/action';
+import {ActionType} from '../types/view/action/action-type';
+import {RunPolicy} from '../types/view/action/run-policy';
+import {FullView} from '../types/view/full-view';
+import {Field} from '../types/view/field/field';
 
 export class DummyUtils {
   static getDummyView(): FullView {

@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {UserPreferencesService} from '../user-preferences/user-preferences.service';
-import {FullView} from '../../interfaces/full-view';
-import {Size} from '../../interfaces/size';
-import {Field} from '../../interfaces/field';
+import {FullView} from '../../types/view/full-view';
+import {Size} from '../../types/size';
+import {Field} from '../../types/view/field/field';
 import {DummyUtils} from '../../utils/dummy-utils';
-import {FieldStyle} from '../../enums/field-style';
+import {FieldStyle} from '../../types/view/field/field-style';
 
 @Injectable({
   providedIn: 'root'
@@ -65,6 +65,14 @@ export class ViewUtilsService {
   public addDummyColumn(view: FullView): void {
     view.fields.forEach(row => {
       row.push(this.getDummyField(true));
+    });
+  }
+
+  public getFieldById(view: FullView, fieldId: number): Field {
+    return view.fields.find((fields) => {
+      return fields.find((field) => field.id === fieldId);
+    }).find((field) => {
+      return field.id === fieldId;
     });
   }
 

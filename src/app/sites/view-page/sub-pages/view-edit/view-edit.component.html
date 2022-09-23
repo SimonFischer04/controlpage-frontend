@@ -1,0 +1,45 @@
+<!--suppress HtmlFormInputWithoutLabel -->
+<!--<div>view-edit works!</div>-->
+<div id="viewEditContent">
+  <div class="row-wrapper">
+    <div id="editViewDisplay">
+      <app-view-renderer
+        *ngIf="view"
+        [view]="view"
+        [isEditMode]="true"
+        (fieldPress)="onEditFieldPress($event)"
+        [fieldRenderParameter]="fieldParams"
+      ></app-view-renderer>
+    </div>
+
+    <span class="flex-fill-space"></span>
+
+    <div
+      *ngIf="view"
+      id="editSection"
+    >
+      <app-view-edit-section
+        [view]="view"
+      ></app-view-edit-section>
+
+      <app-field-edit-section
+        *ngIf="selectedField"
+        [selectedField]="selectedField"
+      ></app-field-edit-section>
+    </div>
+  </div>
+
+  <div style="height: 50px"></div>
+
+  <div>
+    <div>Preview</div>
+    <div id="previewViewDisplay">
+      <app-view-renderer
+        *ngIf="view"
+        [view]="view"
+        [isEditMode]="false"
+        (fieldPress)="onActionFieldPress($event)"
+      ></app-view-renderer>
+    </div>
+  </div>
+</div>
