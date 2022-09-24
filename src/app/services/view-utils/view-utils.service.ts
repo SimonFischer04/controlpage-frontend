@@ -5,6 +5,7 @@ import {Size} from '../../types/size';
 import {Field} from '../../types/view/field/field';
 import {DummyUtils} from '../../utils/dummy-utils';
 import {FieldStyle} from '../../types/view/field/field-style';
+import {ObjectUtils} from "../../utils/object-utils";
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,10 @@ export class ViewUtilsService {
   constructor(
     private pref: UserPreferencesService
   ) {
+  }
+
+  public assignField(target: Field, source: Field){
+    ObjectUtils.assignUnion(target, source, ["id"]);
   }
 
   public getFieldWidth(view: FullView, containerSize: Size): number {
@@ -50,21 +55,21 @@ export class ViewUtilsService {
     return DummyUtils.getDummyView();
   }
 
-  public getDummyField(randomTitle = false): Field {
-    return DummyUtils.getDummyField(randomTitle);
+  public getDummyField(): Field {
+    return DummyUtils.getDummyField();
   }
 
   public addDummyRow(view: FullView): void {
     const ar: Field[] = [];
     for (let i = 0; i < this.getViewWidthCount(view); i++) {
-      ar.push(this.getDummyField(true));
+      ar.push(this.getDummyField());
     }
     view.fields.push(ar);
   }
 
   public addDummyColumn(view: FullView): void {
     view.fields.forEach(row => {
-      row.push(this.getDummyField(true));
+      row.push(this.getDummyField());
     });
   }
 
@@ -97,6 +102,11 @@ export class ViewUtilsService {
     return view.fields.reduce((prev, curr) => prev + Math.max(1, curr[0]?.rowspan), 0);
   }
 
+  /**
+   * Function to get the view size (amount of fields * row/colspan for each) [NOT pixel size!!!]
+   * @param view - The view to get the size from
+   * @private
+   */
   private getViewSize(view: FullView): Size {
     return {width: this.getViewWidthCount(view), height: this.getViewHeightCount(view)};
   }

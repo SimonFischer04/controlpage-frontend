@@ -1,21 +1,32 @@
 <!--    Section where to edit field-->
 <div id="fieldEditSection">
-  <div class="editItem">
+  <div class="editItem-l1">
+    <label>FIELD:</label>
+    <br>
+    <button mat-button (click)="copy()">Copy</button>
+    <button mat-button (click)="cut()">Cut</button>
+    <button mat-button (click)="clear()">Clear</button>
+    <button mat-button (click)="paste()">Paste</button>
+    <button mat-button (click)="undo()">Undo</button>
+    <button mat-button (click)="redo()">Redo</button>
+  </div>
+
+  <div class="editItem-l1">
     <P>General Field Settings</P>
 
-    <div class="editItem">Id: {{selectedField.id}}</div>
+    <div class="editItem-l2">Id: {{selectedField.id}}</div>
 
-    <mat-form-field class="editItem">
+    <mat-form-field class="editItem-l2">
       <input matInput type="text" placeholder="Title" [(ngModel)]="selectedField.title">
     </mat-form-field>
     <br>
 
-    <mat-form-field class="editItem" style="width: 100%">
+    <mat-form-field class="editItem-l2" style="width: 100%">
       <input matInput type="text" placeholder="Description" [(ngModel)]="selectedField.description">
     </mat-form-field>
   </div>
 
-  <div class="editItem">
+  <div class="editItem-l1">
     <p>Background:</p>
     <img [src]="getBackgroundSrcString()" alt="No Background" style="max-width: 100%"/>
     <div>
@@ -26,7 +37,7 @@
     </div>
   </div>
 
-  <div class="editItem">
+  <div class="editItem-l1">
     <p>Action:</p>
 
     <mat-form-field>
@@ -36,7 +47,7 @@
       </mat-select>
     </mat-form-field>
 
-    <div style="border: 1px solid black; margin: 1px">
+    <div class="editItem-l2">
       <p>General Action Settings</p>
       <div>ID: {{action.id}}</div>
       <mat-form-field>
@@ -47,7 +58,7 @@
       </mat-form-field>
     </div>
 
-    <div *ngIf="isRestAction()" style="border: 1px solid black; margin: 1px">
+    <div *ngIf="isRestAction()" class="editItem-l2">
       <p>REST-Action editing section</p>
 
       <mat-form-field>
@@ -68,7 +79,7 @@
       </mat-form-field>
     </div>
 
-    <div *ngIf="isDesktopAutomationAction()" style="border: 1px solid black; margin: 1px">
+    <div *ngIf="isDesktopAutomationAction()" class="editItem-l2">
       <p>Desktop-Automation editing section</p>
 
       <app-desktop-automation-function-select [action]="getDesktopAutomationAction()"></app-desktop-automation-function-select>

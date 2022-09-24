@@ -9,11 +9,8 @@ export class DummyUtils {
     return {id: -1, name: '', group: {id: -1, childGroups: [], name: '', parentGroup: null}, fields: []};
   }
 
-  static getDummyField(randomTitle = false): Field {
-    if (!randomTitle) {
-      return {id: -1, colspan: 1, rowspan: 1};
-    }
-    return {id: -1, colspan: 1, rowspan: 1, title: `testField ${Math.floor(Math.random() * 255)}`};
+  static getDummyField(): Field {
+    return {id: -1, colspan: 1, rowspan: 1};
   }
 
   static getDummyAction(): Action {

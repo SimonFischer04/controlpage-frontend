@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, HostListener, Input, OnInit} from '@angular/core';
 import {Field} from '../../../../../types/view/field/field';
 import {ActionType} from '../../../../../types/view/action/action-type';
 import {getEnumKeyNames} from '../../../../../utils/enum-utils';
@@ -8,6 +8,9 @@ import {DesktopAutomationAction} from '../../../../../types/view/action/impl/des
 import {Action} from '../../../../../types/view/action/action';
 import {DummyUtils} from '../../../../../utils/dummy-utils';
 import {ImageUtilsService} from '../../../../../services/image-utils/image-utils.service';
+import {Clipboard} from '@angular/cdk/clipboard';
+import {ViewUtilsService} from "../../../../../services/view-utils/view-utils.service";
+import {UserPreferencesService} from "../../../../../services/user-preferences/user-preferences.service";
 
 @Component({
   selector: 'app-field-edit-section',
@@ -17,12 +20,112 @@ import {ImageUtilsService} from '../../../../../services/image-utils/image-utils
 export class FieldEditSectionComponent implements OnInit {
   @Input() public selectedField: Field;
 
+  private readonly undoStack: Field[] = [];
+  private readonly redoStack: Field[] = [];
+
   constructor(
-    private readonly imageUtils: ImageUtilsService
+    private readonly imageUtils: ImageUtilsService,
+    private readonly clipboard: Clipboard,
+    private readonly viewUtils: ViewUtilsService,
+    private readonly prefs: UserPreferencesService
   ) {
   }
 
   ngOnInit(): void {
+  }
+
+  /*
+    Field - tools
+   */
+
+  public copy(): void {
+    console.log("copy: ", this.selectedField);
+    this.saveCurrentStateForUndo();
+    this.clearRedoStack();
+    this.clipboard.copy(JSON.stringify(this.selectedField));
+  }
+
+  public cut(): void {
+    console.log("cut: ", this.selectedField);
+    this.saveCurrentStateForUndo();
+    this.clearRedoStack();
+    this.clipboard.copy(JSON.stringify(this.selectedField));
+    this.viewUtils.assignField(this.selectedField, this.viewUtils.getDummyField());
+  }
+
+  public clear(): void {
+    console.log("clear.");
+    this.saveCurrentStateForUndo();
+    this.clearRedoStack();
+    this.viewUtils.assignField(this.selectedField, this.viewUtils.getDummyField());
+  }
+
+  public paste(): void {
+    navigator.clipboard.readText().then((clipboardText: string) => {
+      console.log("paste: ", clipboardText);
+      this.saveCurrentStateForUndo();
+      this.clearRedoStack();
+      this.viewUtils.assignField(this.selectedField, JSON.parse(clipboardText));
+    });
+  }
+
+  public undo(): void {
+    console.log("undo: ", structuredClone(this.undoStack));
+
+    if (this.undoStack.length === 0)
+      return;
+
+    this.saveCurrentStateForRedo();
+    this.viewUtils.assignField(this.selectedField, this.undoStack.pop());
+  }
+
+  public redo(): void {
+    console.log("redo: ", this.redoStack);
+
+    if (this.redoStack.length === 0)
+      return;
+
+    this.saveCurrentStateForUndo();
+    this.viewUtils.assignField(this.selectedField, this.redoStack.pop());
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  private onKeyPress($event: KeyboardEvent) {
+    if (this.prefs.fieldKeybindingEnabled) {
+      // console.error("key", $event.key, $event.code);
+      if (($event.ctrlKey) && $event.key === "c")
+        this.copy();
+      if (($event.ctrlKey) && $event.key === "x")
+        this.cut();
+      if (($event.ctrlKey) && $event.key === "v")
+        this.paste();
+
+      // don't trigger when in input field, ... (undo handled natively by browser)
+      if (($event.ctrlKey) && $event.key === "z" && document.activeElement.tagName === "BODY")
+        this.undo();
+      // don't trigger when in input field, ... (undo handled natively by browser)
+      if (($event.ctrlKey) && $event.key === "y" && document.activeElement.tagName === "BODY")
+        this.redo();
+
+      // don't trigger when in input field, ...
+      if ($event.key === "Delete" && document.activeElement.tagName === "BODY")
+        this.clear();
+    }
+  }
+
+  private saveCurrentStateForRedo(): void {
+    console.log("redo-stack update: ", this.redoStack);
+    this.redoStack.push(structuredClone(this.selectedField));
+  }
+
+  private saveCurrentStateForUndo(): void {
+    console.log("undo stack update: ", this.undoStack);
+    this.undoStack.push(structuredClone(this.selectedField));
+  }
+
+  private clearRedoStack(): void{
+    console.log("clearing redo stack");
+    this.redoStack.splice(0, this.redoStack.length);
   }
 
   /*

@@ -31,6 +31,8 @@ import {MatSelectSearchModule} from "mat-select-search";
 import { BottomBarComponent } from './components/bottom-bar/bottom-bar.component';
 import { FieldEditSectionComponent } from './sites/view-page/sub-pages/view-edit/field-edit-section/field-edit-section.component';
 import { ViewEditSectionComponent } from './sites/view-page/sub-pages/view-edit/view-edit-section/view-edit-section.component';
+import {ClipboardModule} from "@angular/cdk/clipboard";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 @NgModule({
   declarations: [
@@ -64,7 +66,9 @@ import { ViewEditSectionComponent } from './sites/view-page/sub-pages/view-edit/
     MatInputModule,
     MatSelectModule,
     MatCheckboxModule,
-    MatSelectSearchModule
+    MatSelectSearchModule,
+    ClipboardModule,
+    MatTooltipModule
   ],
   providers: [
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {floatLabel: 'auto'}},

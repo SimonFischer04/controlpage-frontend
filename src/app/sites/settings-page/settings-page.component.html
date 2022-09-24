@@ -4,16 +4,16 @@
     <mat-label>Desktop Automation Host</mat-label>
     <input matInput [(ngModel)]="preferences.desktopAutomationHost">
   </mat-form-field>
-  <br>
 
-  <mat-checkbox class="settings-field" [(ngModel)]="preferences.shouldDisplayErrorAlert">Should show alert</mat-checkbox>
-  <br>
+  <div class="settings-field" >
+    <mat-checkbox [(ngModel)]="preferences.shouldDisplayErrorAlert">Should show alert</mat-checkbox>
+    <mat-icon matTooltip="Whether to show each error as alert">info</mat-icon>
+  </div>
 
   <mat-form-field class="settings-field">
     <mat-label>Backend Host</mat-label>
     <input matInput [(ngModel)]="preferences.backendHost">
   </mat-form-field>
-  <br>
 
   <mat-form-field class="settings-field">
     <mat-label>Field-Style</mat-label>
@@ -21,10 +21,14 @@
       <mat-option *ngFor="let fieldStyle of fieldStyles" [value]="fieldStyle">{{fieldStyle}}</mat-option>
     </mat-select>
   </mat-form-field>
-  <br>
 
   <mat-form-field class="settings-field">
     <mat-label>Space Between Fields</mat-label>
     <input matInput type="number" [(ngModel)]="preferences.spaceBetweenFields">
   </mat-form-field>
+
+  <div class="settings-field">
+    <mat-checkbox [(ngModel)]="preferences.fieldKeybindingEnabled">Field keybindings enabled</mat-checkbox>
+    <mat-icon matTooltip="Whether to enable field ctr+c/x/v/z/y +delete hotkeys">info</mat-icon>
+  </div>
 </mat-card>
