@@ -2,5 +2,10 @@ import {UserPreferencesService} from '../user-preferences/user-preferences.servi
 import {Action} from '../../types/view/action/action';
 
 export abstract class ActionExecutor<T extends Action> {
-  public abstract executeAction(preferences: UserPreferencesService, action: T): void;
+  constructor(
+    protected readonly preferences: UserPreferencesService
+  ) {
+  }
+
+  public abstract executeAction(action: T): void;
 }

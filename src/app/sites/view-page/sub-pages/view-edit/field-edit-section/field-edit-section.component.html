@@ -40,16 +40,19 @@
   <div class="editItem-l1">
     <p>Action:</p>
 
-    <mat-form-field>
-      <mat-label>ActionType</mat-label>
-      <mat-select [(ngModel)]="action.type">
-        <mat-option *ngFor="let actionType of getActionTypes()" [value]="actionType">{{actionType}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
     <div class="editItem-l2">
       <p>General Action Settings</p>
+
       <div>ID: {{action.id}}</div>
+
+      <mat-form-field>
+        <mat-label>ActionType</mat-label>
+        <mat-select [(ngModel)]="action.type">
+          <mat-option *ngFor="let actionType of getActionTypes()" [value]="actionType">{{actionType}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <br>
+
       <mat-form-field>
         <mat-label>RunPolicy</mat-label>
         <mat-select [(ngModel)]="action.runPolicy">
@@ -83,6 +86,24 @@
       <p>Desktop-Automation editing section</p>
 
       <app-desktop-automation-function-select [action]="getDesktopAutomationAction()"></app-desktop-automation-function-select>
+    </div>
+
+    <div *ngIf="isViewAction()" class="editItem-l2">
+      <p>View-Action editing section</p>
+
+      <mat-form-field>
+        <mat-label>ViewActionType</mat-label>
+        <mat-select [(ngModel)]="getViewAction().viewActionType">
+          <mat-option *ngFor="let viewActionType of getViewActionTypes()" [value]="viewActionType">{{viewActionType}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <br>
+
+      <mat-form-field *ngIf="isViewSwitchToAction()">
+        <!--TODO: custom view selector-->
+        <mat-label>View-ID</mat-label>
+        <input matInput type="number" [(ngModel)]="getViewAction().viewId">
+      </mat-form-field>
     </div>
   </div>
 </div>

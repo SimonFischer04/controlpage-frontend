@@ -5,23 +5,24 @@ import {ActionType} from '../../types/view/action/action-type';
 import {DesktopAutomationExecutor} from './impl/desktop-automation-executor';
 import {ActionExecutor} from './action-executor';
 import {UserPreferencesService} from '../user-preferences/user-preferences.service';
+import {ViewActionExecutor} from "./impl/view-action-executor";
+import {GlobalEventsService} from "../global-events/global-events.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ActionService {
-  readonly executors:
-    {
-      [key: string]: ActionExecutor<any>
-    } =
-    {
-      [ActionType.REST]: new RestActionExecutor(),
-      [ActionType.DESKTOP_AUTOMATION]: new DesktopAutomationExecutor()
-    };
+  private readonly executors: { [key: string]: ActionExecutor<any> };
 
   constructor(
-    private readonly preferences: UserPreferencesService
+    private readonly preferences: UserPreferencesService,
+    private readonly events: GlobalEventsService
   ) {
+    this.executors = {
+      [ActionType.REST]: new RestActionExecutor(preferences),
+      [ActionType.DESKTOP_AUTOMATION]: new DesktopAutomationExecutor(preferences),
+      [ActionType.VIEW]: new ViewActionExecutor(preferences, events)
+    };
   }
 
   public executeAction(action: Action) {
@@ -33,7 +34,7 @@ export class ActionService {
     if (!executor) {
       console.error(`No executor for type '${action.type}' found!`);
     }
-    executor.executeAction(this.preferences, action);
+    executor.executeAction(action);
   }
 }
 

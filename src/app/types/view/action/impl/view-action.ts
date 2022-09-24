@@ -6,5 +6,8 @@ export interface ViewAction extends Action {
 }
 
 export enum ViewActionType {
-  CLOSE, SWITCH
+  UNDEFINED = "UNDEFINED",
+  CLOSE = "CLOSE",
+  SWITCH_TO = "SWITCH_TO",
+  BACK = "BACK"
 }

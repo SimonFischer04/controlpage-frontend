@@ -3,10 +3,10 @@ import {DesktopAutomationAction} from '../../../types/view/action/impl/desktop-a
 import {UserPreferencesService} from '../../user-preferences/user-preferences.service';
 
 export class DesktopAutomationExecutor extends ActionExecutor<DesktopAutomationAction> {
-  public executeAction(preferences: UserPreferencesService, action: DesktopAutomationAction): void {
+  public executeAction(action: DesktopAutomationAction): void {
     console.log('DesktopAutomationAction: ', action);
 
-    const url = `${preferences.desktopAutomationPrefix}function/${action.functionName}`;
+    const url = `${this.preferences.desktopAutomationPrefix}function/${action.functionName}`;
 
     fetch(url, {
       method: 'POST',

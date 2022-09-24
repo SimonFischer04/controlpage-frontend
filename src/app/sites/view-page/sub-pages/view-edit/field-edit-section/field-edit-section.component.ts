@@ -11,6 +11,7 @@ import {ImageUtilsService} from '../../../../../services/image-utils/image-utils
 import {Clipboard} from '@angular/cdk/clipboard';
 import {ViewUtilsService} from "../../../../../services/view-utils/view-utils.service";
 import {UserPreferencesService} from "../../../../../services/user-preferences/user-preferences.service";
+import {ViewAction, ViewActionType} from "../../../../../types/view/action/impl/view-action";
 
 @Component({
   selector: 'app-field-edit-section',
@@ -123,7 +124,7 @@ export class FieldEditSectionComponent implements OnInit {
     this.undoStack.push(structuredClone(this.selectedField));
   }
 
-  private clearRedoStack(): void{
+  private clearRedoStack(): void {
     console.log("clearing redo stack");
     this.redoStack.splice(0, this.redoStack.length);
   }
@@ -178,12 +179,24 @@ export class FieldEditSectionComponent implements OnInit {
     return this.action.type === ActionType.DESKTOP_AUTOMATION;
   }
 
+  public isViewAction(): boolean {
+    return this.action.type === ActionType.VIEW;
+  }
+
+  public isViewSwitchToAction(): boolean {
+    return this.isViewAction() && this.getViewAction().viewActionType === ViewActionType.SWITCH_TO;
+  }
+
   public getDesktopAutomationAction(): DesktopAutomationAction {
     return this.getTypedAction<DesktopAutomationAction>(ActionType.DESKTOP_AUTOMATION);
   }
 
   public getRestAction(): RestAction {
     return this.getTypedAction<RestAction>(ActionType.REST);
+  }
+
+  public getViewAction(): ViewAction {
+    return this.getTypedAction<ViewAction>(ActionType.VIEW);
   }
 
   public get action(): Action {
@@ -208,6 +221,10 @@ export class FieldEditSectionComponent implements OnInit {
 
   public getRestTypes(): string[] {
     return getEnumKeyNames(RestType);
+  }
+
+  public getViewActionTypes(): string[] {
+    return getEnumKeyNames(ViewActionType);
   }
 
   // ---
