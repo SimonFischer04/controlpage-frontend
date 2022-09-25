@@ -1,10 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Field} from '../../../../../types/view/field/field';
 import {EditFieldRendererParameter} from '../../../../../types/field-renderer-parameter/edit-field-renderer-parameter';
-import {Image} from '../../../../../types/view/image';
 import {ImageUtilsService} from '../../../../../services/image-utils/image-utils.service';
-import {filter} from 'rxjs';
-import {findElementsWithAttribute} from '@angular/cdk/schematics';
+import {ViewUtilsService} from "../../../../../services/view-utils/view-utils.service";
 
 @Component({
   selector: 'app-edit-field-render',
@@ -15,10 +13,11 @@ export class EditFieldRenderComponent implements OnInit {
   @Input() field: Field;
   @Input() params: EditFieldRendererParameter;
 
-  public readonly SELECTED_COLOR: string = 'rgb(86, 204, 73, 0.5)';
+  public readonly FIELD_SELECTED_COLOR: string = 'rgb(86, 204, 73, 0.5)';
 
   constructor(
-    private imageUtils: ImageUtilsService
+    private readonly imageUtils: ImageUtilsService,
+    public readonly viewUtils: ViewUtilsService
   ) {
   }
 

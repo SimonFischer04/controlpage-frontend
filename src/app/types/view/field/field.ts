@@ -1,10 +1,11 @@
 import {Action} from '../action/action';
 import {Image} from '../image';
+import {StyledText} from "../../styled-text";
 
 export interface Field {
   id: number;
   action?: Action;
-  title?: string;
+  title?: StyledText;
   description?: string;
 
   // id to request the image from the backend (only exist AFTER saving view)

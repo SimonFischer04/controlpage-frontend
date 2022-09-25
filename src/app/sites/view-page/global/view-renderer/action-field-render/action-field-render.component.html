@@ -2,7 +2,13 @@
   <div class="stack-item" *ngIf="hasBackground()">
     <img [src]="getBackgroundImage()" alt="" width="100%" height="100%">
   </div>
-  <div class="stack-item" id="titleRenderContainer">
-    <span *ngIf="field.title">{{field.title}}</span>
+  <div *ngIf="field.title" id="actionTitleRenderContainer" class="stack-item"
+       [ngStyle]="{
+            'align-items': viewUtils.getFieldVerticalAlignmentCss(field.title.verticalAlignment),
+            'justify-content': viewUtils.getFieldHorizontalAlignmentCss(field.title.horizontalAlignment),
+            'color': field.title.color
+       }"
+  >
+    {{field.title.text}}
   </div>
 </div>

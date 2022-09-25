@@ -6,6 +6,8 @@ import {Field} from '../../types/view/field/field';
 import {DummyUtils} from '../../utils/dummy-utils';
 import {FieldStyle} from '../../types/view/field/field-style';
 import {ObjectUtils} from "../../utils/object-utils";
+import {HorizontalAlignment} from "../../types/horizontal-alignment";
+import {VerticalAlignment} from "../../types/vertical-alignment";
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +19,36 @@ export class ViewUtilsService {
   ) {
   }
 
-  public assignField(target: Field, source: Field){
+  public getFieldHorizontalAlignmentCss(horizontalAlignment: HorizontalAlignment): string {
+    switch (horizontalAlignment) {
+      case HorizontalAlignment.CENTER: {
+        return "center";
+      }
+      case HorizontalAlignment.LEFT: {
+        return "start";
+      }
+      case HorizontalAlignment.RIGHT: {
+        return "end";
+      }
+    }
+  }
+
+  public getFieldVerticalAlignmentCss(verticalAlignment: VerticalAlignment): string {
+    switch (verticalAlignment) {
+      case VerticalAlignment.CENTER: {
+        return "center";
+      }
+      case VerticalAlignment.TOP: {
+        return "start";
+      }
+      case VerticalAlignment.BOTTOM: {
+        return "end";
+      }
+    }
+  }
+
+
+  public assignField(target: Field, source: Field) {
     ObjectUtils.assignUnion(target, source, ["id"]);
   }
 

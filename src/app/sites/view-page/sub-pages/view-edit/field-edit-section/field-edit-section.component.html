@@ -9,6 +9,7 @@
     <button mat-button (click)="paste()">Paste</button>
     <button mat-button (click)="undo()">Undo</button>
     <button mat-button (click)="redo()">Redo</button>
+    <button mat-button (click)="test()">Test</button>
   </div>
 
   <div class="editItem-l1">
@@ -16,10 +17,49 @@
 
     <div class="editItem-l2">Id: {{selectedField.id}}</div>
 
-    <mat-form-field class="editItem-l2">
-      <input matInput type="text" placeholder="Title" [(ngModel)]="selectedField.title">
-    </mat-form-field>
-    <br>
+    <div class="editItem-l2">
+      <h2>Title:</h2>
+      <div>ID: {{title.id}}</div>
+
+      <mat-form-field>
+        <mat-label>Text</mat-label>
+        <input matInput type="text" [(ngModel)]="title.text">
+      </mat-form-field>
+      <br>
+
+      <mat-label>Horizontal-Align:</mat-label>
+      <mat-button-toggle-group [(ngModel)]="title.horizontalAlignment">
+        <mat-button-toggle value="LEFT" aria-label="Text align left">
+          <mat-icon>format_align_left</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="CENTER" aria-label="Text align center">
+          <mat-icon>format_align_center</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="RIGHT" aria-label="Text align right">
+          <mat-icon>format_align_right</mat-icon>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+      <br>
+
+      <mat-label>Vertical-Align:</mat-label>
+      <mat-button-toggle-group [(ngModel)]="title.verticalAlignment">
+        <mat-button-toggle value="TOP" aria-label="Text align left">
+          <mat-icon>vertical_align_top</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="CENTER" aria-label="Text align center">
+          <mat-icon>vertical_align_center</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="BOTTOM" aria-label="Text align right">
+          <mat-icon>vertical_align_bottom</mat-icon>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+      <br>
+
+      <mat-form-field>
+        <mat-label>Color:</mat-label>
+        <input matInput type="color" [(ngModel)]="title.color">
+      </mat-form-field>
+    </div>
 
     <mat-form-field class="editItem-l2" style="width: 100%">
       <input matInput type="text" placeholder="Description" [(ngModel)]="selectedField.description">

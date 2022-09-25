@@ -12,6 +12,7 @@ import {Clipboard} from '@angular/cdk/clipboard';
 import {ViewUtilsService} from "../../../../../services/view-utils/view-utils.service";
 import {UserPreferencesService} from "../../../../../services/user-preferences/user-preferences.service";
 import {ViewAction, ViewActionType} from "../../../../../types/view/action/impl/view-action";
+import {StyledText} from "../../../../../types/styled-text";
 
 @Component({
   selector: 'app-field-edit-section',
@@ -33,6 +34,10 @@ export class FieldEditSectionComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  public test() {
+    console.warn("test")
   }
 
   /*
@@ -205,6 +210,14 @@ export class FieldEditSectionComponent implements OnInit {
       field.action = DummyUtils.getDummyAction();
     }
     return field.action;
+  }
+
+  public get title(): StyledText {
+    const field: Field = this.selectedField;
+    if (!field.title) {
+      field.title = DummyUtils.getDummyTitle();
+    }
+    return field.title;
   }
 
   /*

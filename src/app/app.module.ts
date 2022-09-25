@@ -21,18 +21,19 @@ import {ViewEditComponent} from './sites/view-page/sub-pages/view-edit/view-edit
 import {ViewActionComponent} from './sites/view-page/sub-pages/view-action/view-action.component';
 import {EditFieldRenderComponent} from './sites/view-page/global/view-renderer/edit-field-render/edit-field-render.component';
 import {ActionFieldRenderComponent} from './sites/view-page/global/view-renderer/action-field-render/action-field-render.component';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {SettingsPageComponent} from './sites/settings-page/settings-page.component';
 import {MatCheckboxModule} from "@angular/material/checkbox";
-import { DesktopAutomationFunctionSelectComponent } from './sites/view-page/sub-pages/view-edit/field-edit-section/desktop-automation-function-select/desktop-automation-function-select.component';
+import {DesktopAutomationFunctionSelectComponent} from './sites/view-page/sub-pages/view-edit/field-edit-section/desktop-automation-function-select/desktop-automation-function-select.component';
 import {MatSelectSearchModule} from "mat-select-search";
-import { BottomBarComponent } from './components/bottom-bar/bottom-bar.component';
-import { FieldEditSectionComponent } from './sites/view-page/sub-pages/view-edit/field-edit-section/field-edit-section.component';
-import { ViewEditSectionComponent } from './sites/view-page/sub-pages/view-edit/view-edit-section/view-edit-section.component';
+import {BottomBarComponent} from './components/bottom-bar/bottom-bar.component';
+import {FieldEditSectionComponent} from './sites/view-page/sub-pages/view-edit/field-edit-section/field-edit-section.component';
+import {ViewEditSectionComponent} from './sites/view-page/sub-pages/view-edit/view-edit-section/view-edit-section.component';
 import {ClipboardModule} from "@angular/cdk/clipboard";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
 
 @NgModule({
   declarations: [
@@ -68,12 +69,14 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     MatCheckboxModule,
     MatSelectSearchModule,
     ClipboardModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatButtonToggleModule,
+    ReactiveFormsModule
   ],
   providers: [
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {floatLabel: 'auto'}},
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}},
-    {provide: HTTP_INTERCEPTORS, useClass: RestService, multi: true}
+    {provide: HTTP_INTERCEPTORS, useClass: RestService, multi: true},
   ],
   bootstrap: [AppComponent]
 })
