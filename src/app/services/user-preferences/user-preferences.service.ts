@@ -30,7 +30,7 @@ export class UserPreferencesService {
       this.shouldDisplayErrorAlert = true;
     }
     if (!localStorage.getItem(this.BACKEND_HOST_KEY)) {
-      this.backendHost = `${window.location.protocol}//${window.location.host.split(':')[0]}:42000`;
+      this.backendHost = `${window.location.protocol}//${window.location.host}`;
     }
     if (!(localStorage.getItem(this.FIELD_KEYBINDINGS_ENABLED_KEY) ?? false)) {
       this.fieldKeybindingEnabled = true;
