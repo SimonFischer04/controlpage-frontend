@@ -1,4 +1,20 @@
-# ControlpageFrontend
+# ControlPage-Frontend
+
+## Canonical source
+
+I do development on my [personal GitLab instance](https://gitlab.fischerserver.eu/controlpage/controlpage-frontend).
+
+But contributions are welcome on [Gitlab.com](https://gitlab.com/controlpage/controlpage-frontend).
+
+Furthermore, this project is mirrored to [GitHub](https://github.com/SimonFischer04/controlpage-frontend). But don't open any issues or pull requests there!
+
+## Introduction
+
+This is the frontend part of the ControlPage application. For more information see the [Docs](https://gitlab.com/controlpage/controlpage-docs).
+
+## ---WIP---
+
+---
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.3.
 
