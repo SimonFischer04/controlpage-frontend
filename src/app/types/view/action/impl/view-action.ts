@@ -5,6 +5,7 @@ export interface ViewAction extends Action {
   viewId: number;
 }
 
+// noinspection JSUnusedGlobalSymbols
 export enum ViewActionType {
   UNDEFINED = "UNDEFINED",
   CLOSE = "CLOSE",

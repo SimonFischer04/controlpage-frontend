@@ -1,4 +1,4 @@
-import {Component,  Input, OnChanges, OnInit,  SimpleChanges} from '@angular/core';
+import {Component,  Input, OnChanges,  SimpleChanges} from '@angular/core';
 import {FullView} from '../../../../types/view/full-view';
 import {Field} from '../../../../types/view/field/field';
 import {EditFieldRendererParameter} from '../../../../types/field-renderer-parameter/edit-field-renderer-parameter';
@@ -9,16 +9,13 @@ import {ActionService} from '../../../../services/action/action.service';
   templateUrl: './view-edit.component.html',
   styleUrls: ['./view-edit.component.scss']
 })
-export class ViewEditComponent implements OnInit, OnChanges {
+export class ViewEditComponent implements  OnChanges {
   @Input() public view: FullView;
   public fieldParams: EditFieldRendererParameter = {selectedField: null};
 
   constructor(
     private readonly actionService: ActionService,
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   ngOnChanges(changes: SimpleChanges): void {

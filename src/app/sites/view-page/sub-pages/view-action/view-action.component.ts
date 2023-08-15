@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {FullView} from '../../../../types/view/full-view';
 import {Field} from '../../../../types/view/field/field';
 import {ActionService} from '../../../../services/action/action.service';
@@ -10,7 +10,7 @@ import screenfull from 'screenfull';
   templateUrl: './view-action.component.html',
   styleUrls: ['./view-action.component.scss']
 })
-export class ViewActionComponent implements OnInit {
+export class ViewActionComponent  {
   @Input() view: FullView;
   @ViewChild('viewRendererWrapper', {static: true}) viewRendererWrapperRef: ElementRef;
 
@@ -19,16 +19,13 @@ export class ViewActionComponent implements OnInit {
   ) {
   }
 
-  ngOnInit(): void {
-  }
-
   public onFieldPress(field: Field): void {
     this.actionService.executeAction(field.action);
   }
 
-  public fullScreen(): void {
+  public async fullScreen(): Promise<void> {
     if (screenfull.isEnabled) {
-      screenfull.request(this.viewRendererWrapperRef.nativeElement);
+      await screenfull.request(this.viewRendererWrapperRef.nativeElement);
     }
   }
 }

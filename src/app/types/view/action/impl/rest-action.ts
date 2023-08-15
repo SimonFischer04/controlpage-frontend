@@ -6,6 +6,7 @@ export interface RestAction extends Action{
   body: string;
 }
 
+// noinspection JSUnusedGlobalSymbols
 export enum RestType {
   GET = 'GET',
   POST = 'POST'

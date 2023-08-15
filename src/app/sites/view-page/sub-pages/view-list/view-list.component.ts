@@ -25,8 +25,8 @@ export class ViewListComponent implements OnInit {
     );
   }
 
-  onPressed(viewId: number, edit: boolean) {
-    this.router.navigate([], {queryParams: {view: viewId, edit}});
+  protected async onPressed(viewId: number, edit: boolean) {
+    await this.router.navigate([], {queryParams: {view: viewId, edit}});
   }
 
 }

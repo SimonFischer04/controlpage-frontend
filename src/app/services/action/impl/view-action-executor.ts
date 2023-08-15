@@ -4,7 +4,7 @@ import {UserPreferencesService} from "../../user-preferences/user-preferences.se
 import {GlobalEventsService} from "../../global-events/global-events.service";
 
 export class ViewActionExecutor extends ActionExecutor<ViewAction> {
-  private lastViewId: number = -1;
+  private lastViewId = -1;
 
   constructor(
     protected readonly preferences: UserPreferencesService,

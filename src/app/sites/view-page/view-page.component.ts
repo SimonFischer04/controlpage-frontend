@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FullView} from '../../types/view/full-view';
 import {RestService} from '../../services/rest/rest.service';
@@ -29,9 +29,9 @@ export class ViewPageComponent implements OnInit {
       }
     );
 
-    this.events.viewChangeRequest$.subscribe((viewId: number) => {
+    this.events.viewChangeRequest$.subscribe(async (viewId: number) => {
       if (viewId < 0) {
-        this.router.navigate(['/view']);
+        await this.router.navigate(['/view']);
         return;
       }
       this.loadView(viewId);

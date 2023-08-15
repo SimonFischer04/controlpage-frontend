@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse} from '@angular/common/http';
-import {environment} from '../../../environments/environment';
-import {catchError, map, Observable, retry, throwError} from 'rxjs';
+import {HttpClient, HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {catchError, Observable, throwError} from 'rxjs';
 import {ViewListResponse} from '../../types/rest/view-list-response';
 import {FullView} from '../../types/view/full-view';
 import {ControlPageFunctionsResponse} from '../../types/desktop-automation-interface/ControlPageFunctionsResponse';
@@ -11,33 +10,17 @@ import {UserPreferencesService} from '../user-preferences/user-preferences.servi
   providedIn: 'root'
 })
 export class RestService implements HttpInterceptor {
-  // readonly urlPrefix;
-
   constructor(
     private readonly http: HttpClient,
     private readonly preferencesService: UserPreferencesService
   ) {
-    // this.urlPrefix = `${environment.host}/api/`;
-    // this.urlPrefix = `${environment.protocol}://${window.location.host.split(":")[0]}:${environment.apiPort}/api/`;
   }
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     if (!request.url.startsWith('http')) {
       request = request.clone({url: `${this.preferencesService.backendHost}/api/${request.url}`});
     }
     return next.handle(request).pipe(
-      // map((event: HttpEvent<any>) => {
-      //   console.error("FJKDSFJK")
-      //   if (event instanceof HttpResponse) {
-      //     console.error("JFKDSJF", event.status !== 200, event);
-      //     // event = event.clone({body: this.modifyBody(event.body)});
-      //     if (event.status !== 200 && this.preferencesService.shouldDisplayErrorAlert) {
-      //       console.error("fgklsdfjgdlkfg")
-      //       alert(`HTTP-Error: ${event.statusText}`);
-      //     }
-      //   }
-      //   return event;
-      // }),
       catchError((error: HttpErrorResponse) => {
         if (this.preferencesService.shouldDisplayErrorAlert) {
           alert(`REST-Service: ${error.message}`);
@@ -67,6 +50,8 @@ export class RestService implements HttpInterceptor {
     return this.http.get<FullView>(`view/${viewId}`);
   }
 
+  // TODO: fix this (combined with client-generation)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   saveView(view: FullView): Observable<any> {
     return this.http.post(`view`, view);
   }

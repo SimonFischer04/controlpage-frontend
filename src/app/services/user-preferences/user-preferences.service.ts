@@ -107,6 +107,6 @@ export class UserPreferencesService {
   }
 
   public set fieldKeybindingEnabled(value: boolean) {
-    localStorage.setItem(this.FIELD_KEYBINDINGS_ENABLED_KEY, this.FIELD_KEYBINDINGS_ENABLED_KEY ? 'TRUE' : 'FALSE');
+    localStorage.setItem(this.FIELD_KEYBINDINGS_ENABLED_KEY, value ? 'TRUE' : 'FALSE');
   }
 }

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {UserPreferencesService} from '../../services/user-preferences/user-preferences.service';
 import {getEnumKeyNames} from "../../utils/enum-utils";
 import {FieldStyle} from "../../types/view/field/field-style";
@@ -8,14 +8,11 @@ import {FieldStyle} from "../../types/view/field/field-style";
   templateUrl: './settings-page.component.html',
   styleUrls: ['./settings-page.component.scss']
 })
-export class SettingsPageComponent implements OnInit {
+export class SettingsPageComponent  {
 
   constructor(
     private readonly preferencesService: UserPreferencesService
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   public get fieldStyles(): string[]{

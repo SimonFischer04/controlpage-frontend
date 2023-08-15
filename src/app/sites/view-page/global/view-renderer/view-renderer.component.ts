@@ -1,4 +1,4 @@
-import {Component, DoCheck, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, DoCheck, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild} from '@angular/core';
 import {ViewUtilsService} from '../../../../services/view-utils/view-utils.service';
 import {FullView} from '../../../../types/view/full-view';
 import {Field} from '../../../../types/view/field/field';
@@ -12,7 +12,7 @@ import {UserPreferencesService} from '../../../../services/user-preferences/user
   templateUrl: './view-renderer.component.html',
   styleUrls: ['./view-renderer.component.scss'],
 })
-export class ViewRendererComponent implements OnInit, DoCheck {
+export class ViewRendererComponent implements  DoCheck {
   @Output() fieldPress: EventEmitter<Field> = new EventEmitter();
   @Input() private fieldRenderParameter: ActionFieldRendererParameter | EditFieldRendererParameter;
   @Input() public view: FullView;
@@ -40,7 +40,6 @@ export class ViewRendererComponent implements OnInit, DoCheck {
       this.view && this.view.fields && this.view.fields.length > 0 &&
       (this.oldViewSize.height !== this.view.fields.length || this.oldViewSize.width !== this.view.fields[0].length)
     ) {
-      // console.error("gfldgjkdfg")
       this.init();
       this.oldViewSize = {
         height: this.view.fields.length,
@@ -49,11 +48,8 @@ export class ViewRendererComponent implements OnInit, DoCheck {
     }
   }
 
-  ngOnInit(): void {
-  }
-
   @HostListener('window:resize', ['$event'])
-  onResize(_) {
+  onResize() {
     this.init();
   }
 

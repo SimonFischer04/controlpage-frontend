@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Field} from '../../../../../types/view/field/field';
 import {EditFieldRendererParameter} from '../../../../../types/field-renderer-parameter/edit-field-renderer-parameter';
 import {ViewUtilsService} from '../../../../../services/view-utils/view-utils.service';
@@ -8,7 +8,7 @@ import {ViewUtilsService} from '../../../../../services/view-utils/view-utils.se
   templateUrl: './edit-field-render.component.html',
   styleUrls: ['./edit-field-render.component.scss']
 })
-export class EditFieldRenderComponent implements OnInit {
+export class EditFieldRenderComponent {
   @Input() field: Field;
   @Input() params: EditFieldRendererParameter;
 
@@ -17,9 +17,6 @@ export class EditFieldRenderComponent implements OnInit {
   constructor(
     public readonly viewUtils: ViewUtilsService
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   public isSelected(): boolean {

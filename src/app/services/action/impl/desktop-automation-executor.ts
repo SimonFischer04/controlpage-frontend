@@ -1,6 +1,5 @@
 import {ActionExecutor} from '../action-executor';
 import {DesktopAutomationAction} from '../../../types/view/action/impl/desktop-automation-action';
-import {UserPreferencesService} from '../../user-preferences/user-preferences.service';
 
 export class DesktopAutomationExecutor extends ActionExecutor<DesktopAutomationAction> {
   public executeAction(action: DesktopAutomationAction): void {
@@ -14,9 +13,9 @@ export class DesktopAutomationExecutor extends ActionExecutor<DesktopAutomationA
       // body: action
     }).then((result: Response) => {
       return result.text();
-    }).then((value: any) => {
+    }).then((value: unknown) => {
       console.log('fetch-result: ', value);
-    }).catch((error: any) => {
+    }).catch((error: unknown) => {
       alert(`DesktopAutomationAction-Error: ${error}`);
     });
   }

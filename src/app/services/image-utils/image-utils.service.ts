@@ -55,16 +55,4 @@ export class ImageUtilsService {
     }
     return `data:${image.type};base64,${image.imageData}`;
   }
-
-  private getSrcStringByFile(file: File): string {
-    const reader = new FileReader();
-
-    let data = '';
-    reader.onload = (event) => { // called once readAsDataURL is completed
-      data = event.target.result as string;
-    };
-
-    reader.readAsDataURL(file);
-    return data;
-  }
 }

@@ -12,7 +12,7 @@ import {GlobalEventsService} from "../global-events/global-events.service";
   providedIn: 'root'
 })
 export class ActionService {
-  private readonly executors: { [key: string]: ActionExecutor<any> };
+  private readonly executors: { [key: string]: ActionExecutor<Action> };
 
   constructor(
     private readonly preferences: UserPreferencesService,

@@ -82,6 +82,7 @@ export class ViewUtilsService {
     Utils
    */
 
+  // noinspection JSUnusedGlobalSymbols
   public getDummyView(): FullView {
     return DummyUtils.getDummyView();
   }
@@ -139,6 +140,7 @@ export class ViewUtilsService {
     return view.fields.reduce((prev, curr) => prev + Math.max(1, curr[0]?.rowspan), 0);
   }
 
+  // noinspection JSUnusedLocalSymbols
   /**
    * Function to get the view size (amount of fields * row/colspan for each) [NOT pixel size!!!]
    * @param view - The view to get the size from

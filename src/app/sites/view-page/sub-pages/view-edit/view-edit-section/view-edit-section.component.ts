@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ViewUtilsService} from '../../../../../services/view-utils/view-utils.service';
 import {FullView} from '../../../../../types/view/full-view';
 import deepEqual from 'deep-equal';
@@ -11,7 +11,7 @@ import {RestService} from '../../../../../services/rest/rest.service';
   templateUrl: './view-edit-section.component.html',
   styleUrls: ['./view-edit-section.component.scss']
 })
-export class ViewEditSectionComponent implements OnInit, OnChanges {
+export class ViewEditSectionComponent implements  OnChanges {
   @Input() private view: FullView;
 
   // save copy of view to be able to check if something changed -> f.e. display "unsaved-infos"
@@ -21,9 +21,6 @@ export class ViewEditSectionComponent implements OnInit, OnChanges {
     private readonly rest: RestService,
     private readonly viewUtils: ViewUtilsService
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -108,7 +105,7 @@ export class ViewEditSectionComponent implements OnInit, OnChanges {
         /*
           Send Event to trigger reload (re-fetch from server) in "view-page-component".
           Yes, I know, I could skip this step but this should prevent inconsistent ("saved")-data between frontend and backend.
-          And ... I think this is negligible because it is only part of "the editing". (wouldn't do such things in "the using expierence")
+          And ... I think this is negligible because it is only part of "the editing". (wouldn't do such things in "the using experience")
          */
         // this.refreshEvent.emit();
         window.location.reload();

@@ -8,7 +8,7 @@ export class RestActionExecutor extends ActionExecutor<RestAction> {
       method: action.restType,
       body: action.body,
       mode: 'no-cors'
-    }).catch((error: any) => {
+    }).catch((error: unknown) => {
       if (this.preferences.shouldDisplayErrorAlert) {
         alert(`RestAction-Error: ${error}`);
       }

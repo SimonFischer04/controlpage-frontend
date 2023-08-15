@@ -13,10 +13,6 @@ export class GlobalEventsService {
 
   // Observable streams
   private readonly viewChangeRequest$_: Observable<number> = this.viewChangeEventSource.asObservable(); // Observable<viewId>
-  private readonly currentView$_: Observable<FullView> = this.viewSource.asObservable();
-
-  constructor() {
-  }
 
   public get viewChangeRequest$(): Observable<number> {
     return this.viewChangeRequest$_;
@@ -28,10 +24,6 @@ export class GlobalEventsService {
 
   public get currentView(): FullView {
     return this.viewSource.getValue();
-  }
-
-  public get currentView$(): Observable<FullView> {
-    return this.currentView$_;
   }
 
   public changeCurrentView(view: FullView): void {

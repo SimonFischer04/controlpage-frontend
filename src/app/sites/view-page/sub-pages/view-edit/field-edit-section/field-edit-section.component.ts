@@ -1,4 +1,4 @@
-import {Component, HostListener, Input, OnInit} from '@angular/core';
+import {Component, HostListener, Input} from '@angular/core';
 import {Field} from '../../../../../types/view/field/field';
 import {ActionType} from '../../../../../types/view/action/action-type';
 import {getEnumKeyNames} from '../../../../../utils/enum-utils';
@@ -13,14 +13,13 @@ import {ViewUtilsService} from '../../../../../services/view-utils/view-utils.se
 import {UserPreferencesService} from '../../../../../services/user-preferences/user-preferences.service';
 import {ViewAction, ViewActionType} from '../../../../../types/view/action/impl/view-action';
 import {StyledText} from '../../../../../types/styled-text';
-import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'app-field-edit-section',
   templateUrl: './field-edit-section.component.html',
   styleUrls: ['./field-edit-section.component.scss']
 })
-export class FieldEditSectionComponent implements OnInit {
+export class FieldEditSectionComponent  {
   @Input() public selectedField: Field;
 
   private readonly undoStack: Field[] = [];
@@ -32,9 +31,6 @@ export class FieldEditSectionComponent implements OnInit {
     private readonly viewUtils: ViewUtilsService,
     private readonly preferences: UserPreferencesService
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   public test() {
@@ -147,23 +143,25 @@ export class FieldEditSectionComponent implements OnInit {
     Field
    */
 
-  public onFileChanged(event: any): void {
+  public onFileChanged(event: Event): void {
     const field = this.selectedField;
     console.log('fileChangeEvent: ', event);
-    if (event.target.files && event.target.files[0]) {
-      const file: File = event.target.files[0];
-      this.selectedField.backgroundFile = file;
+    const inputElement = event.target as HTMLInputElement;
+    const selectedFile = inputElement.files?.[0];
+
+    if (selectedFile) {
+      this.selectedField.backgroundFile = selectedFile;
       const reader = new FileReader();
 
       reader.onload = (e) => {
         const res: string = e.target.result as string;
         const regExpMatchArray: RegExpMatchArray = res.match('data:(.*?);base64,(.*)');
         // console.log(regExpMatchArray);
-        field.backgroundImage = {id: -1, name: file.name, type: file.type, imageData: regExpMatchArray[2]};
+        field.backgroundImage = {id: -1, name: selectedFile.name, type: selectedFile.type, imageData: regExpMatchArray[2]};
         console.log('backG: ', field.backgroundImage);
       };
 
-      reader.readAsDataURL(event.target.files[0]);
+      reader.readAsDataURL(selectedFile);
     }
   }
 
