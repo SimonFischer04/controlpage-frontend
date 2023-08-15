@@ -34,6 +34,8 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
+import {NgOptimizedImage} from "@angular/common";
+import { BackgroundImageRendererComponent } from './sites/view-page/global/background-image-renderer/background-image-renderer.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +53,8 @@ import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
     DesktopAutomationFunctionSelectComponent,
     BottomBarComponent,
     FieldEditSectionComponent,
-    ViewEditSectionComponent
+    ViewEditSectionComponent,
+    BackgroundImageRendererComponent
   ],
   imports: [
     BrowserModule,
@@ -71,7 +74,8 @@ import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
     ClipboardModule,
     MatTooltipModule,
     MatButtonToggleModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgOptimizedImage
   ],
   providers: [
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {floatLabel: 'auto'}},

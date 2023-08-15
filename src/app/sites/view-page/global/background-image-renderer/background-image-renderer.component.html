@@ -1,0 +1,19 @@
+<img
+  *ngIf="hasBackground() && !isUnsavedImage()"
+  ngSrc="{{getBackgroundImage()}}"
+  alt="{{getBackgroundImageAltText()}}"
+  fill=""
+  style="object-fit: contain"
+>
+<!--
+  NG02952: The NgOptimizedImage directive has detected that `ngSrc` is a Base64-encoded string (data:image/png;base64,...).
+  NgOptimizedImage does not support Base64-encoded strings. To fix this, disable the NgOptimizedImage directive for this element by removing `ngSrc` and using a standard `src` attribute instead.
+-->
+<!--suppress AngularNgOptimizedImage -->
+<img
+  *ngIf="hasBackground() && isUnsavedImage()"
+  src="{{getBackgroundImage()}}"
+  alt="{{getBackgroundImageAltText()}}"
+  width="100%" height="100%"
+  style="object-fit: contain"
+>

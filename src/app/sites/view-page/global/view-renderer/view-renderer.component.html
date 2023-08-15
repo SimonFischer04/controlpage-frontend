@@ -13,7 +13,7 @@
               (click)="onFieldPress(field)"
               [params]="getEditFieldRendererParameter()"
               class="renderComponent"
-            ></app-edit-field-render>
+            />
 
             <app-action-field-render
               *ngIf="!isEditMode"
@@ -21,7 +21,7 @@
               (click)="onFieldPress(field)"
               [params]="getActionFieldRendererParameter()"
               class="renderComponent"
-            ></app-action-field-render>
+            />
           </div>
           <div *ngIf="x !== fieldsRow.length-1" [ngStyle]="{'width.px': prefs.spaceBetweenFields}" style="background-color: darkblue"></div>
         </div>

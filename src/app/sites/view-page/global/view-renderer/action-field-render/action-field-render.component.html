@@ -1,7 +1,5 @@
 <div class="stack">
-  <div class="stack-item" *ngIf="hasBackground()">
-    <img [src]="getBackgroundImage()" alt="" width="100%" height="100%">
-  </div>
+  <app-background-image-renderer class="stack-item" [field]="field"/>
   <div *ngIf="field.title" id="actionTitleRenderContainer" class="stack-item"
        [ngStyle]="{
             'align-items': viewUtils.getFieldVerticalAlignmentCss(field.title.verticalAlignment),

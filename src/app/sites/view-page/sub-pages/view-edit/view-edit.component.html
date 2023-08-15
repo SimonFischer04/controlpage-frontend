@@ -9,7 +9,7 @@
         [isEditMode]="true"
         (fieldPress)="onEditFieldPress($event)"
         [fieldRenderParameter]="fieldParams"
-      ></app-view-renderer>
+      />
     </div>
 
     <span class="flex-fill-space"></span>
@@ -20,12 +20,12 @@
     >
       <app-view-edit-section
         [view]="view"
-      ></app-view-edit-section>
+      />
 
       <app-field-edit-section
         *ngIf="selectedField"
         [selectedField]="selectedField"
-      ></app-field-edit-section>
+      />
     </div>
   </div>
 
@@ -39,7 +39,7 @@
         [view]="view"
         [isEditMode]="false"
         (fieldPress)="onActionFieldPress($event)"
-      ></app-view-renderer>
+      />
     </div>
   </div>
 </div>

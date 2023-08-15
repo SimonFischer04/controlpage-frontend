@@ -28,6 +28,19 @@ export class ImageUtilsService {
     return '';
   }
 
+  public getBackgroundImageAltText(field: Field): string {
+    // "backgroundImage" is only set in "unsaved-state", server will only respond with "backgroundId"
+    if (field.backgroundImage) {
+      // TODO: improve this alt-text
+      return '(recently uploaded background-image)';
+    }
+    if (field.backgroundId > 0) {
+      // TODO: proper backend / save alt-text support
+      return `background image with id: ${field.backgroundId}`;
+    }
+    return '';
+  }
+
   private getRemoteImageSrc(field: Field): string {
     return `${this.preferences.backendHost}/api/image/${field.backgroundId}`;
   }
