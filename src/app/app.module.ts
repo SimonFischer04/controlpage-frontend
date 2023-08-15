@@ -25,15 +25,15 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {SettingsPageComponent} from './sites/settings-page/settings-page.component';
-import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatCheckboxModule} from '@angular/material/checkbox';
 import {DesktopAutomationFunctionSelectComponent} from './sites/view-page/sub-pages/view-edit/field-edit-section/desktop-automation-function-select/desktop-automation-function-select.component';
-import {MatSelectSearchModule} from "mat-select-search";
 import {BottomBarComponent} from './components/bottom-bar/bottom-bar.component';
 import {FieldEditSectionComponent} from './sites/view-page/sub-pages/view-edit/field-edit-section/field-edit-section.component';
 import {ViewEditSectionComponent} from './sites/view-page/sub-pages/view-edit/view-edit-section/view-edit-section.component';
-import {ClipboardModule} from "@angular/cdk/clipboard";
-import {MatTooltipModule} from "@angular/material/tooltip";
-import {MatButtonToggleModule} from "@angular/material/button-toggle";
+import {ClipboardModule} from '@angular/cdk/clipboard';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
 
 @NgModule({
   declarations: [
@@ -66,8 +66,8 @@ import {MatButtonToggleModule} from "@angular/material/button-toggle";
     FormsModule,
     MatInputModule,
     MatSelectModule,
+    NgxMatSelectSearchModule,
     MatCheckboxModule,
-    MatSelectSearchModule,
     ClipboardModule,
     MatTooltipModule,
     MatButtonToggleModule,

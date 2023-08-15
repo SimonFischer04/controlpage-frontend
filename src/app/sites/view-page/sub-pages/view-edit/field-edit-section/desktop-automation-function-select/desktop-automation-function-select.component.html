@@ -1,22 +1,10 @@
 <mat-form-field>
-  <mat-label>Select a Function</mat-label>
-  <mat-select #functionSelect [(ngModel)]="action.functionName">
-    <mat-select-trigger>{{functionSelect.value}}</mat-select-trigger>
-
+  <mat-select [formControl]="functionCtr" placeholder="Bank">
     <mat-option>
-      <lib-mat-select-search
-        [list]="getFunctions()"
-        [searchProperties]="['name']"
-        (filtered)="filteredFunctions = $event"
-        fixOnTop="true"
-      >
-      </lib-mat-select-search>
+      <ngx-mat-select-search [formControl]="functionFilterCtr"></ngx-mat-select-search>
     </mat-option>
-
-    <mat-option *ngFor="let func of filteredFunctions" [value]="func.name">
-      <div class="function-container">
-        <span>{{func.name}}</span>
-      </div>
+    <mat-option *ngFor="let func of filteredFunctions | async" [value]="func">
+      {{func.name}}
     </mat-option>
   </mat-select>
 </mat-form-field>
