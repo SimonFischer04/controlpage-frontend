@@ -6,7 +6,6 @@ import {ActionFieldRendererParameter} from '../../../../types/field-renderer-par
 import {EditFieldRendererParameter} from '../../../../types/field-renderer-parameter/edit-field-renderer-parameter';
 import {Size} from '../../../../types/size';
 import {UserPreferencesService} from '../../../../services/user-preferences/user-preferences.service';
-import {$e} from "codelyzer/angular/styles/chars";
 
 @Component({
   selector: 'app-view-renderer',
@@ -37,13 +36,16 @@ export class ViewRendererComponent implements OnInit, DoCheck {
     // (so, only primitive types or reference change, but NOT field push! - get detected by ngOnChanges)
 
     // check, if view updated
-    if (this.oldViewSize.height !== this.view.fields.length || this.oldViewSize.width !== this.view.fields[0].length) {
+    if (
+      this.view && this.view.fields && this.view.fields.length > 0 &&
+      (this.oldViewSize.height !== this.view.fields.length || this.oldViewSize.width !== this.view.fields[0].length)
+    ) {
       // console.error("gfldgjkdfg")
       this.init();
       this.oldViewSize = {
         height: this.view.fields.length,
         width: this.view.fields[0].length
-      }
+      };
     }
   }
 
@@ -104,9 +106,7 @@ export class ViewRendererComponent implements OnInit, DoCheck {
     return this.fieldRenderParameter as ActionFieldRendererParameter;
   }
 
-  public get prefs(): UserPreferencesService {
+  public get preferences(): UserPreferencesService {
     return this.preferencesService;
   }
-
-  protected readonly $e = $e;
 }

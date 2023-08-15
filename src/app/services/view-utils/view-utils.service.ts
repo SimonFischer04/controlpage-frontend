@@ -92,13 +92,19 @@ export class ViewUtilsService {
 
   public addDummyRow(view: FullView): void {
     const ar: Field[] = [];
-    for (let i = 0; i < this.getViewWidthCount(view); i++) {
+    // add minimum of 1 column => do expected behaviour of going from completely empty("[]") => 1x1 view / 1 field("[[Field1]]")
+    for (let i = 0; i < Math.max(1, this.getViewWidthCount(view)); i++) {
       ar.push(this.getDummyField());
     }
     view.fields.push(ar);
   }
 
   public addDummyColumn(view: FullView): void {
+    // add minimum of 1 row => do expected behaviour of going from completely empty("[]") => 1x1 view / 1 field("[[Field1]]")
+    if (view.fields.length === 0) {
+      view.fields.push([this.getDummyField()]);
+      return;
+    }
     view.fields.forEach(row => {
       row.push(this.getDummyField());
     });
@@ -126,7 +132,7 @@ export class ViewUtilsService {
   }
 
   private getViewWidthCount(view: FullView): number {
-    return view.fields[0]?.reduce((prev, curr) => prev + curr.colspan, 0);
+    return view.fields[0]?.reduce((prev, curr) => prev + curr.colspan, 0) || 0;
   }
 
   private getViewHeightCount(view: FullView): number {
