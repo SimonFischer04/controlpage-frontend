@@ -6,11 +6,8 @@ export class RestActionExecutor extends ActionExecutor<RestAction> {
     console.log('rest-action: ', action);
     fetch(action.url, {
       method: action.restType,
-      body: action.body
-    }).then((result: Response) => {
-      return result.json();
-    }).then((value: any) => {
-      console.log('fetch-result: ', value);
+      body: action.body,
+      mode: 'no-cors'
     }).catch((error: any) => {
       if (this.preferences.shouldDisplayErrorAlert) {
         alert(`RestAction-Error: ${error}`);
