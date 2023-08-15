@@ -1,5 +1,5 @@
-@use "src/app/components/top-bar/top-bar.component" as topBar;
-@use "src/app/components/bottom-bar/bottom-bar.component" as bottomBar;
+@use "../../../../components/top-bar/top-bar.component" as topBar;
+@use "../../../../components/bottom-bar/bottom-bar.component" as bottomBar;
 
 $fullscreenButtonHeight: 50px;
 
