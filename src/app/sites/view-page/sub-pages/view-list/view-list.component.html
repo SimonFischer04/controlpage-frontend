@@ -1,5 +1,7 @@
 <mat-card *ngFor="let view of views">
-  {{view.name}}
-  <button mat-button (click)="onPressed(view.id,false)">View</button>
-  <button mat-button (click)="onPressed(view.id,true)">Edit</button>
+  <mat-card-content>
+    {{view.name}}
+    <button mat-button (click)="onPressed(view.id,false)">View</button>
+    <button mat-button (click)="onPressed(view.id,true)">Edit</button>
+  </mat-card-content>
 </mat-card>
