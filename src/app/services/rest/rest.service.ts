@@ -3,7 +3,7 @@ import {HttpClient, HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, 
 import {catchError, Observable, throwError} from 'rxjs';
 import {ControlPageFunctionsResponse} from '../../types/desktop-automation-interface/ControlPageFunctionsResponse';
 import {UserPreferencesService} from '../user-preferences/user-preferences.service';
-import {FullViewDTO, ImageControllerService, ViewControllerService, ViewListResponse} from "../../../gen";
+import {FullViewDTO, ImageControllerService, OpenAPI, ViewControllerService, ViewListResponse} from "../../../gen";
 import {SaveImageResponse} from "../../types/save-image-response";
 
 @Injectable({
@@ -16,6 +16,7 @@ export class RestService implements HttpInterceptor {
     private readonly viewService: ViewControllerService,
     private readonly imageService: ImageControllerService
   ) {
+    OpenAPI.BASE = preferencesService.backendHost; // set current value onload
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
