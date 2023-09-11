@@ -1,9 +1,8 @@
 import {Component, ElementRef, Input, ViewChild} from '@angular/core';
-import {FullView} from '../../../../types/view/full-view';
-import {Field} from '../../../../types/view/field/field';
 import {ActionService} from '../../../../services/action/action.service';
 // noinspection SpellCheckingInspection
 import screenfull from 'screenfull';
+import {FieldDTO, FullViewDTO} from "../../../../../gen";
 
 @Component({
   selector: 'app-view-action',
@@ -11,7 +10,7 @@ import screenfull from 'screenfull';
   styleUrls: ['./view-action.component.scss']
 })
 export class ViewActionComponent  {
-  @Input() view: FullView;
+  @Input() view: FullViewDTO;
   @ViewChild('viewRendererWrapper', {static: true}) viewRendererWrapperRef: ElementRef;
 
   constructor(
@@ -19,7 +18,7 @@ export class ViewActionComponent  {
   ) {
   }
 
-  public onFieldPress(field: Field): void {
+  public onFieldPress(field: FieldDTO): void {
     this.actionService.executeAction(field.action);
   }
 

@@ -1,7 +1,7 @@
 import {ActionExecutor} from "../action-executor";
-import {ViewAction, ViewActionType} from "../../../types/view/action/impl/view-action";
 import {UserPreferencesService} from "../../user-preferences/user-preferences.service";
 import {GlobalEventsService} from "../../global-events/global-events.service";
+import {ViewAction} from "../../../../gen";
 
 export class ViewActionExecutor extends ActionExecutor<ViewAction> {
   private lastViewId = -1;
@@ -16,16 +16,16 @@ export class ViewActionExecutor extends ActionExecutor<ViewAction> {
   public executeAction(action: ViewAction): void {
     console.log('view-action: ', action);
     switch (action.viewActionType) {
-      case ViewActionType.SWITCH_TO: {
+      case ViewAction.viewActionType.SWITCH_TO: {
         this.lastViewId = this.globalEvents.currentView.id;
         this.globalEvents.emitViewChangeRequest(action.viewId);
         break;
       }
-      case ViewActionType.BACK: {
+      case ViewAction.viewActionType.BACK: {
         this.globalEvents.emitViewChangeRequest(this.lastViewId);
         break;
       }
-      case ViewActionType.CLOSE: {
+      case ViewAction.viewActionType.CLOSE: {
         this.globalEvents.emitViewChangeRequest(-1);
         break;
       }

@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {FullView} from '../../types/view/full-view';
 import {RestService} from '../../services/rest/rest.service';
 import {GlobalEventsService} from "../../services/global-events/global-events.service";
+import {FullViewDTO} from "../../../gen";
 
 @Component({
   selector: 'app-action-page',
@@ -10,7 +10,7 @@ import {GlobalEventsService} from "../../services/global-events/global-events.se
   styleUrls: ['./view-page.component.scss']
 })
 export class ViewPageComponent implements OnInit {
-  public selectedView: FullView;
+  public selectedView: FullViewDTO;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -40,7 +40,7 @@ export class ViewPageComponent implements OnInit {
 
   private loadView(viewId: number): void {
     this.rest.getView(viewId).subscribe(
-      (v: FullView) => {
+      (v: FullViewDTO) => {
         console.log('loadView: ', v);
         this.selectedView = v;
         this.events.changeCurrentView(v);

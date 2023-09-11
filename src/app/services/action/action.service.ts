@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
-import {Action} from '../../types/view/action/action';
 import {RestActionExecutor} from './impl/rest-action-executor';
-import {ActionType} from '../../types/view/action/action-type';
+import {ActionType} from '../../types/action-type';
 import {DesktopAutomationExecutor} from './impl/desktop-automation-executor';
 import {ActionExecutor} from './action-executor';
 import {UserPreferencesService} from '../user-preferences/user-preferences.service';
 import {ViewActionExecutor} from "./impl/view-action-executor";
 import {GlobalEventsService} from "../global-events/global-events.service";
+import {Action} from "../../../gen";
 
 @Injectable({
   providedIn: 'root'

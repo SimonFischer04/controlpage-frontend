@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {RestService} from '../../../../services/rest/rest.service';
-import {BasicView} from '../../../../types/view/basic-view';
 import {Router} from '@angular/router';
+import {BasicView} from "../../../../../gen";
 
 @Component({
   selector: 'app-view-list',

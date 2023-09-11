@@ -1,5 +1,5 @@
 import {UserPreferencesService} from '../user-preferences/user-preferences.service';
-import {Action} from '../../types/view/action/action';
+import {Action} from "../../../gen";
 
 export abstract class ActionExecutor<T extends Action> {
   constructor(

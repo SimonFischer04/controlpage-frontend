@@ -1,18 +1,13 @@
 import {Component, HostListener, Input} from '@angular/core';
-import {Field} from '../../../../../types/view/field/field';
-import {ActionType} from '../../../../../types/view/action/action-type';
+import {ActionType} from '../../../../../types/action-type';
 import {getEnumKeyNames} from '../../../../../utils/enum-utils';
-import {RunPolicy} from '../../../../../types/view/action/run-policy';
-import {RestAction, RestType} from '../../../../../types/view/action/impl/rest-action';
-import {DesktopAutomationAction} from '../../../../../types/view/action/impl/desktop-automation-action';
-import {Action} from '../../../../../types/view/action/action';
 import {DummyUtils} from '../../../../../utils/dummy-utils';
 import {ImageUtilsService} from '../../../../../services/image-utils/image-utils.service';
 import {Clipboard} from '@angular/cdk/clipboard';
 import {ViewUtilsService} from '../../../../../services/view-utils/view-utils.service';
 import {UserPreferencesService} from '../../../../../services/user-preferences/user-preferences.service';
-import {ViewAction, ViewActionType} from '../../../../../types/view/action/impl/view-action';
-import {StyledText} from '../../../../../types/styled-text';
+import {Action, DesktopAutomationAction, FieldDTO, RestAction, StyledText, ViewAction} from "../../../../../../gen";
+import {FrontendField} from "../../../../../types/frontend-wrapper/frontend-field";
 
 @Component({
   selector: 'app-field-edit-section',
@@ -20,10 +15,10 @@ import {StyledText} from '../../../../../types/styled-text';
   styleUrls: ['./field-edit-section.component.scss']
 })
 export class FieldEditSectionComponent  {
-  @Input() public selectedField: Field;
+  @Input() public selectedField: FrontendField;
 
-  private readonly undoStack: Field[] = [];
-  private readonly redoStack: Field[] = [];
+  private readonly undoStack: FieldDTO[] = [];
+  private readonly redoStack: FieldDTO[] = [];
 
   constructor(
     private readonly imageUtils: ImageUtilsService,
@@ -166,7 +161,7 @@ export class FieldEditSectionComponent  {
   }
 
   public removeBackground(): void {
-    const field: Field = this.selectedField;
+    const field: FrontendField = this.selectedField;
     field.backgroundId = -1;
     field.backgroundImage = undefined;
   }
@@ -192,7 +187,7 @@ export class FieldEditSectionComponent  {
   }
 
   public isViewSwitchToAction(): boolean {
-    return this.isViewAction() && this.getViewAction().viewActionType === ViewActionType.SWITCH_TO;
+    return this.isViewAction() && this.getViewAction().viewActionType === ViewAction.viewActionType.SWITCH_TO;
   }
 
   public getDesktopAutomationAction(): DesktopAutomationAction {
@@ -208,7 +203,7 @@ export class FieldEditSectionComponent  {
   }
 
   public get action(): Action {
-    const field: Field = this.selectedField;
+    const field: FieldDTO = this.selectedField;
     if (!field.action) {
       field.action = DummyUtils.getDummyAction();
     }
@@ -216,7 +211,7 @@ export class FieldEditSectionComponent  {
   }
 
   public get title(): StyledText {
-    const field: Field = this.selectedField;
+    const field: FieldDTO = this.selectedField;
     if (!field.title) {
       field.title = DummyUtils.getDummyTitle();
     }
@@ -232,15 +227,15 @@ export class FieldEditSectionComponent  {
   }
 
   public getRunPolicies(): string[] {
-    return getEnumKeyNames(RunPolicy);
+    return getEnumKeyNames(Action.runPolicy);
   }
 
   public getRestTypes(): string[] {
-    return getEnumKeyNames(RestType);
+    return getEnumKeyNames(RestAction.restType);
   }
 
   public getViewActionTypes(): string[] {
-    return getEnumKeyNames(ViewActionType);
+    return getEnumKeyNames(ViewAction.viewActionType);
   }
 
   // ---

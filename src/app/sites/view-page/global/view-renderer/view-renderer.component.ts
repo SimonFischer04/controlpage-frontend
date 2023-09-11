@@ -1,11 +1,10 @@
 import {Component, DoCheck, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild} from '@angular/core';
 import {ViewUtilsService} from '../../../../services/view-utils/view-utils.service';
-import {FullView} from '../../../../types/view/full-view';
-import {Field} from '../../../../types/view/field/field';
 import {ActionFieldRendererParameter} from '../../../../types/field-renderer-parameter/action-field-renderer-parameter';
 import {EditFieldRendererParameter} from '../../../../types/field-renderer-parameter/edit-field-renderer-parameter';
 import {Size} from '../../../../types/size';
 import {UserPreferencesService} from '../../../../services/user-preferences/user-preferences.service';
+import {FieldDTO, FullViewDTO} from "../../../../../gen";
 
 @Component({
   selector: 'app-view-renderer',
@@ -13,9 +12,9 @@ import {UserPreferencesService} from '../../../../services/user-preferences/user
   styleUrls: ['./view-renderer.component.scss'],
 })
 export class ViewRendererComponent implements  DoCheck {
-  @Output() fieldPress: EventEmitter<Field> = new EventEmitter();
+  @Output() fieldPress: EventEmitter<FieldDTO> = new EventEmitter();
   @Input() private fieldRenderParameter: ActionFieldRendererParameter | EditFieldRendererParameter;
-  @Input() public view: FullView;
+  @Input() public view: FullViewDTO;
   @Input() public isEditMode: boolean;
 
   @ViewChild('fieldsContainer', {static: true}) private fieldsContainerRef: ElementRef;
@@ -82,7 +81,7 @@ export class ViewRendererComponent implements  DoCheck {
     };
   }
 
-  public onFieldPress(field: Field): void {
+  public onFieldPress(field: FieldDTO): void {
     this.fieldPress.emit(field);
   }
 
