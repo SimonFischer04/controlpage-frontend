@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
-import {Image} from '../../types/view/image';
-import {Field} from '../../types/view/field/field';
+import {Image} from '../../types/image';
 import {UserPreferencesService} from '../user-preferences/user-preferences.service';
+import {FieldDTO} from "../../../gen";
+import {FrontendField} from "../../types/frontend-wrapper/frontend-field";
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +14,11 @@ export class ImageUtilsService {
   ) {
   }
 
-  public hasBackground(field: Field): boolean {
+  public hasBackground(field: FrontendField): boolean {
     return !!field.backgroundImage || field.backgroundId > 0;
   }
 
-  public getBackgroundImage(field: Field): string {
+  public getBackgroundImage(field: FrontendField): string {
     // "backgroundImage" is only set in "unsaved-state", server will only respond with "backgroundId"
     if (field.backgroundImage) {
       return this.getBackgroundImgString(field);
@@ -28,7 +29,7 @@ export class ImageUtilsService {
     return '';
   }
 
-  public getBackgroundImageAltText(field: Field): string {
+  public getBackgroundImageAltText(field: FrontendField): string {
     // "backgroundImage" is only set in "unsaved-state", server will only respond with "backgroundId"
     if (field.backgroundImage) {
       // TODO: improve this alt-text
@@ -41,11 +42,11 @@ export class ImageUtilsService {
     return '';
   }
 
-  private getRemoteImageSrc(field: Field): string {
+  private getRemoteImageSrc(field: FieldDTO): string {
     return `${this.preferences.backendHost}/api/image/${field.backgroundId}`;
   }
 
-  private getBackgroundImgString(field: Field): string {
+  private getBackgroundImgString(field: FrontendField): string {
     return `${this.getSrcStringByImage(field.backgroundImage)}`;
   }
 

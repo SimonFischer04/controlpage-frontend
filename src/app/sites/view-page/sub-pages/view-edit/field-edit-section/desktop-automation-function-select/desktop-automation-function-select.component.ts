@@ -1,10 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {DesktopAutomationAction} from '../../../../../../types/view/action/impl/desktop-automation-action';
 import {ControlPageFunctionsResponse} from '../../../../../../types/desktop-automation-interface/ControlPageFunctionsResponse';
 import {RestService} from '../../../../../../services/rest/rest.service';
 import {FormControl} from '@angular/forms';
 import {ControlPageFunction} from '../../../../../../types/desktop-automation-interface/ControlPageFunction';
 import {ReplaySubject} from 'rxjs';
+import {DesktopAutomationAction} from "../../../../../../../gen";
 
 @Component({
     selector: 'app-desktop-automation-function-select',

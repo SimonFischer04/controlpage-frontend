@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
-import {Field} from '../../../../../types/view/field/field';
 import {ActionFieldRendererParameter} from '../../../../../types/field-renderer-parameter/action-field-renderer-parameter';
 import {ViewUtilsService} from '../../../../../services/view-utils/view-utils.service';
+import {FieldDTO} from "../../../../../../gen";
 
 @Component({
   selector: 'app-action-field-render',
@@ -9,7 +9,7 @@ import {ViewUtilsService} from '../../../../../services/view-utils/view-utils.se
   styleUrls: ['./action-field-render.component.scss']
 })
 export class ActionFieldRenderComponent {
-  @Input() field: Field;
+  @Input() field: FieldDTO;
   @Input() params: ActionFieldRendererParameter;
 
   constructor(

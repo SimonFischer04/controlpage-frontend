@@ -1,10 +1,12 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ViewUtilsService} from '../../../../../services/view-utils/view-utils.service';
-import {FullView} from '../../../../../types/view/full-view';
 import deepEqual from 'deep-equal';
-import {Field} from '../../../../../types/view/field/field';
-import {ActionType} from '../../../../../types/view/action/action-type';
 import {RestService} from '../../../../../services/rest/rest.service';
+import {SaveImageResponse} from "../../../../../types/save-image-response";
+import {FieldDTO, FullViewDTO} from "../../../../../../gen";
+import {ActionType} from "../../../../../types/action-type";
+import {FrontendFullView} from "../../../../../types/frontend-wrapper/frontend-full-view";
+import {FrontendField} from "../../../../../types/frontend-wrapper/frontend-field";
 
 @Component({
   selector: 'app-view-edit-section',
@@ -12,10 +14,10 @@ import {RestService} from '../../../../../services/rest/rest.service';
   styleUrls: ['./view-edit-section.component.scss']
 })
 export class ViewEditSectionComponent implements  OnChanges {
-  @Input() private view: FullView;
+  @Input() private view: FrontendFullView;
 
   // save copy of view to be able to check if something changed -> f.e. display "unsaved-infos"
-  private savedView?: FullView;
+  private savedView?: FullViewDTO;
 
   constructor(
     private readonly rest: RestService,
@@ -61,8 +63,9 @@ export class ViewEditSectionComponent implements  OnChanges {
   public save(): void {
     this.changedFiles.forEach(({fieldId, backgroundFile}) => {
       this.rest.saveFile(backgroundFile).subscribe(
-        (imageId: number): void => {
-          const field = this.viewUtils.getFieldById(this.view, fieldId);
+        (response: SaveImageResponse): void => {
+          const imageId = response.imageId;
+          const field = this.viewUtils.getFieldById(this.view, fieldId) as FrontendField;
           field.backgroundId = imageId;
           field.backgroundFile = null;
           field.backgroundImage = null;
@@ -88,12 +91,12 @@ export class ViewEditSectionComponent implements  OnChanges {
       return;
     }
 
-    const view: FullView = structuredClone(this.view);
+    const view: FullViewDTO = structuredClone(this.view);
     console.log('saveView: ', view);
 
     // filter out undefined-dummy-actions again
-    view.fields.forEach((row: Field[]): void => {
-      row.forEach((field: Field): void => {
+    view.fields.forEach((row: FieldDTO[]): void => {
+      row.forEach((field: FieldDTO): void => {
         if (field.action && field.action.type === ActionType.UNDEFINED) {
           field.action = null;
         }

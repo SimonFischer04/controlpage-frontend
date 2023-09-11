@@ -1,8 +1,7 @@
 import {Component,  Input, OnChanges,  SimpleChanges} from '@angular/core';
-import {FullView} from '../../../../types/view/full-view';
-import {Field} from '../../../../types/view/field/field';
 import {EditFieldRendererParameter} from '../../../../types/field-renderer-parameter/edit-field-renderer-parameter';
 import {ActionService} from '../../../../services/action/action.service';
+import {FieldDTO, FullViewDTO} from "../../../../../gen";
 
 @Component({
   selector: 'app-view-edit',
@@ -10,7 +9,7 @@ import {ActionService} from '../../../../services/action/action.service';
   styleUrls: ['./view-edit.component.scss']
 })
 export class ViewEditComponent implements  OnChanges {
-  @Input() public view: FullView;
+  @Input() public view: FullViewDTO;
   public fieldParams: EditFieldRendererParameter = {selectedField: null};
 
   constructor(
@@ -25,7 +24,7 @@ export class ViewEditComponent implements  OnChanges {
     }
   }
 
-  public onEditFieldPress(field: Field): void {
+  public onEditFieldPress(field: FieldDTO): void {
     // Unselect Field if pressed 2nd time
     this.selectedField = (field === this.selectedField ? null : field);
     console.log('editing Field: ', this.selectedField);
@@ -36,7 +35,7 @@ export class ViewEditComponent implements  OnChanges {
     Other
    */
 
-  public onActionFieldPress(field: Field) {
+  public onActionFieldPress(field: FieldDTO) {
     this.actionService.executeAction(field.action);
   }
 
@@ -44,11 +43,11 @@ export class ViewEditComponent implements  OnChanges {
    Utils
   */
 
-  public get selectedField(): Field {
+  public get selectedField(): FieldDTO {
     return this.fieldParams.selectedField;
   }
 
-  private set selectedField(field: Field) {
+  private set selectedField(field: FieldDTO) {
     this.fieldParams.selectedField = field;
   }
 }

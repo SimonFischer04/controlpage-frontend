@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
-import {FieldStyle} from '../../types/view/field/field-style';
+import {FieldStyle} from '../../types/field-style';
+import {OpenAPI} from "../../../gen";
 
 @Injectable({
   providedIn: 'root'
@@ -97,6 +98,7 @@ export class UserPreferencesService {
 
   public set backendHost(value: string) {
     localStorage.setItem(this.BACKEND_HOST_KEY, value);
+    OpenAPI.BASE = value;
   }
 
   //

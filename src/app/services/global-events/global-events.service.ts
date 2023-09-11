@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, Subject} from "rxjs";
-import {FullView} from "../../types/view/full-view";
 import {DummyUtils} from "../../utils/dummy-utils";
+import {FullViewDTO} from "../../../gen";
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +9,7 @@ import {DummyUtils} from "../../utils/dummy-utils";
 export class GlobalEventsService {
   // Observable sources
   private readonly viewChangeEventSource = new Subject<number>(); // Subject<viewId>
-  private readonly viewSource = new BehaviorSubject<FullView>(DummyUtils.getDummyView());
+  private readonly viewSource = new BehaviorSubject<FullViewDTO>(DummyUtils.getDummyView());
 
   // Observable streams
   private readonly viewChangeRequest$_: Observable<number> = this.viewChangeEventSource.asObservable(); // Observable<viewId>
@@ -22,11 +22,11 @@ export class GlobalEventsService {
     this.viewChangeEventSource.next(viewId);
   }
 
-  public get currentView(): FullView {
+  public get currentView(): FullViewDTO {
     return this.viewSource.getValue();
   }
 
-  public changeCurrentView(view: FullView): void {
+  public changeCurrentView(view: FullViewDTO): void {
     this.viewSource.next(view);
   }
 }

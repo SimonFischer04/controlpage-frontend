@@ -1,5 +1,5 @@
 import {ActionExecutor} from '../action-executor';
-import {DesktopAutomationAction} from '../../../types/view/action/impl/desktop-automation-action';
+import {DesktopAutomationAction} from "../../../../gen";
 
 export class DesktopAutomationExecutor extends ActionExecutor<DesktopAutomationAction> {
   public executeAction(action: DesktopAutomationAction): void {

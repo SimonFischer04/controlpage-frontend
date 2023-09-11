@@ -1,5 +1,5 @@
-import {Field} from '../view/field/field';
+import {FieldDTO} from "../../../gen";
 
 export interface EditFieldRendererParameter {
-  selectedField: Field;
+  selectedField: FieldDTO;
 }

@@ -1,13 +1,10 @@
 import {Injectable} from '@angular/core';
 import {UserPreferencesService} from '../user-preferences/user-preferences.service';
-import {FullView} from '../../types/view/full-view';
 import {Size} from '../../types/size';
-import {Field} from '../../types/view/field/field';
 import {DummyUtils} from '../../utils/dummy-utils';
-import {FieldStyle} from '../../types/view/field/field-style';
+import {FieldStyle} from '../../types/field-style';
 import {ObjectUtils} from "../../utils/object-utils";
-import {HorizontalAlignment} from "../../types/horizontal-alignment";
-import {VerticalAlignment} from "../../types/vertical-alignment";
+import {FieldDTO, FullViewDTO, StyledText} from "../../../gen";
 
 @Injectable({
   providedIn: 'root'
@@ -19,40 +16,40 @@ export class ViewUtilsService {
   ) {
   }
 
-  public getFieldHorizontalAlignmentCss(horizontalAlignment: HorizontalAlignment): string {
+  public getFieldHorizontalAlignmentCss(horizontalAlignment: StyledText.horizontalAlignment): string {
     switch (horizontalAlignment) {
-      case HorizontalAlignment.CENTER: {
+      case StyledText.horizontalAlignment.CENTER: {
         return "center";
       }
-      case HorizontalAlignment.LEFT: {
+      case StyledText.horizontalAlignment.LEFT: {
         return "start";
       }
-      case HorizontalAlignment.RIGHT: {
+      case StyledText.horizontalAlignment.RIGHT: {
         return "end";
       }
     }
   }
 
-  public getFieldVerticalAlignmentCss(verticalAlignment: VerticalAlignment): string {
+  public getFieldVerticalAlignmentCss(verticalAlignment: StyledText.verticalAlignment): string {
     switch (verticalAlignment) {
-      case VerticalAlignment.CENTER: {
+      case StyledText.verticalAlignment.CENTER: {
         return "center";
       }
-      case VerticalAlignment.TOP: {
+      case StyledText.verticalAlignment.TOP: {
         return "start";
       }
-      case VerticalAlignment.BOTTOM: {
+      case StyledText.verticalAlignment.BOTTOM: {
         return "end";
       }
     }
   }
 
 
-  public assignField(target: Field, source: Field) {
+  public assignField(target: FieldDTO, source: FieldDTO) {
     ObjectUtils.assignUnion(target, source, ["id"]);
   }
 
-  public getFieldWidth(view: FullView, containerSize: Size): number {
+  public getFieldWidth(view: FullViewDTO, containerSize: Size): number {
     switch (this.pref.fieldStyle) {
       case FieldStyle.SQUARE: {
         return Math.min(this.getMaxFieldWidth(view, containerSize), this.getMaxFieldHeight(view, containerSize));
@@ -67,7 +64,7 @@ export class ViewUtilsService {
     - preference-fieldStyle === 'square': use same height as width => shrink/extend space
     - preference-fieldStyle === 'rectangle': use fixed space => shrink/extend height (dump idea? -> backgroundImage would get stretched?)
    */
-  public getFieldHeight(view: FullView, containerSize: Size): number {
+  public getFieldHeight(view: FullViewDTO, containerSize: Size): number {
     switch (this.pref.fieldStyle) {
       case FieldStyle.SQUARE: {
         return Math.min(this.getMaxFieldHeight(view, containerSize), this.getMaxFieldWidth(view, containerSize));
@@ -83,16 +80,16 @@ export class ViewUtilsService {
    */
 
   // noinspection JSUnusedGlobalSymbols
-  public getDummyView(): FullView {
+  public getDummyView(): FullViewDTO {
     return DummyUtils.getDummyView();
   }
 
-  public getDummyField(): Field {
+  public getDummyField(): FieldDTO {
     return DummyUtils.getDummyField();
   }
 
-  public addDummyRow(view: FullView): void {
-    const ar: Field[] = [];
+  public addDummyRow(view: FullViewDTO): void {
+    const ar: FieldDTO[] = [];
     // add minimum of 1 column => do expected behaviour of going from completely empty("[]") => 1x1 view / 1 field("[[Field1]]")
     for (let i = 0; i < Math.max(1, this.getViewWidthCount(view)); i++) {
       ar.push(this.getDummyField());
@@ -100,7 +97,7 @@ export class ViewUtilsService {
     view.fields.push(ar);
   }
 
-  public addDummyColumn(view: FullView): void {
+  public addDummyColumn(view: FullViewDTO): void {
     // add minimum of 1 row => do expected behaviour of going from completely empty("[]") => 1x1 view / 1 field("[[Field1]]")
     if (view.fields.length === 0) {
       view.fields.push([this.getDummyField()]);
@@ -111,7 +108,7 @@ export class ViewUtilsService {
     });
   }
 
-  public getFieldById(view: FullView, fieldId: number): Field {
+  public getFieldById(view: FullViewDTO, fieldId: number): FieldDTO {
     return view.fields.find((fields) => {
       return fields.find((field) => field.id === fieldId);
     }).find((field) => {
@@ -122,21 +119,21 @@ export class ViewUtilsService {
   // -------------
 
   // sizing fields so that there is a fixed amount of space between them
-  private getMaxFieldWidth(view: FullView, containerSize: Size): number {
+  private getMaxFieldWidth(view: FullViewDTO, containerSize: Size): number {
     // console.log('getMaxFieldWidth: ', view, containerSize);
     return (containerSize.width - this.pref.spaceBetweenFields) / this.getViewWidthCount(view) - this.pref.spaceBetweenFields;
   }
 
-  private getMaxFieldHeight(view: FullView, containerSize: Size): number {
+  private getMaxFieldHeight(view: FullViewDTO, containerSize: Size): number {
     // console.log('getMaxFieldHeight: ', view, containerSize);
     return (containerSize.height - this.pref.spaceBetweenFields) / this.getViewHeightCount(view) - this.pref.spaceBetweenFields;
   }
 
-  private getViewWidthCount(view: FullView): number {
+  private getViewWidthCount(view: FullViewDTO): number {
     return view.fields[0]?.reduce((prev, curr) => prev + curr.colspan, 0) || 0;
   }
 
-  private getViewHeightCount(view: FullView): number {
+  private getViewHeightCount(view: FullViewDTO): number {
     return view.fields.reduce((prev, curr) => prev + Math.max(1, curr[0]?.rowspan), 0);
   }
 
@@ -146,7 +143,7 @@ export class ViewUtilsService {
    * @param view - The view to get the size from
    * @private
    */
-  private getViewSize(view: FullView): Size {
+  private getViewSize(view: FullViewDTO): Size {
     return {width: this.getViewWidthCount(view), height: this.getViewHeightCount(view)};
   }
 }

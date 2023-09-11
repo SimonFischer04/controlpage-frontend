@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {ImageUtilsService} from '../../../../services/image-utils/image-utils.service';
-import {Field} from '../../../../types/view/field/field';
+import {FrontendField} from "../../../../types/frontend-wrapper/frontend-field";
 
 @Component({
   selector: 'app-background-image-renderer',
@@ -8,7 +8,7 @@ import {Field} from '../../../../types/view/field/field';
   styleUrls: ['./background-image-renderer.component.scss']
 })
 export class BackgroundImageRendererComponent {
-  @Input({required: true}) field: Field;
+  @Input({required: true}) field: FrontendField;
 
   constructor(
     private readonly imageUtils: ImageUtilsService,
