@@ -36,7 +36,22 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 
 ## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+End-to-end tests are written with [Cypress](https://www.cypress.io/) and live in `cypress/`.
+
+The app needs the generated API client in `src/gen` (see `npm run gen`, requires a running backend) before it can be built.
+
+| Command                                               | Description                                                                  |
+|-------------------------------------------------------|------------------------------------------------------------------------------|
+| `npm run e2e` / `ng e2e`                              | Starts the dev server and runs all specs headless.                           |
+| `npm run e2e:open`                                    | Starts the dev server and opens the interactive Cypress runner.              |
+| `npm run e2e -- --spec cypress/e2e/view-edit.cy.ts`   | Runs a single spec.                                                          |
+| `CYPRESS_backendUrl=http://localhost:42000 npm run e2e` | Additionally runs the full-stack specs against a running backend.          |
+
+Structure:
+
+- `cypress/e2e/*.cy.ts` – UI tests. Every backend / desktop-automation request is stubbed with `cy.intercept()` and the fixtures from `cypress/fixtures`, so these tests need nothing but the frontend.
+- `cypress/e2e/fullstack/*.cy.ts` – integration tests against a real backend. They create their own uniquely named views and are skipped unless `backendUrl` is set.
+- `cypress/support/commands.ts` – custom commands: `cy.stubBackend()`, `cy.visitApp(route, preferences)` and `cy.preference(key)`.
 
 ## Further help
 
