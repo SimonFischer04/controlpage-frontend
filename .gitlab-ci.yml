@@ -1,0 +1,26 @@
+stages:
+  - prepare
+  - test
+
+default:
+  # All jobs are interruptable by default
+  interruptible: true
+
+variables:
+  # The backend is built from source to generate the OpenAPI client (src/gen) and to run the full-stack e2e tests.
+  # Override BACKEND_REF (e.g. when running a pipeline manually) to test against another backend branch / tag.
+  BACKEND_PROJECT_PATH: "$CI_PROJECT_NAMESPACE/controlpage-backend"
+  BACKEND_REF: "main"
+  BACKEND_REPO_URL: "$CI_SERVER_PROTOCOL://gitlab-ci-token:$CI_JOB_TOKEN@$CI_SERVER_HOST:$CI_SERVER_PORT/$BACKEND_PROJECT_PATH.git"
+
+  # Database used by the backend (application.yml reads DB_HOST, credentials are overridden via spring env vars)
+  MARIADB_DATABASE: "controlpage"
+  MARIADB_USER: "controlpage"
+  MARIADB_PASSWORD: "controlpage-ci"
+  MARIADB_ROOT_PASSWORD: "controlpage-ci-root"
+  DB_HOST: "mariadb"
+  SPRING_DATASOURCE_USERNAME: "$MARIADB_USER"
+  SPRING_DATASOURCE_PASSWORD: "$MARIADB_PASSWORD"
+
+include:
+  - local: .gitlab/ci/*.gitlab-ci.yml

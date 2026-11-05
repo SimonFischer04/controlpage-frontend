@@ -15,6 +15,11 @@ export default defineConfig({
       openMode: 0
     }
   },
+  // on CI (e.g. GitLab, which sets CI=true) write one JUnit report per spec for the pipeline's test report
+  reporter: process.env['CI'] ? 'junit' : 'spec',
+  reporterOptions: {
+    mochaFile: 'cypress/results/junit-[hash].xml'
+  },
   env: {
     // Base URL of a running controlpage-backend. When set, the full-stack specs in
     // cypress/e2e/fullstack run against it, otherwise they are skipped.

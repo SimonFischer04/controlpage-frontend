@@ -9,7 +9,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "e2e:open": "ng run controlpage-frontend:cypress-open",
-    "gen": "openapi --input http://localhost:42000/v3/api-docs --output src/gen --client angular --useOptions"
+    "gen": "openapi --input http://localhost:42000/v3/api-docs --output src/gen --client angular --useOptions",
+    "gen:file": "openapi --input openapi.json --output src/gen --client angular --useOptions"
   },
   "private": true,
   "dependencies": {

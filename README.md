@@ -53,6 +53,22 @@ Structure:
 - `cypress/e2e/fullstack/*.cy.ts` – integration tests against a real backend. They create their own uniquely named views and are skipped unless `backendUrl` is set.
 - `cypress/support/commands.ts` – custom commands: `cy.stubBackend()`, `cy.visitApp(route, preferences)` and `cy.preference(key)`.
 
+### GitLab CI
+
+`.gitlab-ci.yml` runs all e2e tests in three jobs:
+
+| Job             | Stage   | Description                                                                                                                                                                                                       |
+|-----------------|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `backend`       | prepare | Clones and builds [controlpage-backend](https://gitlab.com/controlpage/controlpage-backend) (`BACKEND_REF`, default `main`), starts it with a MariaDB service and exports `openapi.json` + `backend.jar`. |
+| `e2e`           | test    | Generates `src/gen` from `openapi.json` (`npm run gen:file`) and runs the stubbed UI specs.                                                                                                                      |
+| `e2e:fullstack` | test    | Starts `backend.jar` (MariaDB service) and runs the full-stack specs against it.                                                                                                                                 |
+
+Results show up in the merge request / pipeline test report (JUnit), screenshots of failed tests and the backend log are kept as job artifacts.
+
+The backend is cloned from `$CI_PROJECT_NAMESPACE/controlpage-backend` on the same GitLab instance using the job token.
+If that project is private, add this project to its *Settings → CI/CD → Job token permissions* allowlist.
+To test against another backend branch, run a pipeline with the variable `BACKEND_REF` set.
+
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).

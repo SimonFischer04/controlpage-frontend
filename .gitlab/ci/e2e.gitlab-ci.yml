@@ -1,0 +1,53 @@
+.e2e:
+  stage: test
+  image: cypress/base:18.20.3
+  needs:
+    - job: backend
+      artifacts: true
+  variables:
+    npm_config_cache: "$CI_PROJECT_DIR/.npm"
+    CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/.cache/Cypress"
+    NG_CLI_ANALYTICS: "false"
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm
+      - .cache/Cypress
+  before_script:
+    - npm ci --prefer-offline --no-audit --no-fund
+    - npm run gen:file
+  artifacts:
+    when: always
+    expire_in: 1 week
+    paths:
+      - cypress/screenshots
+      - cypress/results
+    reports:
+      junit: cypress/results/*.xml
+
+# UI tests, all backend requests are stubbed (the full-stack specs are skipped here)
+e2e:
+  extends: .e2e
+  script:
+    - npm run e2e
+
+# Full-stack tests against the backend built in the "backend" job
+e2e:fullstack:
+  extends:
+    - .e2e
+    - .mariadb
+  variables:
+    CYPRESS_backendUrl: "http://localhost:42000"
+  script:
+    # the JRE runs the backend next to Cypress (/usr/share/man/man1 is missing in the slim image but required by the JRE's postinst)
+    - mkdir -p /usr/share/man/man1
+    - apt-get update -qq && apt-get install -y -qq --no-install-recommends openjdk-17-jre-headless curl > /dev/null
+    - .gitlab/ci/scripts/start-backend.sh
+    - npm run e2e -- --spec "cypress/e2e/fullstack/**/*.cy.ts"
+  artifacts:
+    paths:
+      - cypress/screenshots
+      - cypress/results
+      - backend.log
