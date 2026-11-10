@@ -34,11 +34,20 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
+## API client
+
+`src/gen` contains the API client generated from the backend's OpenAPI spec. It is committed, so the app builds without a backend, but must not be edited by hand.
+
+After a change of the backend API regenerate it and commit the result:
+
+- `npm run gen` – from a running backend (`http://localhost:42000/v3/api-docs`)
+- `npm run gen:file` – from an `openapi.json` in the project root
+
+The `api-client` CI job checks that the committed client still matches the backend (see [GitLab CI](#gitlab-ci)).
+
 ## Running end-to-end tests
 
 End-to-end tests are written with [Cypress](https://www.cypress.io/) and live in `cypress/`.
-
-The app needs the generated API client in `src/gen` (see `npm run gen`, requires a running backend) before it can be built.
 
 | Command                                               | Description                                                                  |
 |-------------------------------------------------------|------------------------------------------------------------------------------|
@@ -55,20 +64,20 @@ Structure:
 
 ### GitLab CI
 
-`.gitlab-ci.yml` runs all e2e tests in three jobs:
+`.gitlab-ci.yml` runs all e2e tests and checks the committed API client:
 
-| Job             | Stage   | Description                                                                                                                                                                                                       |
-|-----------------|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Job             | Stage   | Description                                                                                                                                                                                                |
+|-----------------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `e2e`           | test    | Runs the stubbed UI specs. Needs nothing but this repository, so it starts right away and is independent of the backend.                                                                                   |
 | `backend`       | prepare | Clones and builds [controlpage-backend](https://gitlab.com/controlpage/controlpage-backend) (`BACKEND_REF`, default `main`), starts it with a MariaDB service and exports `openapi.json` + `backend.jar`. |
-| `e2e`           | test    | Generates `src/gen` from `openapi.json` (`npm run gen:file`) and runs the stubbed UI specs.                                                                                                                      |
-| `e2e:fullstack` | test    | Starts `backend.jar` (MariaDB service) and runs the full-stack specs against it.                                                                                                                                 |
+| `e2e:fullstack` | test    | Starts `backend.jar` (MariaDB service) and runs the full-stack specs against it.                                                                                                                           |
+| `api-client`    | test    | Regenerates `src/gen` from the backend's `openapi.json` and compares it with the committed one. If it is outdated, the job provides an `api-client.patch` artifact (`git apply api-client.patch`).        |
 
 Results show up in the merge request / pipeline test report (JUnit), screenshots of failed tests and the backend log are kept as job artifacts.
+
+An outdated API client is only a warning in regular pipelines, so a backend change does not block unrelated frontend work.
+In scheduled pipelines it fails the pipeline: create a schedule (*Build → Pipeline schedules*, e.g. daily on the default branch) to get notified when the backend API changed.
 
 The backend is cloned from `$CI_PROJECT_NAMESPACE/controlpage-backend` on the same GitLab instance using the job token.
 If that project is private, add this project to its *Settings → CI/CD → Job token permissions* allowlist.
 To test against another backend branch, run a pipeline with the variable `BACKEND_REF` set.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).

@@ -4,7 +4,7 @@
       alias: mariadb
 
 # Builds the backend, starts it and exports its OpenAPI spec.
-# Artifacts: backend.jar (used by e2e:fullstack) and openapi.json (used to generate src/gen).
+# Artifacts: backend.jar (used by e2e:fullstack) and openapi.json (used by api-client).
 backend:
   stage: prepare
   image: maven:3.9-eclipse-temurin-17

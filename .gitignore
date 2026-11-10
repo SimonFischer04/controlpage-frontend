@@ -46,8 +46,6 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# -------------------
-src/gen/*
 
 
 # cypress
@@ -60,3 +58,4 @@ src/gen/*
 /openapi.json
 /backend.jar
 /backend.log
+/api-client.patch
