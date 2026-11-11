@@ -1,4 +1,4 @@
-import {DESKTOP_AUTOMATION_PREFIX} from '../support/commands';
+import {DESKTOP_AUTOMATION_PREFIX} from '../support/constants';
 
 describe('View page - action mode', () => {
   const tile = (title: string) => cy.contains('#viewRendererWrapper app-action-field-render', title);

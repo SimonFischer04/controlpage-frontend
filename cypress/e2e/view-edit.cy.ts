@@ -1,4 +1,4 @@
-import {DESKTOP_AUTOMATION_PREFIX} from '../support/commands';
+import {DESKTOP_AUTOMATION_PREFIX} from '../support/constants';
 
 describe('View page - edit mode', () => {
   const editTiles = () => cy.get('#editViewDisplay app-edit-field-render');

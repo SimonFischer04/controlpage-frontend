@@ -59,8 +59,8 @@ End-to-end tests are written with [Cypress](https://www.cypress.io/) and live in
 Structure:
 
 - `cypress/e2e/*.cy.ts` – UI tests. Every backend / desktop-automation request is stubbed with `cy.intercept()` and the fixtures from `cypress/fixtures`, so these tests need nothing but the frontend.
-- `cypress/e2e/fullstack/*.cy.ts` – integration tests against a real backend. They create their own uniquely named views and are skipped unless `backendUrl` is set.
-- `cypress/support/commands.ts` – custom commands: `cy.stubBackend()`, `cy.visitApp(route, preferences)` and `cy.preference(key)`.
+- `cypress/e2e/fullstack/*.cy.ts` – integration tests against a real backend. They are skipped unless `backendUrl` is set. Every run creates new, uniquely named views (`e2e-…`) and an image that are never removed (the backend has no delete endpoint), so point `backendUrl` at a backend with a throwaway database.
+- `cypress/support/commands.ts` – custom commands: `cy.stubBackend()`, `cy.visitApp(route, preferences)` and `cy.preference(key)`. After `cy.stubBackend()` a request to the backend or the desktop-automation service without a stub fails the test instead of reaching a real service.
 
 ### GitLab CI
 
@@ -70,10 +70,10 @@ Structure:
 |-----------------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `e2e`           | test    | Runs the stubbed UI specs. Needs nothing but this repository, so it starts right away and is independent of the backend.                                                                                   |
 | `backend`       | prepare | Clones and builds [controlpage-backend](https://gitlab.com/controlpage/controlpage-backend) (`BACKEND_REF`, default `main`), starts it with a MariaDB service and exports `openapi.json` + `backend.jar`. |
-| `e2e:fullstack` | test    | Starts `backend.jar` (MariaDB service) and runs the full-stack specs against it.                                                                                                                           |
+| `e2e:fullstack` | test    | Starts `backend.jar` (MariaDB service) and runs the full-stack specs against it. Fails if no test was executed.                                                                                            |
 | `api-client`    | test    | Regenerates `src/gen` from the backend's `openapi.json` and compares it with the committed one. If it is outdated, the job provides an `api-client.patch` artifact (`git apply api-client.patch`).        |
 
-Results show up in the merge request / pipeline test report (JUnit), screenshots of failed tests and the backend log are kept as job artifacts.
+Results show up in the job log and in the merge request / pipeline test report (JUnit), screenshots of failed tests and the backend log are kept as job artifacts.
 
 An outdated API client is only a warning in regular pipelines, so a backend change does not block unrelated frontend work.
 In scheduled pipelines it fails the pipeline: create a schedule (*Build → Pipeline schedules*, e.g. daily on the default branch) to get notified when the backend API changed.

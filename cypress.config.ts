@@ -15,10 +15,14 @@ export default defineConfig({
       openMode: 0
     }
   },
-  // on CI (e.g. GitLab, which sets CI=true) write one JUnit report per spec for the pipeline's test report
-  reporter: process.env['CI'] ? 'junit' : 'spec',
+  // On CI (e.g. GitLab, which sets CI=true) additionally write one JUnit report per spec for the pipeline's test
+  // report. The spec reporter stays enabled, so test names and failure messages still show up in the job log.
+  reporter: process.env['CI'] ? 'cypress-multi-reporters' : 'spec',
   reporterOptions: {
-    mochaFile: 'cypress/results/junit-[hash].xml'
+    reporterEnabled: 'spec, mocha-junit-reporter',
+    mochaJunitReporterReporterOptions: {
+      mochaFile: 'cypress/results/junit-[hash].xml'
+    }
   },
   env: {
     // Base URL of a running controlpage-backend. When set, the full-stack specs in

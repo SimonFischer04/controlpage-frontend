@@ -47,6 +47,8 @@ e2e:fullstack:
     - apt-get update -qq && apt-get install -y -qq --no-install-recommends openjdk-17-jre-headless curl > /dev/null
     - .gitlab/ci/scripts/start-backend.sh
     - npm run e2e -- --spec "cypress/e2e/fullstack/**/*.cy.ts"
+    # the full-stack specs are skipped (= a successful run) without a backend url: make sure they really ran
+    - .gitlab/ci/scripts/assert-tests-ran.sh
   artifacts:
     paths:
       - cypress/screenshots
