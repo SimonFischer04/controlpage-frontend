@@ -278,6 +278,39 @@ describe('View page - edit mode', () => {
       fieldSection().should('contain.text', `Id: ${lights().id}`);
     });
 
+    it('moves a field with cut and paste and stores it in the backend', () => {
+      // The headless browser does not grant access to the system clipboard: hand "Paste" what "Cut" wrote to it.
+      cy.window().then(win => {
+        let clipboard = '';
+        win.document.addEventListener('copy', () => clipboard = (win.document.activeElement as HTMLTextAreaElement).value, true);
+        cy.stub(win.navigator.clipboard, 'readText').callsFake(() => win.Promise.resolve(clipboard));
+      });
+
+      fieldSection().contains('button', 'Cut').click();
+      previewTile('Lights').should('not.exist');
+
+      editTile(exact(backgroundOnly().id)).click();
+      fieldSection().should('contain.text', `Id: ${backgroundOnly().id}`);
+      fieldSection().contains('button', 'Paste').click();
+      previewTiles().filter(':contains("Lights")').should('have.length', 1);
+
+      saveAndFetchView().then(stored => {
+        const [source, target] = [stored.fields[0][0], stored.fields[1][1]];
+        // the fields kept their ids, the content moved from one to the other
+        expect(source.id).to.eq(lights().id);
+        expect(source.title?.text ?? '').to.eq('');
+        expect(source.action).to.be.null;
+        expect(target.id).to.eq(backgroundOnly().id);
+        expect(target.title.text).to.eq('Lights');
+        expect(target.description).to.eq('toggle the lights');
+        expect(target.action).to.include({type: 'REST', restType: 'POST', url: 'http://rest-target.test/lights', body: 'on'});
+      });
+
+      // the reloaded page shows the field at its new place only
+      previewTiles().filter(':contains("Lights")').should('have.length', 1);
+      editTile('Lights').should('contain.text', backgroundOnly().id);
+    });
+
     it('switches the action type and shows the matching editing section', () => {
       cy.stubDesktopAutomationFunctions();
 
