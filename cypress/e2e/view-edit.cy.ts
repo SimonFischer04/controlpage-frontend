@@ -16,6 +16,16 @@ describe('View page - edit mode', () => {
     cy.contains('mat-option', exact(option)).click();
   };
 
+  /**
+   * The headless browser does not grant access to the system clipboard:
+   * hand the "Paste" button what "Copy" / "Cut" wrote to it.
+   */
+  const bridgeClipboard = () => cy.window().then(win => {
+    let clipboard = '';
+    win.document.addEventListener('copy', () => clipboard = (win.document.activeElement as HTMLTextAreaElement).value, true);
+    cy.stub(win.navigator.clipboard, 'readText').callsFake(() => win.Promise.resolve(clipboard));
+  });
+
   /** The view the "Go to Kitchen" field switches to. */
   let kitchen: View;
 
@@ -278,13 +288,36 @@ describe('View page - edit mode', () => {
       fieldSection().should('contain.text', `Id: ${lights().id}`);
     });
 
-    it('moves a field with cut and paste and stores it in the backend', () => {
-      // The headless browser does not grant access to the system clipboard: hand "Paste" what "Cut" wrote to it.
-      cy.window().then(win => {
-        let clipboard = '';
-        win.document.addEventListener('copy', () => clipboard = (win.document.activeElement as HTMLTextAreaElement).value, true);
-        cy.stub(win.navigator.clipboard, 'readText').callsFake(() => win.Promise.resolve(clipboard));
+    it('copies a field with copy and paste and stores both fields in the backend', () => {
+      bridgeClipboard();
+
+      fieldSection().contains('button', 'Copy').click();
+      editTile('Go to Kitchen').click();
+      fieldSection().should('contain.text', `Id: ${goToKitchen().id}`);
+      fieldSection().contains('button', 'Paste').click();
+      previewTiles().filter(':contains("Lights")').should('have.length', 2);
+      previewTile('Go to Kitchen').should('not.exist');
+
+      saveAndFetchView().then(stored => {
+        const [source, copy] = stored.fields[0];
+        expect(source, 'the copied field is unchanged').to.deep.eq(lights());
+
+        expect(copy.id).to.eq(goToKitchen().id);
+        expect(copy.description).to.eq('toggle the lights');
+        expect(copy.title).to.include({text: 'Lights', color: '#ffffff'});
+        expect(copy.action).to.include({type: 'REST', restType: 'POST', url: 'http://rest-target.test/lights', body: 'on'});
+        // the copy has a title and an action of its own
+        expect(copy.title.id).to.be.greaterThan(0).and.not.eq(source.title.id);
+        expect(copy.action.id).to.be.greaterThan(0).and.not.eq(source.action.id);
       });
+
+      // the reloaded page shows both
+      previewTiles().filter(':contains("Lights")').should('have.length', 2);
+      unsavedIndicator().should('not.exist');
+    });
+
+    it('moves a field with cut and paste and stores it in the backend', () => {
+      bridgeClipboard();
 
       fieldSection().contains('button', 'Cut').click();
       previewTile('Lights').should('not.exist');
@@ -385,6 +418,39 @@ describe('View page - edit mode', () => {
         previewTile('Lights').find(`img[alt="background image with id: ${imageId}"]`)
           .should('be.visible')
           .and($img => expect(($img[0] as HTMLImageElement).naturalWidth).to.eq(16));
+      });
+    });
+
+    it('copies a field with its background image and stores a copy of the image in the backend', () => {
+      bridgeClipboard();
+
+      editTile(exact(backgroundOnly().id)).click();
+      fieldSection().contains('button', 'Copy').click();
+      editTile('Lights').click();
+      fieldSection().should('contain.text', `Id: ${lights().id}`);
+      fieldSection().contains('button', 'Paste').click();
+
+      // the pasted field (it has no title anymore) shows the image before it is saved
+      editTile(exact(lights().id)).find('img[alt="(recently uploaded background-image)"]').should('be.visible');
+      unsavedIndicator().should('be.visible');
+
+      saveAndFetchView().then(stored => {
+        const copiedImageId = stored.fields[0][0].backgroundId;
+        expect(stored.fields[1][1].backgroundId, 'background of the copied field').to.eq(backgroundImageId);
+        // an image belongs to one field: the copy got an image of its own ...
+        expect(copiedImageId).to.be.greaterThan(0).and.not.eq(backgroundImageId);
+        // ... with the same content
+        cy.request({url: `${BACKEND_URL}/api/image/${copiedImageId}`, encoding: 'base64'}).then(response => {
+          expect(response.headers['content-type']).to.eq('image/png');
+          cy.fixture('images/background.png', 'base64').should('eq', response.body);
+        });
+
+        // the reloaded page renders both from the backend
+        [backgroundImageId, copiedImageId].forEach(imageId => {
+          cy.get(`#editViewDisplay img[alt="background image with id: ${imageId}"]`)
+            .should('be.visible')
+            .and($img => expect(($img[0] as HTMLImageElement).naturalWidth).to.eq(16));
+        });
       });
     });
 

@@ -8,6 +8,7 @@ import {ViewUtilsService} from '../../../../../services/view-utils/view-utils.se
 import {UserPreferencesService} from '../../../../../services/user-preferences/user-preferences.service';
 import {Action, DesktopAutomationAction, FieldDTO, RestAction, StyledText, ViewAction} from "../../../../../../gen";
 import {FrontendField} from "../../../../../types/frontend-wrapper/frontend-field";
+import {RestService} from "../../../../../services/rest/rest.service";
 
 @Component({
   selector: 'app-field-edit-section',
@@ -24,7 +25,8 @@ export class FieldEditSectionComponent  {
     private readonly imageUtils: ImageUtilsService,
     private readonly clipboard: Clipboard,
     private readonly viewUtils: ViewUtilsService,
-    private readonly preferences: UserPreferencesService
+    private readonly preferences: UserPreferencesService,
+    private readonly rest: RestService
   ) {
   }
 
@@ -61,10 +63,44 @@ export class FieldEditSectionComponent  {
   public paste(): void {
     navigator.clipboard.readText().then((clipboardText: string) => {
       console.log('paste: ', clipboardText);
+      const pasted: FrontendField = JSON.parse(clipboardText);
       this.saveCurrentStateForUndo();
       this.clearRedoStack();
-      this.viewUtils.assignField(this.selectedField, JSON.parse(clipboardText));
+
+      // In the backend a title, an action and a background image belong to exactly one field. The pasted field
+      // must not reference the ones of the field it was copied from: it gets its own, with the same content.
+      if (pasted.title) {
+        pasted.title.id = DummyUtils.getDummyTitle().id;
+      }
+      if (pasted.action) {
+        pasted.action.id = DummyUtils.getDummyAction().id;
+      }
+      this.viewUtils.assignField(this.selectedField, pasted);
+      this.pasteBackground(this.selectedField, pasted);
     });
+  }
+
+  /**
+   * Gives the field its own copy of the background image of the pasted field.
+   * Like a newly selected image file it is uploaded when the view is saved.
+   */
+  private pasteBackground(field: FrontendField, pasted: FrontendField): void {
+    const sourceBackgroundId = pasted.backgroundId;
+    field.backgroundId = -1;
+    field.backgroundFile = undefined;
+    field.backgroundImage = undefined;
+
+    if (pasted.backgroundImage) {
+      // the copied field had an image that was not saved yet: the clipboard contains the image itself
+      const image = pasted.backgroundImage;
+      const bytes = Uint8Array.from(atob(image.imageData), char => char.charCodeAt(0));
+      field.backgroundFile = new File([bytes], image.name, {type: image.type});
+      field.backgroundImage = image;
+    } else if (sourceBackgroundId > 0) {
+      this.rest.getImage(sourceBackgroundId).subscribe((blob: Blob) => {
+        this.setBackgroundFile(field, new File([blob], `background-${sourceBackgroundId}`, {type: blob.type}));
+      });
+    }
   }
 
   public undo(): void {
@@ -145,19 +181,27 @@ export class FieldEditSectionComponent  {
     const selectedFile = inputElement.files?.[0];
 
     if (selectedFile) {
-      this.selectedField.backgroundFile = selectedFile;
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        const res: string = e.target.result as string;
-        const regExpMatchArray: RegExpMatchArray = res.match('data:(.*?);base64,(.*)');
-        // console.log(regExpMatchArray);
-        field.backgroundImage = {id: -1, name: selectedFile.name, type: selectedFile.type, imageData: regExpMatchArray[2]};
-        console.log('backG: ', field.backgroundImage);
-      };
-
-      reader.readAsDataURL(selectedFile);
+      this.setBackgroundFile(field, selectedFile);
     }
+  }
+
+  /**
+   * Sets a new, not yet saved background image: the file is uploaded when the view is saved,
+   * until then the field displays the image from its data.
+   */
+  private setBackgroundFile(field: FrontendField, file: File): void {
+    field.backgroundFile = file;
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const res: string = e.target.result as string;
+      const regExpMatchArray: RegExpMatchArray = res.match('data:(.*?);base64,(.*)');
+      // console.log(regExpMatchArray);
+      field.backgroundImage = {id: -1, name: file.name, type: file.type, imageData: regExpMatchArray[2]};
+      console.log('backG: ', field.backgroundImage);
+    };
+
+    reader.readAsDataURL(file);
   }
 
   public removeBackground(): void {
