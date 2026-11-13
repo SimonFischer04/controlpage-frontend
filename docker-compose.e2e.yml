@@ -1,0 +1,57 @@
+# The real environment the e2e tests run against: a MariaDB database and the controlpage-backend, built from source.
+#
+#   npm run e2e:env:up     build + start, returns when the backend is ready on http://localhost:42000
+#   npm run e2e            run the tests against it
+#   npm run e2e:env:down   stop it
+#
+# The database is kept in memory only (tmpfs), so every start begins with an empty database.
+#
+# BACKEND_CONTEXT  where to build the backend from: a checkout (default: ../controlpage-backend) or a git url,
+#                  e.g. BACKEND_CONTEXT=https://gitlab.com/controlpage/controlpage-backend.git#main
+# BACKEND_PORT     host port of the backend (default: 42000)
+name: controlpage-e2e
+
+services:
+  db:
+    image: mariadb:10
+    environment:
+      MARIADB_DATABASE: controlpage
+      MARIADB_USER: controlpage
+      MARIADB_PASSWORD: controlpage-e2e
+      MARIADB_ROOT_PASSWORD: controlpage-e2e-root
+    tmpfs:
+      - /var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 3s
+      timeout: 5s
+      retries: 40
+
+  backend:
+    build:
+      context: ${BACKEND_CONTEXT:-../controlpage-backend}
+      dockerfile_inline: |
+        FROM maven:3.9-eclipse-temurin-17 AS build
+        WORKDIR /src
+        COPY . .
+        RUN mvn -B -q package -Dmaven.test.skip=true
+
+        FROM eclipse-temurin:17-jre
+        COPY --from=build /src/target/controlpage-backend-*.jar /backend.jar
+        EXPOSE 42000
+        ENTRYPOINT ["java", "-jar", "/backend.jar"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # see application.yml of the backend
+      DB_HOST: db
+      SPRING_DATASOURCE_USERNAME: controlpage
+      SPRING_DATASOURCE_PASSWORD: controlpage-e2e
+    ports:
+      - "${BACKEND_PORT:-42000}:42000"
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "--max-time", "5", "http://localhost:42000/v3/api-docs", "-o", "/dev/null"]
+      interval: 3s
+      timeout: 6s
+      retries: 60

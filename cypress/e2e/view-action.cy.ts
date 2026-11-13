@@ -1,26 +1,68 @@
-import {DESKTOP_AUTOMATION_PREFIX} from '../support/constants';
+import {BACKEND_URL, DESKTOP_AUTOMATION_PREFIX, title, UNREACHABLE_BACKEND_URL, View} from '../support/constants';
 
 describe('View page - action mode', () => {
-  const tile = (title: string) => cy.contains('#viewRendererWrapper app-action-field-render', title);
+  const tile = (text: string) => cy.contains('#viewRendererWrapper app-action-field-render', text);
 
-  beforeEach(() => {
-    cy.stubBackend();
+  let kitchen: View;
+  let livingRoom: View;
+  let backgroundImageId: number;
+
+  // The tests of this spec only use the views, they don't change them: create them once.
+  before(() => {
+    cy.uploadImage('images/background.png').then(imageId => backgroundImageId = imageId);
+
+    cy.createView('Kitchen', [[
+      {title: title('Back'), action: {type: 'VIEW', runPolicy: 'ASYNC', viewActionType: 'BACK'}},
+      {title: title('Close'), action: {type: 'VIEW', runPolicy: 'ASYNC', viewActionType: 'CLOSE'}},
+    ]]).then(view => {
+      kitchen = view;
+
+      cy.createView('Living Room', [
+        [
+          {
+            title: title('Lights'),
+            // a REST action against a server that really exists: the backend itself
+            action: {type: 'REST', runPolicy: 'ASYNC', restType: 'GET', url: `${BACKEND_URL}/api/view/${kitchen.id}`}
+          },
+          {
+            title: title('Go to Kitchen', {color: '#ff0000', horizontalAlignment: 'LEFT', verticalAlignment: 'TOP'}),
+            action: {type: 'VIEW', runPolicy: 'ASYNC', viewActionType: 'SWITCH_TO', viewId: kitchen.id}
+          },
+        ],
+        [
+          {
+            title: title('Play/Pause', {color: '#00ff00', horizontalAlignment: 'RIGHT', verticalAlignment: 'BOTTOM'}),
+            action: {type: 'DESKTOP_AUTOMATION', runPolicy: 'ASYNC', functionName: 'playPause'}
+          },
+          {
+            title: title('Broken'),
+            action: {type: 'REST', runPolicy: 'ASYNC', restType: 'POST', url: `${UNREACHABLE_BACKEND_URL}/lights`, body: 'on'}
+          },
+        ]
+      ]).then(view => {
+        // Like in the frontend, a background is attached to a field of an existing view
+        // (the backend can't create a view together with a reference to an image).
+        view.fields[1][1].backgroundId = backgroundImageId;
+        cy.saveView(view).then(saved => livingRoom = saved);
+      });
+    });
   });
+
+  const visitLivingRoom = (preferences = {}) => cy.visitApp(`/view?view=${livingRoom.id}&edit=false`, preferences);
 
   describe('rendering', () => {
     beforeEach(() => {
-      cy.visitApp('/view?view=1&edit=false');
-      cy.wait('@getView1');
+      visitLivingRoom();
     });
 
     it('renders the view name and all fields in a grid', () => {
-      cy.get('#viewRendererContainer').should('contain.text', 'Living Room');
+      cy.get('#viewRendererContainer').should('contain.text', livingRoom.name);
       cy.get('#viewRendererContainer .field-row').should('have.length', 2);
       cy.get('#viewRendererContainer .field-row').each(row => {
         cy.wrap(row).find('app-action-field-render').should('have.length', 2);
       });
 
-      ['Lights', 'Go to Kitchen', 'Play/Pause'].forEach(title => tile(title).should('be.visible'));
+      ['Lights', 'Go to Kitchen', 'Play/Pause', 'Broken'].forEach(text => tile(text).should('be.visible'));
     });
 
     it('applies the title color and alignment of each field', () => {
@@ -41,10 +83,11 @@ describe('View page - action mode', () => {
     });
 
     it('loads background images from the backend', () => {
-      cy.wait('@getImage').its('request.url').should('match', /\/api\/image\/7$/);
-      cy.get('#viewRendererWrapper img[alt="background image with id: 7"]')
+      cy.get(`#viewRendererWrapper img[alt="background image with id: ${backgroundImageId}"]`)
         .should('be.visible')
-        .and($img => expect(($img[0] as HTMLImageElement).naturalWidth).to.be.greaterThan(0));
+        .and('have.attr', 'src', `${BACKEND_URL}/api/image/${backgroundImageId}`)
+        // the fixture is a 16x16 png: the browser really decoded the image the backend stored
+        .and($img => expect(($img[0] as HTMLImageElement).naturalWidth).to.eq(16));
     });
 
     it('renders square fields by default', () => {
@@ -70,8 +113,7 @@ describe('View page - action mode', () => {
 
   describe('user preferences', () => {
     it('renders stretched fields with the RECTANGLE field style', () => {
-      cy.visitApp('/view?view=1&edit=false', {fieldStyle: 'RECTANGLE'});
-      cy.wait('@getView1');
+      visitLivingRoom({fieldStyle: 'RECTANGLE'});
 
       cy.get('#viewRendererWrapper .field').first().then($field => {
         const {width, height} = $field[0].getBoundingClientRect();
@@ -82,8 +124,7 @@ describe('View page - action mode', () => {
     });
 
     it('uses the configured space between fields', () => {
-      cy.visitApp('/view?view=1&edit=false', {spaceBetweenFields: 25});
-      cy.wait('@getView1');
+      visitLivingRoom({spaceBetweenFields: 25});
 
       cy.get('#viewRendererWrapper .field-row').first().find('.padded-field > div:not(.field)')
         .should('have.length', 1)
@@ -91,72 +132,88 @@ describe('View page - action mode', () => {
     });
   });
 
-  describe('actions', () => {
-    it('executes REST actions', () => {
-      cy.intercept('POST', 'http://rest-target.test/lights', {statusCode: 200}).as('restAction');
+  describe('REST actions', () => {
+    it('sends the configured request', () => {
+      // not a stub: the request goes to the real backend, this only observes it
+      cy.intercept('GET', `${BACKEND_URL}/api/view/${kitchen.id}`).as('restAction');
 
-      cy.visitApp('/view?view=1&edit=false');
+      visitLivingRoom();
       tile('Lights').click();
 
-      cy.wait('@restAction').its('request.body').should('eq', 'on');
+      cy.wait('@restAction').its('response.statusCode').should('eq', 200);
     });
 
-    it('shows an alert when a REST action fails', () => {
-      cy.intercept('POST', 'http://rest-target.test/lights', {forceNetworkError: true}).as('restAction');
+    it('shows an alert when the request fails', () => {
       const alert = cy.stub().as('alert');
       cy.on('window:alert', alert);
 
-      cy.visitApp('/view?view=1&edit=false');
-      tile('Lights').click();
+      visitLivingRoom();
+      tile('Broken').click();
 
-      cy.wait('@restAction');
       cy.get('@alert').should('have.been.calledOnce')
         .its('firstCall.args.0').should('contain', 'RestAction-Error');
     });
 
-    it('executes desktop automation actions on the default host', () => {
+    it('does not show an alert for a failed request when error alerts are disabled', () => {
+      const alert = cy.stub().as('alert');
+      cy.on('window:alert', alert);
+      cy.intercept('POST', `${UNREACHABLE_BACKEND_URL}/lights`).as('restAction');
+
+      visitLivingRoom({shouldDisplayErrorAlert: false});
+      tile('Broken').click();
+
+      cy.wait('@restAction').then(({request, error}) => {
+        expect(request.body).to.eq('on');
+        expect(error).to.exist;
+      });
+      cy.get('@alert').should('not.have.been.called');
+    });
+  });
+
+  // The desktop-automation service runs on the user's desktop and is not part of this project: it is stubbed.
+  describe('desktop automation actions', () => {
+    it('calls the function on the default host', () => {
       cy.intercept('POST', `${DESKTOP_AUTOMATION_PREFIX}/function/playPause`, {statusCode: 200, body: 'ok'}).as('desktopAutomation');
 
-      cy.visitApp('/view?view=1&edit=false');
+      visitLivingRoom();
       tile('Play/Pause').click();
 
       cy.wait('@desktopAutomation');
     });
 
-    it('executes desktop automation actions on the configured host', () => {
+    it('calls the function on the configured host', () => {
       cy.intercept('POST', 'http://10.0.0.5:42069/api/controlPageInterface/function/playPause', {statusCode: 200, body: 'ok'})
         .as('desktopAutomation');
 
-      cy.visitApp('/view?view=1&edit=false', {desktopAutomationHost: '10.0.0.5'});
+      visitLivingRoom({desktopAutomationHost: '10.0.0.5'});
       tile('Play/Pause').click();
 
       cy.wait('@desktopAutomation');
     });
+  });
 
+  describe('view actions', () => {
     it('switches to another view and back again', () => {
-      cy.visitApp('/view?view=1&edit=false');
-      cy.wait('@getView1');
+      visitLivingRoom();
 
       tile('Go to Kitchen').click();
-      cy.wait('@getView2');
-      cy.get('#viewRendererContainer').should('contain.text', 'Kitchen');
+      cy.get('#viewRendererContainer').should('contain.text', kitchen.name);
       tile('Back').should('be.visible');
       tile('Lights').should('not.exist');
 
       tile('Back').click();
-      cy.wait('@getView1');
+      cy.get('#viewRendererContainer').should('contain.text', livingRoom.name);
       tile('Lights').should('be.visible');
       tile('Back').should('not.exist');
     });
 
     it('closes the view and returns to the view list', () => {
-      cy.visitApp('/view?view=2&edit=false');
-      cy.wait('@getView2');
+      cy.visitApp(`/view?view=${kitchen.id}&edit=false`);
 
       tile('Close').click();
 
       cy.location('hash').should('eq', '#/view');
-      cy.get('app-view-list mat-card').should('have.length', 2);
+      cy.contains('app-view-list mat-card', kitchen.name).should('be.visible');
       cy.get('app-view-action').should('not.exist');
     });
   });

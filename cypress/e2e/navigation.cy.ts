@@ -1,8 +1,6 @@
-describe('Navigation', () => {
-  beforeEach(() => {
-    cy.stubBackend();
-  });
+import {title} from '../support/constants';
 
+describe('Navigation', () => {
   it('redirects the root url to the home page', () => {
     cy.visit('/');
     cy.location('hash').should('eq', '#/home');
@@ -23,19 +21,20 @@ describe('Navigation', () => {
   });
 
   it('navigates between the pages using the top bar', () => {
-    cy.visitApp('/home');
+    cy.createView('Navigation', [[{title: title('A field')}]]).then(view => {
+      cy.visitApp('/home');
 
-    cy.get('#topBar').contains('a', 'View').click();
-    cy.location('hash').should('eq', '#/view');
-    cy.wait('@getViewList');
-    cy.get('app-view-list').should('exist');
+      cy.get('#topBar').contains('a', 'View').click();
+      cy.location('hash').should('eq', '#/view');
+      cy.contains('app-view-list mat-card', view.name).should('be.visible');
 
-    cy.get('#topBar').contains('a', 'Settings').click();
-    cy.location('hash').should('eq', '#/settings');
-    cy.get('app-settings-page').contains('Settings').should('be.visible');
+      cy.get('#topBar').contains('a', 'Settings').click();
+      cy.location('hash').should('eq', '#/settings');
+      cy.get('app-settings-page').contains('Settings').should('be.visible');
 
-    cy.get('#topBar').contains('a', 'Home').click();
-    cy.location('hash').should('eq', '#/home');
-    cy.contains('home-page works!').should('be.visible');
+      cy.get('#topBar').contains('a', 'Home').click();
+      cy.location('hash').should('eq', '#/home');
+      cy.contains('home-page works!').should('be.visible');
+    });
   });
 });

@@ -9,6 +9,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "e2e:open": "ng run controlpage-frontend:cypress-open",
+    "e2e:env:up": "docker compose -f docker-compose.e2e.yml up --build --wait -d",
+    "e2e:env:down": "docker compose -f docker-compose.e2e.yml down -v",
     "gen": "openapi --input http://localhost:42000/v3/api-docs --output src/gen --client angular --useOptions",
     "gen:file": "openapi --input openapi.json --output src/gen --client angular --useOptions"
   },

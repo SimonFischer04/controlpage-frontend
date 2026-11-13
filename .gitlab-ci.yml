@@ -7,7 +7,7 @@ default:
   interruptible: true
 
 variables:
-  # The backend is built from source to run the full-stack e2e tests against it and to check that the committed
+  # The backend is built from source to run the e2e tests against it and to check that the committed
   # OpenAPI client (src/gen) still matches its API.
   # Override BACKEND_REF (e.g. when running a pipeline manually) to test against another backend branch / tag.
   BACKEND_PROJECT_PATH: "$CI_PROJECT_NAMESPACE/controlpage-backend"

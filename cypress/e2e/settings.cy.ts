@@ -1,12 +1,13 @@
+import {BACKEND_URL, title} from '../support/constants';
+
 describe('Settings page', () => {
   const field = (label: string) => cy.contains('mat-form-field', label);
 
-  beforeEach(() => {
-    cy.stubBackend();
-  });
+  // these tests are about the settings themselves: visit the app without any seeded preference
+  const visitSettingsAsNewUser = () => cy.visit('/#/settings');
 
   it('initialises sensible defaults on first visit', () => {
-    cy.visitApp('/settings');
+    visitSettingsAsNewUser();
 
     field('Desktop Automation Host').find('input').should('have.value', 'localhost');
     field('Backend Host').find('input').should('have.value', Cypress.config('baseUrl').replace(/\/$/, ''));
@@ -23,7 +24,7 @@ describe('Settings page', () => {
   });
 
   it('persists changed settings in localStorage and restores them after a reload', () => {
-    cy.visitApp('/settings');
+    visitSettingsAsNewUser();
 
     field('Desktop Automation Host').find('input').clear().type('192.168.0.42');
     field('Backend Host').find('input').clear().type('http://backend.local:42000');
@@ -52,14 +53,17 @@ describe('Settings page', () => {
     cy.contains('mat-checkbox', 'Field keybindings enabled').find('input').should('not.be.checked');
   });
 
-  it('uses the configured backend host for api requests', () => {
-    cy.intercept('GET', 'http://backend.local:42000/api/view/all', {fixture: 'views/view-list.json'}).as('customBackend');
+  it('connects to the backend entered as backend host', () => {
+    cy.createView('Settings', [[{title: title('A field')}]]).then(view => {
+      visitSettingsAsNewUser();
+      field('Backend Host').find('input').clear().type(BACKEND_URL);
 
-    cy.visitApp('/settings');
-    field('Backend Host').find('input').clear().type('http://backend.local:42000');
+      cy.get('#topBar').contains('a', 'View').click();
+      cy.contains('app-view-list mat-card', view.name).should('be.visible');
 
-    cy.get('#topBar').contains('a', 'View').click();
-    cy.wait('@customBackend');
-    cy.get('app-view-list mat-card').should('have.length', 2);
+      // and still does after a reload
+      cy.reload();
+      cy.contains('app-view-list mat-card', view.name).should('be.visible');
+    });
   });
 });

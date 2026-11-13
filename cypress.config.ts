@@ -25,9 +25,8 @@ export default defineConfig({
     }
   },
   env: {
-    // Base URL of a running controlpage-backend. When set, the full-stack specs in
-    // cypress/e2e/fullstack run against it, otherwise they are skipped.
-    // e.g.: CYPRESS_backendUrl=http://localhost:42000 npm run e2e
-    backendUrl: ''
+    // Base url of the backend the tests run against: `npm run e2e:env:up` starts one together with its database.
+    // Override with e.g. CYPRESS_backendUrl=http://localhost:42001
+    backendUrl: 'http://localhost:42000'
   }
 });

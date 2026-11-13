@@ -1,9 +1,16 @@
-.e2e:
+# End-to-end tests: the frontend against the real backend (built in the "backend" job) and a real MariaDB.
+# Locally the same environment is provided by docker-compose.e2e.yml (npm run e2e:env:up).
+e2e:
   stage: test
   image: cypress/base:18.20.3
+  extends: .mariadb
+  needs:
+    - job: backend
+      artifacts: true
   variables:
     npm_config_cache: "$CI_PROJECT_DIR/.npm"
     CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/.cache/Cypress"
+    CYPRESS_backendUrl: "http://localhost:42000"
     NG_CLI_ANALYTICS: "false"
   cache:
     key:
@@ -12,45 +19,19 @@
     paths:
       - .npm
       - .cache/Cypress
-  before_script:
+  script:
     - npm ci --prefer-offline --no-audit --no-fund
+    # the JRE runs the backend next to Cypress (/usr/share/man/man1 is missing in the slim image but required by the JRE's postinst)
+    - mkdir -p /usr/share/man/man1
+    - apt-get update -qq && apt-get install -y -qq --no-install-recommends openjdk-17-jre-headless curl > /dev/null
+    - .gitlab/ci/scripts/start-backend.sh
+    - npm run e2e
   artifacts:
     when: always
     expire_in: 1 week
     paths:
       - cypress/screenshots
       - cypress/results
+      - backend.log
     reports:
       junit: cypress/results/*.xml
-
-# UI tests, all backend requests are stubbed (the full-stack specs are skipped here).
-# Needs nothing but this repository (the API client in src/gen is committed), so it does not wait for the backend job.
-e2e:
-  extends: .e2e
-  needs: []
-  script:
-    - npm run e2e
-
-# Full-stack tests against the backend built in the "backend" job
-e2e:fullstack:
-  extends:
-    - .e2e
-    - .mariadb
-  needs:
-    - job: backend
-      artifacts: true
-  variables:
-    CYPRESS_backendUrl: "http://localhost:42000"
-  script:
-    # the JRE runs the backend next to Cypress (/usr/share/man/man1 is missing in the slim image but required by the JRE's postinst)
-    - mkdir -p /usr/share/man/man1
-    - apt-get update -qq && apt-get install -y -qq --no-install-recommends openjdk-17-jre-headless curl > /dev/null
-    - .gitlab/ci/scripts/start-backend.sh
-    - npm run e2e -- --spec "cypress/e2e/fullstack/**/*.cy.ts"
-    # the full-stack specs are skipped (= a successful run) without a backend url: make sure they really ran
-    - .gitlab/ci/scripts/assert-tests-ran.sh
-  artifacts:
-    paths:
-      - cypress/screenshots
-      - cypress/results
-      - backend.log
