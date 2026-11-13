@@ -1,31 +1,21 @@
-.mariadb:
+# The environment the jobs run against: the backend image and its PostgreSQL database, as services of the job.
+# Locally the same environment is provided by docker-compose.e2e.yml (npm run e2e:env:up).
+.backend:
   services:
-    - name: mariadb:10
-      alias: mariadb
-
-# Builds the backend, starts it and exports its OpenAPI spec.
-# Artifacts: backend.jar (used by e2e) and openapi.json (used by api-client).
-backend:
-  stage: prepare
-  image: maven:3.9-eclipse-temurin-17
-  extends: .mariadb
+    - name: postgres:17
+      alias: postgres
+    - name: $BACKEND_IMAGE
+      alias: backend
   variables:
-    MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
-  cache:
-    key: backend-maven
-    paths:
-      - .m2/repository
-  script:
-    - git clone --depth 1 --branch "$BACKEND_REF" "$BACKEND_REPO_URL" backend-src
-    - echo "Testing against backend $(git -C backend-src rev-parse HEAD) ($BACKEND_REF)"
-    - (cd backend-src && mvn -B -q package -Dmaven.test.skip=true)
-    - cp backend-src/target/controlpage-backend-*.jar backend.jar
-    - .gitlab/ci/scripts/start-backend.sh
-    - curl -sSf http://localhost:42000/v3/api-docs -o openapi.json
-  artifacts:
-    when: always
-    expire_in: 1 week
-    paths:
-      - backend.jar
-      - backend.log
-      - openapi.json
+    # the services of a job can only reach each other (backend -> postgres) with a network per job
+    FF_NETWORK_PER_BUILD: "true"
+    BACKEND_URL: "http://backend:42000"
+    POSTGRES_DB: "controlpage"
+    POSTGRES_USER: "controlpage"
+    POSTGRES_PASSWORD: "controlpage-ci"
+    # for the backend, see its application.yml
+    DB_HOST: "postgres"
+    SPRING_DATASOURCE_USERNAME: "controlpage"
+    SPRING_DATASOURCE_PASSWORD: "controlpage-ci"
+    # both services start at the same time: the backend waits for the database instead of failing
+    SPRING_DATASOURCE_HIKARI_INITIALIZATION_FAIL_TIMEOUT: "60000"

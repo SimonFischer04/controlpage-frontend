@@ -1,5 +1,4 @@
 stages:
-  - prepare
   - test
 
 default:
@@ -7,21 +6,10 @@ default:
   interruptible: true
 
 variables:
-  # The backend is built from source to run the e2e tests against it and to check that the committed
-  # OpenAPI client (src/gen) still matches its API.
-  # Override BACKEND_REF (e.g. when running a pipeline manually) to test against another backend branch / tag.
-  BACKEND_PROJECT_PATH: "$CI_PROJECT_NAMESPACE/controlpage-backend"
-  BACKEND_REF: "main"
-  BACKEND_REPO_URL: "$CI_SERVER_PROTOCOL://gitlab-ci-token:$CI_JOB_TOKEN@$CI_SERVER_HOST:$CI_SERVER_PORT/$BACKEND_PROJECT_PATH.git"
-
-  # Database used by the backend (application.yml reads DB_HOST, credentials are overridden via spring env vars)
-  MARIADB_DATABASE: "controlpage"
-  MARIADB_USER: "controlpage"
-  MARIADB_PASSWORD: "controlpage-ci"
-  MARIADB_ROOT_PASSWORD: "controlpage-ci-root"
-  DB_HOST: "mariadb"
-  SPRING_DATASOURCE_USERNAME: "$MARIADB_USER"
-  SPRING_DATASOURCE_PASSWORD: "$MARIADB_PASSWORD"
+  # The backend is not built here. Its own pipeline publishes an image, which the jobs run as a service.
+  # Override BACKEND_IMAGE (e.g. when running a pipeline manually) to test against the image of another
+  # backend branch: <registry>/<namespace>/controlpage-backend:<branch>
+  BACKEND_IMAGE: "$CI_REGISTRY/$CI_PROJECT_NAMESPACE/controlpage-backend:latest"
 
 include:
   - local: .gitlab/ci/*.gitlab-ci.yml

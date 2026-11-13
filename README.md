@@ -48,18 +48,23 @@ The `api-client` CI job checks that the committed client still matches the backe
 ## Running end-to-end tests
 
 The end-to-end tests are written with [Cypress](https://www.cypress.io/) and live in `cypress/`.
-They drive the frontend in a browser against a **real backend with a real MariaDB database**: nothing of the backend is stubbed.
+They drive the frontend in a browser against a **real backend with a real PostgreSQL database**: nothing of the backend is stubbed.
 
 ### Environment
 
-`docker-compose.e2e.yml` provides the environment: a MariaDB and the [backend](https://gitlab.com/controlpage/controlpage-backend), built from source.
+`docker-compose.e2e.yml` provides the environment: a PostgreSQL and the [backend](https://gitlab.com/controlpage/controlpage-backend).
+The backend is not built here, its image comes from the backend's pipeline.
 
-| Command                | Description                                                                                         |
-|------------------------|-----------------------------------------------------------------------------------------------------|
-| `npm run e2e:env:up`   | Builds and starts database + backend, returns when the backend is ready on `http://localhost:42000`. |
-| `npm run e2e:env:down` | Stops them.                                                                                         |
+| Command                | Description                                                                               |
+|------------------------|-------------------------------------------------------------------------------------------|
+| `npm run e2e:env:up`   | Starts database + backend, returns when the backend is ready on `http://localhost:42000`. |
+| `npm run e2e:env:pull` | Fetches the newest backend image (an image that is already present is not pulled again).  |
+| `npm run e2e:env:down` | Stops them.                                                                               |
 
-- The backend is built from the checkout in `../controlpage-backend`. To build from somewhere else, set `BACKEND_CONTEXT` to a directory or a git url, e.g. `BACKEND_CONTEXT=https://gitlab.com/controlpage/controlpage-backend.git#main npm run e2e:env:up`.
+- By default the latest image of the backend's default branch is used. `BACKEND_IMAGE` selects another one:
+  - a backend branch: `BACKEND_IMAGE=gitlab-registry.fischerserver.eu/controlpage/controlpage-backend:my-branch npm run e2e:env:up`
+  - your local backend checkout: `docker build -t controlpage-backend:dev ../controlpage-backend`, then `BACKEND_IMAGE=controlpage-backend:dev npm run e2e:env:up`
+- If the registry is private, `docker login gitlab-registry.fischerserver.eu` first.
 - The database only lives in memory: every `e2e:env:up` starts with an empty database. The tests create the views they need themselves (with unique names) and never rely on an empty database, so they can run repeatedly against the same environment.
 - You can also run the tests against any other backend with `CYPRESS_backendUrl=http://host:port npm run e2e`. They leave their views and images behind (the backend has no delete endpoint), so don't point them at a backend with data you care about.
 
@@ -84,19 +89,21 @@ A test that talks to it has to stub it (`cy.stubDesktopAutomationFunctions()`, `
 
 ### GitLab CI
 
-`.gitlab-ci.yml` runs the e2e tests and checks the committed API client:
+`.gitlab-ci.yml` runs the e2e tests and checks the committed API client.
+Both jobs run the backend image (`BACKEND_IMAGE`) and a PostgreSQL as services, the backend is not built in this pipeline.
 
-| Job          | Stage   | Description                                                                                                                                                                                                |
-|--------------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `backend`    | prepare | Clones and builds [controlpage-backend](https://gitlab.com/controlpage/controlpage-backend) (`BACKEND_REF`, default `main`), starts it with a MariaDB service and exports `openapi.json` + `backend.jar`. |
-| `e2e`        | test    | Starts `backend.jar` with a MariaDB service and runs all specs against it.                                                                                                                                 |
-| `api-client` | test    | Regenerates `src/gen` from the backend's `openapi.json` and compares it with the committed one. If it is outdated, the job provides an `api-client.patch` artifact (`git apply api-client.patch`).        |
+| Job          | Description                                                                                                                                                                                     |
+|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `e2e`        | Runs all specs against the backend.                                                                                                                                                             |
+| `api-client` | Regenerates `src/gen` from the spec the backend serves and compares it with the committed one. If it is outdated, the job provides an `api-client.patch` artifact (`git apply api-client.patch`). |
 
-Results show up in the job log and in the merge request / pipeline test report (JUnit), screenshots of failed tests and the backend log are kept as job artifacts.
+Results show up in the job log and in the merge request / pipeline test report (JUnit), screenshots of failed tests are kept as job artifacts.
 
 An outdated API client is only a warning in regular pipelines, so a backend change does not block unrelated frontend work.
 In scheduled pipelines it fails the pipeline: create a schedule (*Build → Pipeline schedules*, e.g. daily on the default branch) to get notified when the backend API changed.
 
-The backend is cloned from `$CI_PROJECT_NAMESPACE/controlpage-backend` on the same GitLab instance using the job token.
-If that project is private, add this project to its *Settings → CI/CD → Job token permissions* allowlist.
-To test against another backend branch, run a pipeline with the variable `BACKEND_REF` set.
+The backend image is the one the backend's pipeline pushes to its container registry: `$CI_REGISTRY/$CI_PROJECT_NAMESPACE/controlpage-backend:latest`.
+
+- To test against the image of another backend branch, run a pipeline with the variable `BACKEND_IMAGE` set.
+- If the backend project is private, add this project to its *Settings → CI/CD → Job token permissions* allowlist, so the jobs can pull the image.
+- The services need to reach each other, which the jobs enable with `FF_NETWORK_PER_BUILD` (Docker executor).

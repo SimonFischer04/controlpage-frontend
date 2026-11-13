@@ -1,16 +1,12 @@
-# End-to-end tests: the frontend against the real backend (built in the "backend" job) and a real MariaDB.
-# Locally the same environment is provided by docker-compose.e2e.yml (npm run e2e:env:up).
+# End-to-end tests: the frontend against the real backend and a real PostgreSQL (see .backend).
 e2e:
   stage: test
   image: cypress/base:18.20.3
-  extends: .mariadb
-  needs:
-    - job: backend
-      artifacts: true
+  extends: .backend
   variables:
     npm_config_cache: "$CI_PROJECT_DIR/.npm"
     CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/.cache/Cypress"
-    CYPRESS_backendUrl: "http://localhost:42000"
+    CYPRESS_backendUrl: "http://backend:42000"
     NG_CLI_ANALYTICS: "false"
   cache:
     key:
@@ -21,10 +17,7 @@ e2e:
       - .cache/Cypress
   script:
     - npm ci --prefer-offline --no-audit --no-fund
-    # the JRE runs the backend next to Cypress (/usr/share/man/man1 is missing in the slim image but required by the JRE's postinst)
-    - mkdir -p /usr/share/man/man1
-    - apt-get update -qq && apt-get install -y -qq --no-install-recommends openjdk-17-jre-headless curl > /dev/null
-    - .gitlab/ci/scripts/start-backend.sh
+    - node .gitlab/ci/scripts/wait-for-backend.js
     - npm run e2e
   artifacts:
     when: always
@@ -32,6 +25,5 @@ e2e:
     paths:
       - cypress/screenshots
       - cypress/results
-      - backend.log
     reports:
       junit: cypress/results/*.xml

@@ -56,6 +56,4 @@ Thumbs.db
 
 # ci
 /openapi.json
-/backend.jar
-/backend.log
 /api-client.patch

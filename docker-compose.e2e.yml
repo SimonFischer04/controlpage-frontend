@@ -1,45 +1,38 @@
-# The real environment the e2e tests run against: a MariaDB database and the controlpage-backend, built from source.
+# The real environment the e2e tests run against: a PostgreSQL database and the controlpage-backend.
 #
-#   npm run e2e:env:up     build + start, returns when the backend is ready on http://localhost:42000
+#   npm run e2e:env:up     start, returns when the backend is ready on http://localhost:42000
 #   npm run e2e            run the tests against it
 #   npm run e2e:env:down   stop it
 #
 # The database is kept in memory only (tmpfs), so every start begins with an empty database.
 #
-# BACKEND_CONTEXT  where to build the backend from: a checkout (default: ../controlpage-backend) or a git url,
-#                  e.g. BACKEND_CONTEXT=https://gitlab.com/controlpage/controlpage-backend.git#main
-# BACKEND_PORT     host port of the backend (default: 42000)
+# The backend is not built here: its image comes from the backend's pipeline.
+# BACKEND_IMAGE  the backend image to test against (default: the latest image of the default branch), e.g.
+#                  a branch:           BACKEND_IMAGE=gitlab-registry.fischerserver.eu/controlpage/controlpage-backend:my-branch
+#                  a local checkout:   docker build -t controlpage-backend:dev ../controlpage-backend
+#                                      BACKEND_IMAGE=controlpage-backend:dev
+# BACKEND_PORT   host port of the backend (default: 42000)
+#
+# An image that is already present is not pulled again: `npm run e2e:env:pull` fetches the newest one.
 name: controlpage-e2e
 
 services:
   db:
-    image: mariadb:10
+    image: postgres:17
     environment:
-      MARIADB_DATABASE: controlpage
-      MARIADB_USER: controlpage
-      MARIADB_PASSWORD: controlpage-e2e
-      MARIADB_ROOT_PASSWORD: controlpage-e2e-root
+      POSTGRES_DB: controlpage
+      POSTGRES_USER: controlpage
+      POSTGRES_PASSWORD: controlpage-e2e
     tmpfs:
-      - /var/lib/mysql
+      - /var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      interval: 3s
+      test: ["CMD", "pg_isready", "-U", "controlpage", "-d", "controlpage"]
+      interval: 2s
       timeout: 5s
       retries: 40
 
   backend:
-    build:
-      context: ${BACKEND_CONTEXT:-../controlpage-backend}
-      dockerfile_inline: |
-        FROM maven:3.9-eclipse-temurin-17 AS build
-        WORKDIR /src
-        COPY . .
-        RUN mvn -B -q package -Dmaven.test.skip=true
-
-        FROM eclipse-temurin:17-jre
-        COPY --from=build /src/target/controlpage-backend-*.jar /backend.jar
-        EXPOSE 42000
-        ENTRYPOINT ["java", "-jar", "/backend.jar"]
+    image: ${BACKEND_IMAGE:-gitlab-registry.fischerserver.eu/controlpage/controlpage-backend:latest}
     depends_on:
       db:
         condition: service_healthy

@@ -1,5 +1,5 @@
-# Ensures the committed OpenAPI client (src/gen) is not outdated: regenerates it from the spec of the backend built
-# in the "backend" job and fails if the result differs from what is committed.
+# Ensures the committed OpenAPI client (src/gen) is not outdated: regenerates it from the spec the backend
+# (see .backend) serves and fails if the result differs from what is committed.
 #
 # - Scheduled pipelines (Build -> Pipeline schedules): a difference fails the pipeline.
 # - All other pipelines: a difference is only a warning, so a backend change does not block unrelated frontend work.
@@ -8,9 +8,7 @@
 api-client:
   stage: test
   image: node:18
-  needs:
-    - job: backend
-      artifacts: true
+  extends: .backend
   variables:
     npm_config_cache: "$CI_PROJECT_DIR/.npm"
     # only the generator is needed here
@@ -24,6 +22,7 @@ api-client:
     policy: pull
   script:
     - npm ci --prefer-offline --no-audit --no-fund
+    - node .gitlab/ci/scripts/wait-for-backend.js openapi.json
     - npm run gen:file
     - .gitlab/ci/scripts/check-api-client.sh
   artifacts:
