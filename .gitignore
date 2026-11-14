@@ -46,6 +46,14 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# -------------------
-src/gen/*
 
+
+# cypress
+/cypress/screenshots
+/cypress/videos
+/cypress/downloads
+/cypress/results
+
+# ci
+/openapi.json
+/api-client.patch

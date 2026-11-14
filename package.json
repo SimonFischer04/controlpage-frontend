@@ -8,7 +8,12 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "gen": "openapi --input http://localhost:42000/v3/api-docs --output src/gen --client angular --useOptions"
+    "e2e:open": "ng run controlpage-frontend:cypress-open",
+    "e2e:env:up": "docker compose -f docker-compose.e2e.yml up --wait -d",
+    "e2e:env:pull": "docker compose -f docker-compose.e2e.yml pull",
+    "e2e:env:down": "docker compose -f docker-compose.e2e.yml down -v",
+    "gen": "openapi --input http://localhost:42000/v3/api-docs --output src/gen --client angular --useOptions",
+    "gen:file": "openapi --input openapi.json --output src/gen --client angular --useOptions"
   },
   "private": true,
   "dependencies": {
@@ -40,11 +45,16 @@
     "@angular/cli": "^16.2.0",
     "@angular/compiler-cli": "^16.2.0",
     "@angular/language-service": "^16.2.0",
+    "@cypress/schematic": "^2.5.2",
     "@types/deep-equal": "^1.0.1",
     "@types/node": "^18.17.5",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
+    "cypress": "^13.17.0",
+    "cypress-multi-reporters": "^2.1.0",
     "eslint": "^8.44.0",
+    "mocha": "^10.8.2",
+    "mocha-junit-reporter": "^2.2.1",
     "openapi-typescript-codegen": "^0.25.0",
     "typescript": "^5.1.6"
   }

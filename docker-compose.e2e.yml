@@ -1,0 +1,50 @@
+# The real environment the e2e tests run against: a PostgreSQL database and the controlpage-backend.
+#
+#   npm run e2e:env:up     start, returns when the backend is ready on http://localhost:42000
+#   npm run e2e            run the tests against it
+#   npm run e2e:env:down   stop it
+#
+# The database is kept in memory only (tmpfs), so every start begins with an empty database.
+#
+# The backend is not built here: its image comes from the backend's pipeline.
+# BACKEND_IMAGE  the backend image to test against (default: the latest image of the default branch), e.g.
+#                  a branch:           BACKEND_IMAGE=gitlab-registry.fischerserver.eu/controlpage/controlpage-backend:my-branch
+#                  a local checkout:   docker build -t controlpage-backend:dev ../controlpage-backend
+#                                      BACKEND_IMAGE=controlpage-backend:dev
+# BACKEND_PORT   host port of the backend (default: 42000)
+#
+# An image that is already present is not pulled again: `npm run e2e:env:pull` fetches the newest one.
+name: controlpage-e2e
+
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: controlpage
+      POSTGRES_USER: controlpage
+      POSTGRES_PASSWORD: controlpage-e2e
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "controlpage", "-d", "controlpage"]
+      interval: 2s
+      timeout: 5s
+      retries: 40
+
+  backend:
+    image: ${BACKEND_IMAGE:-gitlab-registry.fischerserver.eu/controlpage/controlpage-backend:latest}
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # see application.yml of the backend
+      DB_HOST: db
+      SPRING_DATASOURCE_USERNAME: controlpage
+      SPRING_DATASOURCE_PASSWORD: controlpage-e2e
+    ports:
+      - "${BACKEND_PORT:-42000}:42000"
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "--max-time", "5", "http://localhost:42000/v3/api-docs", "-o", "/dev/null"]
+      interval: 3s
+      timeout: 6s
+      retries: 60

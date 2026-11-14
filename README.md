@@ -34,10 +34,76 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
+## API client
+
+`src/gen` contains the API client generated from the backend's OpenAPI spec. It is committed, so the app builds without a backend, but must not be edited by hand.
+
+After a change of the backend API regenerate it and commit the result:
+
+- `npm run gen` – from a running backend (`http://localhost:42000/v3/api-docs`)
+- `npm run gen:file` – from an `openapi.json` in the project root
+
+The `api-client` CI job checks that the committed client still matches the backend (see [GitLab CI](#gitlab-ci)).
+
 ## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+The end-to-end tests are written with [Cypress](https://www.cypress.io/) and live in `cypress/`.
+They drive the frontend in a browser against a **real backend with a real PostgreSQL database**: nothing of the backend is stubbed.
 
-## Further help
+### Environment
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+`docker-compose.e2e.yml` provides the environment: a PostgreSQL and the [backend](https://gitlab.com/controlpage/controlpage-backend).
+The backend is not built here, its image comes from the backend's pipeline.
+
+| Command                | Description                                                                               |
+|------------------------|-------------------------------------------------------------------------------------------|
+| `npm run e2e:env:up`   | Starts database + backend, returns when the backend is ready on `http://localhost:42000`. |
+| `npm run e2e:env:pull` | Fetches the newest backend image (an image that is already present is not pulled again).  |
+| `npm run e2e:env:down` | Stops them.                                                                               |
+
+- By default the latest image of the backend's default branch is used. `BACKEND_IMAGE` selects another one:
+  - a backend branch: `BACKEND_IMAGE=gitlab-registry.fischerserver.eu/controlpage/controlpage-backend:my-branch npm run e2e:env:up`
+  - your local backend checkout: `docker build -t controlpage-backend:dev ../controlpage-backend`, then `BACKEND_IMAGE=controlpage-backend:dev npm run e2e:env:up`
+- If the registry is private, `docker login gitlab-registry.fischerserver.eu` first.
+- The database only lives in memory: every `e2e:env:up` starts with an empty database. The tests create the views they need themselves (with unique names) and never rely on an empty database, so they can run repeatedly against the same environment.
+- You can also run the tests against any other backend with `CYPRESS_backendUrl=http://host:port npm run e2e`. They leave their views and images behind (the backend has no delete endpoint), so don't point them at a backend with data you care about.
+
+### Running
+
+| Command                                             | Description                                                     |
+|-----------------------------------------------------|-----------------------------------------------------------------|
+| `npm run e2e` / `ng e2e`                            | Starts the dev server and runs all specs headless.              |
+| `npm run e2e:open`                                  | Starts the dev server and opens the interactive Cypress runner. |
+| `npm run e2e -- --spec cypress/e2e/view-edit.cy.ts` | Runs a single spec.                                             |
+
+If the environment is not running, the tests fail right away with a message that says so.
+
+### Structure
+
+- `cypress/e2e/*.cy.ts` – the specs. They create their test data through the backend's API, use the app like a user and, where something is saved, read it back from the backend to check what really was stored.
+- `cypress/support/commands.ts` – custom commands: `cy.visitApp(route, preferences)`, `cy.createView(name, fields)`, `cy.saveView(view)`, `cy.fetchView(id)`, `cy.uploadImage(fixture)`, `cy.preference(key)`.
+- `cypress/support/constants.ts` – constants and types shared by commands and specs.
+
+The only thing that is stubbed is the desktop-automation service (`http://<host>:42069`): it runs on the user's desktop and is not part of this project.
+A test that talks to it has to stub it (`cy.stubDesktopAutomationFunctions()`, `cy.intercept()`), any other request to it fails the test instead of triggering something on your desktop.
+
+### GitLab CI
+
+`.gitlab-ci.yml` runs the e2e tests and checks the committed API client.
+Both jobs run the backend image (`BACKEND_IMAGE`) and a PostgreSQL as services, the backend is not built in this pipeline.
+
+| Job          | Description                                                                                                                                                                                     |
+|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `e2e`        | Runs all specs against the backend.                                                                                                                                                             |
+| `api-client` | Regenerates `src/gen` from the spec the backend serves and compares it with the committed one. If it is outdated, the job provides an `api-client.patch` artifact (`git apply api-client.patch`). |
+
+Results show up in the job log and in the merge request / pipeline test report (JUnit), screenshots of failed tests are kept as job artifacts.
+
+An outdated API client is only a warning in regular pipelines, so a backend change does not block unrelated frontend work.
+In scheduled pipelines it fails the pipeline: create a schedule (*Build → Pipeline schedules*, e.g. daily on the default branch) to get notified when the backend API changed.
+
+The backend image is the one the backend's pipeline pushes to its container registry: `$CI_REGISTRY/$CI_PROJECT_NAMESPACE/controlpage-backend:latest`.
+
+- To test against the image of another backend branch, run a pipeline with the variable `BACKEND_IMAGE` set.
+- If the backend project is private, add this project to its *Settings → CI/CD → Job token permissions* allowlist, so the jobs can pull the image.
+- The services need to reach each other, which the jobs enable with `FF_NETWORK_PER_BUILD` (Docker executor).

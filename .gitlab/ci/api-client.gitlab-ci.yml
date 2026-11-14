@@ -1,0 +1,37 @@
+# Ensures the committed OpenAPI client (src/gen) is not outdated: regenerates it from the spec the backend
+# (see .backend) serves and fails if the result differs from what is committed.
+#
+# - Scheduled pipelines (Build -> Pipeline schedules): a difference fails the pipeline.
+# - All other pipelines: a difference is only a warning, so a backend change does not block unrelated frontend work.
+#
+# To fix: run `npm run gen` against a running backend (or apply the api-client.patch artifact of this job) and commit.
+api-client:
+  stage: test
+  image: node:18
+  extends: .backend
+  variables:
+    npm_config_cache: "$CI_PROJECT_DIR/.npm"
+    # only the generator is needed here
+    CYPRESS_INSTALL_BINARY: "0"
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm
+    policy: pull
+  script:
+    - npm ci --prefer-offline --no-audit --no-fund
+    - node .gitlab/ci/scripts/wait-for-backend.js openapi.json
+    - npm run gen:file
+    - .gitlab/ci/scripts/check-api-client.sh
+  artifacts:
+    when: on_failure
+    expire_in: 1 week
+    paths:
+      - api-client.patch
+      - openapi.json
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      allow_failure: false
+    - allow_failure: true

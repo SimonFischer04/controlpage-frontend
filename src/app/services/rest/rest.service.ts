@@ -58,6 +58,11 @@ export class RestService implements HttpInterceptor {
     return this.viewService.saveView({requestBody: view});
   }
 
+  // the image itself (not json), so not via the generated client
+  getImage(imageId: number): Observable<Blob> {
+    return this.http.get(`${this.preferencesService.backendHost}/api/image/${imageId}`, {responseType: 'blob'});
+  }
+
   // returns id
   // TODO: proper fix typing
   saveFile(file: File): Observable<SaveImageResponse> {

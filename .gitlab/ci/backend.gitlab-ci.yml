@@ -1,0 +1,21 @@
+# The environment the jobs run against: the backend image and its PostgreSQL database, as services of the job.
+# Locally the same environment is provided by docker-compose.e2e.yml (npm run e2e:env:up).
+.backend:
+  services:
+    - name: postgres:17
+      alias: postgres
+    - name: $BACKEND_IMAGE
+      alias: backend
+  variables:
+    # the services of a job can only reach each other (backend -> postgres) with a network per job
+    FF_NETWORK_PER_BUILD: "true"
+    BACKEND_URL: "http://backend:42000"
+    POSTGRES_DB: "controlpage"
+    POSTGRES_USER: "controlpage"
+    POSTGRES_PASSWORD: "controlpage-ci"
+    # for the backend, see its application.yml
+    DB_HOST: "postgres"
+    SPRING_DATASOURCE_USERNAME: "controlpage"
+    SPRING_DATASOURCE_PASSWORD: "controlpage-ci"
+    # both services start at the same time: the backend waits for the database instead of failing
+    SPRING_DATASOURCE_HIKARI_INITIALIZATION_FAIL_TIMEOUT: "60000"
