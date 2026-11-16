@@ -1,5 +1,6 @@
 stages:
   - test
+  - build
 
 default:
   # All jobs are interruptable by default

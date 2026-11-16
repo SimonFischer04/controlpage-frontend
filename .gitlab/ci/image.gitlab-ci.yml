@@ -1,0 +1,24 @@
+# Builds the frontend image (see Dockerfile) and pushes it to this project's container registry:
+#   <registry>/<this project>:<branch>   on every branch
+#   <registry>/<this project>:latest     additionally on the default branch
+# The deployment examples in controlpage-releases use this image.
+#
+# The runner mounts the host's Docker socket into the job, so the image is built by the host's Docker daemon
+# (no Docker-in-Docker service). Its layer cache and the npm cache of the Dockerfile persist between builds.
+image:
+  stage: build
+  image: docker:27
+  # runs after the test stage: an image is only published if the e2e tests pass
+  variables:
+    IMAGE: "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+  script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    - docker build --pull -t "$IMAGE" .
+    - docker push "$IMAGE"
+    - |
+      if [ "$CI_COMMIT_BRANCH" = "$CI_DEFAULT_BRANCH" ]; then
+        docker tag "$IMAGE" "$CI_REGISTRY_IMAGE:latest"
+        docker push "$CI_REGISTRY_IMAGE:latest"
+      fi
+  rules:
+    - if: '$CI_COMMIT_BRANCH'

@@ -30,6 +30,14 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
+## Docker image
+
+`docker build -t controlpage-frontend .` builds the frontend from source into an nginx image, it only needs Docker.
+
+The pipeline (`.gitlab-ci.yml`) pushes the image to this project's container registry if the e2e tests pass:
+`<registry>/<this project>:<branch>` on every branch and additionally `:latest` on the default branch.
+The deployment examples in [controlpage-releases](https://gitlab.com/controlpage/controlpage-releases) use that image.
+
 ## Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
@@ -89,7 +97,7 @@ A test that talks to it has to stub it (`cy.stubDesktopAutomationFunctions()`, `
 
 ### GitLab CI
 
-`.gitlab-ci.yml` runs the e2e tests and checks the committed API client.
+`.gitlab-ci.yml` runs the e2e tests, checks the committed API client and publishes the image (see [Docker image](#docker-image)).
 Both jobs run the backend image (`BACKEND_IMAGE`) and a PostgreSQL as services, the backend is not built in this pipeline.
 
 | Job          | Description                                                                                                                                                                                     |
