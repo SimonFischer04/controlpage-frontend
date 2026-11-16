@@ -5,7 +5,8 @@
 #
 # The runner mounts the host's Docker socket into the job, so the image is built by the host's Docker daemon
 # (no Docker-in-Docker service). Its layer cache and the npm cache of the Dockerfile persist between builds.
-image:
+# (not "image": at the top level that is the keyword for the global default image, not a job)
+publish-image:
   stage: build
   image: docker:27
   # runs after the test stage: an image is only published if the e2e tests pass
