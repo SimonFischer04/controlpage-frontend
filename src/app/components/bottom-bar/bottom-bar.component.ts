@@ -3,7 +3,8 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-bottom-bar',
   templateUrl: './bottom-bar.component.html',
-  styleUrls: ['./bottom-bar.component.scss']
+  styleUrls: ['./bottom-bar.component.scss'],
+  standalone: false
 })
 export class BottomBarComponent  {
 }

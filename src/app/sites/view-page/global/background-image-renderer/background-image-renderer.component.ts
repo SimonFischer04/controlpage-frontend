@@ -5,7 +5,8 @@ import {FrontendField} from "../../../../types/frontend-wrapper/frontend-field";
 @Component({
   selector: 'app-background-image-renderer',
   templateUrl: './background-image-renderer.component.html',
-  styleUrls: ['./background-image-renderer.component.scss']
+  styleUrls: ['./background-image-renderer.component.scss'],
+  standalone: false
 })
 export class BackgroundImageRendererComponent {
   @Input({required: true}) field: FrontendField;

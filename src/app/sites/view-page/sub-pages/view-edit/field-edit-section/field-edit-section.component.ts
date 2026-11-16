@@ -13,7 +13,8 @@ import {RestService} from "../../../../../services/rest/rest.service";
 @Component({
   selector: 'app-field-edit-section',
   templateUrl: './field-edit-section.component.html',
-  styleUrls: ['./field-edit-section.component.scss']
+  styleUrls: ['./field-edit-section.component.scss'],
+  standalone: false
 })
 export class FieldEditSectionComponent  {
   @Input() public selectedField: FrontendField;

@@ -6,7 +6,8 @@ import {FieldDTO} from "../../../../../../gen";
 @Component({
   selector: 'app-action-field-render',
   templateUrl: './action-field-render.component.html',
-  styleUrls: ['./action-field-render.component.scss']
+  styleUrls: ['./action-field-render.component.scss'],
+  standalone: false
 })
 export class ActionFieldRenderComponent {
   @Input() field: FieldDTO;

@@ -6,7 +6,8 @@ import {FieldDTO, FullViewDTO} from "../../../../../gen";
 @Component({
   selector: 'app-view-edit',
   templateUrl: './view-edit.component.html',
-  styleUrls: ['./view-edit.component.scss']
+  styleUrls: ['./view-edit.component.scss'],
+  standalone: false
 })
 export class ViewEditComponent implements  OnChanges {
   @Input() public view: FullViewDTO;

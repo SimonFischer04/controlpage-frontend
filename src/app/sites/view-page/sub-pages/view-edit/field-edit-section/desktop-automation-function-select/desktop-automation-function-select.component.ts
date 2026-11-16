@@ -9,7 +9,8 @@ import {DesktopAutomationAction} from "../../../../../../../gen";
 @Component({
     selector: 'app-desktop-automation-function-select',
     templateUrl: './desktop-automation-function-select.component.html',
-    styleUrls: ['./desktop-automation-function-select.component.scss']
+    styleUrls: ['./desktop-automation-function-select.component.scss'],
+    standalone: false
 })
 export class DesktopAutomationFunctionSelectComponent implements OnInit {
     @Input() public action: DesktopAutomationAction;

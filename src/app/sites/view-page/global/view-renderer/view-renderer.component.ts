@@ -10,6 +10,7 @@ import {FieldDTO, FullViewDTO} from "../../../../../gen";
   selector: 'app-view-renderer',
   templateUrl: './view-renderer.component.html',
   styleUrls: ['./view-renderer.component.scss'],
+  standalone: false
 })
 export class ViewRendererComponent implements  DoCheck {
   @Output() fieldPress: EventEmitter<FieldDTO> = new EventEmitter();

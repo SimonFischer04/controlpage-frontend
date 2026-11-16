@@ -6,7 +6,8 @@ import {FieldDTO} from "../../../../../../gen";
 @Component({
   selector: 'app-edit-field-render',
   templateUrl: './edit-field-render.component.html',
-  styleUrls: ['./edit-field-render.component.scss']
+  styleUrls: ['./edit-field-render.component.scss'],
+  standalone: false
 })
 export class EditFieldRenderComponent {
   @Input() field: FieldDTO;

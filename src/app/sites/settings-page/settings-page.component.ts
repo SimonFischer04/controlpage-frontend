@@ -6,7 +6,8 @@ import {FieldStyle} from "../../types/field-style";
 @Component({
   selector: 'app-settings-page',
   templateUrl: './settings-page.component.html',
-  styleUrls: ['./settings-page.component.scss']
+  styleUrls: ['./settings-page.component.scss'],
+  standalone: false
 })
 export class SettingsPageComponent  {
 

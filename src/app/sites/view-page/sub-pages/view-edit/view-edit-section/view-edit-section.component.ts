@@ -11,7 +11,8 @@ import {FrontendField} from "../../../../../types/frontend-wrapper/frontend-fiel
 @Component({
   selector: 'app-view-edit-section',
   templateUrl: './view-edit-section.component.html',
-  styleUrls: ['./view-edit-section.component.scss']
+  styleUrls: ['./view-edit-section.component.scss'],
+  standalone: false
 })
 export class ViewEditSectionComponent implements  OnChanges {
   @Input() private view: FrontendFullView;

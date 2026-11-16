@@ -7,7 +7,8 @@ import {FullViewDTO} from "../../../gen";
 @Component({
   selector: 'app-action-page',
   templateUrl: './view-page.component.html',
-  styleUrls: ['./view-page.component.scss']
+  styleUrls: ['./view-page.component.scss'],
+  standalone: false
 })
 export class ViewPageComponent implements OnInit {
   public selectedView: FullViewDTO;

@@ -7,7 +7,8 @@ import {FieldDTO, FullViewDTO} from "../../../../../gen";
 @Component({
   selector: 'app-view-action',
   templateUrl: './view-action.component.html',
-  styleUrls: ['./view-action.component.scss']
+  styleUrls: ['./view-action.component.scss'],
+  standalone: false
 })
 export class ViewActionComponent  {
   @Input() view: FullViewDTO;
