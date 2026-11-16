@@ -30,6 +30,22 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
+## Running unit tests
+
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+
+## Running end-to-end tests
+
+Run `ng e2e` to execute the end-to-end tests via [Cypress](https://www.cypress.io/), see [End-to-end tests](#end-to-end-tests).
+
+## Further help
+
+To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+---
+
+# AUTO GENERATED SUMMARY
+
 ## Docker image
 
 `docker build -t controlpage-frontend .` builds the frontend from source into an nginx image, it only needs Docker.
@@ -37,10 +53,6 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 On the default branch the pipeline (`.gitlab-ci.yml`) pushes the image to this project's container registry if the e2e
 tests pass, as `<registry>/<this project>:latest`. On other branches the image is only built, not pushed.
 The deployment examples in [controlpage-releases](https://gitlab.com/controlpage/controlpage-releases) use that image.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
 ## API client
 
@@ -53,7 +65,7 @@ After a change of the backend API regenerate it and commit the result:
 
 The `api-client` CI job checks that the committed client still matches the backend (see [GitLab CI](#gitlab-ci)).
 
-## Running end-to-end tests
+## End-to-end tests
 
 The end-to-end tests are written with [Cypress](https://www.cypress.io/) and live in `cypress/`.
 They drive the frontend in a browser against a **real backend with a real PostgreSQL database**: nothing of the backend is stubbed.
