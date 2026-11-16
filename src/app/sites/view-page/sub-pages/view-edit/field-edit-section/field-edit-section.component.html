@@ -73,9 +73,11 @@
     </div>
     <div>
       <input type="file" accept="image/*" (change)="onFileChanged($event)">
-      <button mat-icon-button *ngIf="hasBackground()" (click)="removeBackground()">
-        <mat-icon>delete</mat-icon>
-      </button>
+      @if (hasBackground()) {
+        <button mat-icon-button (click)="removeBackground()">
+          <mat-icon>delete</mat-icon>
+        </button>
+      }
     </div>
   </div>
 
@@ -90,7 +92,9 @@
       <mat-form-field>
         <mat-label>ActionType</mat-label>
         <mat-select [(ngModel)]="action.type">
-          <mat-option *ngFor="let actionType of getActionTypes()" [value]="actionType">{{actionType}}</mat-option>
+          @for (actionType of getActionTypes(); track actionType) {
+            <mat-option [value]="actionType">{{actionType}}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
       <br>
@@ -98,55 +102,69 @@
       <mat-form-field>
         <mat-label>RunPolicy</mat-label>
         <mat-select [(ngModel)]="action.runPolicy">
-          <mat-option *ngFor="let runPolicy of getRunPolicies()" [value]="runPolicy">{{runPolicy}}</mat-option>
+          @for (runPolicy of getRunPolicies(); track runPolicy) {
+            <mat-option [value]="runPolicy">{{runPolicy}}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </div>
 
-    <div *ngIf="isRestAction()" class="editItem-l2">
-      <p>REST-Action editing section</p>
+    @if (isRestAction()) {
+      <div class="editItem-l2">
+        <p>REST-Action editing section</p>
 
-      <mat-form-field>
-        <mat-label>RestType</mat-label>
-        <mat-select [(ngModel)]="getRestAction().restType">
-          <mat-option *ngFor="let restType of getRestTypes()" [value]="restType">{{restType}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <br>
+        <mat-form-field>
+          <mat-label>RestType</mat-label>
+          <mat-select [(ngModel)]="getRestAction().restType">
+            @for (restType of getRestTypes(); track restType) {
+              <mat-option [value]="restType">{{restType}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <br>
 
-      <mat-form-field>
-        <input matInput type="text" placeholder="URL" [(ngModel)]="getRestAction().url">
-      </mat-form-field>
-      <br>
+        <mat-form-field>
+          <input matInput type="text" placeholder="URL" [(ngModel)]="getRestAction().url">
+        </mat-form-field>
+        <br>
 
-      <mat-form-field>
-        <input matInput type="text" placeholder="Body" [(ngModel)]="getRestAction().body">
-      </mat-form-field>
-    </div>
+        <mat-form-field>
+          <input matInput type="text" placeholder="Body" [(ngModel)]="getRestAction().body">
+        </mat-form-field>
+      </div>
+    }
 
-    <div *ngIf="isDesktopAutomationAction()" class="editItem-l2">
-      <p>Desktop-Automation editing section</p>
+    @if (isDesktopAutomationAction()) {
+      <div class="editItem-l2">
+        <p>Desktop-Automation editing section</p>
 
-      <app-desktop-automation-function-select [action]="getDesktopAutomationAction()"></app-desktop-automation-function-select>
-    </div>
+        <app-desktop-automation-function-select [action]="getDesktopAutomationAction()"></app-desktop-automation-function-select>
+      </div>
+    }
 
-    <div *ngIf="isViewAction()" class="editItem-l2">
-      <p>View-Action editing section</p>
+    @if (isViewAction()) {
+      <div class="editItem-l2">
+        <p>View-Action editing section</p>
 
-      <mat-form-field>
-        <mat-label>ViewActionType</mat-label>
-        <mat-select [(ngModel)]="getViewAction().viewActionType">
-          <mat-option *ngFor="let viewActionType of getViewActionTypes()" [value]="viewActionType">{{viewActionType}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <br>
+        <mat-form-field>
+          <mat-label>ViewActionType</mat-label>
+          <mat-select [(ngModel)]="getViewAction().viewActionType">
+            @for (viewActionType of getViewActionTypes(); track viewActionType) {
+              <mat-option [value]="viewActionType">{{viewActionType}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <br>
 
-      <mat-form-field *ngIf="isViewSwitchToAction()">
-        <!--TODO: custom view selector-->
-        <mat-label>View-ID</mat-label>
-        <input matInput type="number" [(ngModel)]="getViewAction().viewId">
-      </mat-form-field>
-    </div>
+        @if (isViewSwitchToAction()) {
+          <mat-form-field>
+            <!--TODO: custom view selector-->
+            <mat-label>View-ID</mat-label>
+            <input matInput type="number" [(ngModel)]="getViewAction().viewId">
+          </mat-form-field>
+        }
+      </div>
+    }
   </div>
 </div>
 

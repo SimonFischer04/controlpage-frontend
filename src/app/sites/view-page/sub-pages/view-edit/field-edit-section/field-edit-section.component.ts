@@ -127,7 +127,7 @@ export class FieldEditSectionComponent  {
   }
 
   @HostListener('window:keydown', ['$event'])
-  private onKeyPress($event: KeyboardEvent) {
+  protected onKeyPress($event: KeyboardEvent) {
     if (this.preferences.fieldKeybindingEnabled) {
       // console.error("key", $event.key, $event.code);
       if (($event.ctrlKey) && $event.key === 'c') {

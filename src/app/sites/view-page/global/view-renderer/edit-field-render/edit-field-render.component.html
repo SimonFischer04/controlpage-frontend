@@ -1,18 +1,22 @@
 <div class="stack">
   <app-background-image-renderer class="stack-item" [field]="field"/>
-  <div class="stack-item" *ngIf="isSelected()" [ngStyle]="{backgroundColor: FIELD_SELECTED_COLOR}"></div>
+  @if (isSelected()) {
+    <div class="stack-item" [ngStyle]="{backgroundColor: FIELD_SELECTED_COLOR}"></div>
+  }
   <div class="stack-item">
     <div class="stack">
       <div class="stack-item">{{field.id}}</div>
-      <div *ngIf="field.title" id="editTitleRenderContainer" class="stack-item"
-           [ngStyle]="{
-            'align-items': viewUtils.getFieldVerticalAlignmentCss(field.title.verticalAlignment),
-            'justify-content': viewUtils.getFieldHorizontalAlignmentCss(field.title.horizontalAlignment),
-            'color': field.title.color
-           }"
-      >
-        {{field.title.text}}
-      </div>
+      @if (field.title) {
+        <div id="editTitleRenderContainer" class="stack-item"
+             [ngStyle]="{
+              'align-items': viewUtils.getFieldVerticalAlignmentCss(field.title.verticalAlignment),
+              'justify-content': viewUtils.getFieldHorizontalAlignmentCss(field.title.horizontalAlignment),
+              'color': field.title.color
+             }"
+        >
+          {{field.title.text}}
+        </div>
+      }
     </div>
   </div>
 </div>

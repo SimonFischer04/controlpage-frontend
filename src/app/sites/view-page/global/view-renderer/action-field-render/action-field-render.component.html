@@ -1,12 +1,14 @@
 <div class="stack">
   <app-background-image-renderer class="stack-item" [field]="field"/>
-  <div *ngIf="field.title" id="actionTitleRenderContainer" class="stack-item"
-       [ngStyle]="{
-            'align-items': viewUtils.getFieldVerticalAlignmentCss(field.title.verticalAlignment),
-            'justify-content': viewUtils.getFieldHorizontalAlignmentCss(field.title.horizontalAlignment),
-            'color': field.title.color
-       }"
-  >
-    {{field.title.text}}
-  </div>
+  @if (field.title) {
+    <div id="actionTitleRenderContainer" class="stack-item"
+         [ngStyle]="{
+              'align-items': viewUtils.getFieldVerticalAlignmentCss(field.title.verticalAlignment),
+              'justify-content': viewUtils.getFieldHorizontalAlignmentCss(field.title.horizontalAlignment),
+              'color': field.title.color
+         }"
+    >
+      {{field.title.text}}
+    </div>
+  }
 </div>
