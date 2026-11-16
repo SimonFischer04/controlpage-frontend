@@ -34,8 +34,8 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 `docker build -t controlpage-frontend .` builds the frontend from source into an nginx image, it only needs Docker.
 
-The pipeline (`.gitlab-ci.yml`) pushes the image to this project's container registry if the e2e tests pass:
-`<registry>/<this project>:<branch>` on every branch and additionally `:latest` on the default branch.
+On the default branch the pipeline (`.gitlab-ci.yml`) pushes the image to this project's container registry if the e2e
+tests pass, as `<registry>/<this project>:latest`. On other branches the image is only built, not pushed.
 The deployment examples in [controlpage-releases](https://gitlab.com/controlpage/controlpage-releases) use that image.
 
 ## Running unit tests
@@ -69,9 +69,9 @@ The backend is not built here, its image comes from the backend's pipeline.
 | `npm run e2e:env:pull` | Fetches the newest backend image (an image that is already present is not pulled again).  |
 | `npm run e2e:env:down` | Stops them.                                                                               |
 
-- By default the latest image of the backend's default branch is used. `BACKEND_IMAGE` selects another one:
-  - a backend branch: `BACKEND_IMAGE=gitlab-registry.fischerserver.eu/controlpage/controlpage-backend:my-branch npm run e2e:env:up`
-  - your local backend checkout: `docker build -t controlpage-backend:dev ../controlpage-backend`, then `BACKEND_IMAGE=controlpage-backend:dev npm run e2e:env:up`
+- By default the image of the backend's default branch (`:latest`) is used. To test against other backend code, e.g. a
+  backend branch, build it from your checkout and select it with `BACKEND_IMAGE`:
+  `docker build -t controlpage-backend:dev ../controlpage-backend`, then `BACKEND_IMAGE=controlpage-backend:dev npm run e2e:env:up`
 - If the registry is private, `docker login gitlab-registry.fischerserver.eu` first.
 - The database only lives in memory: every `e2e:env:up` starts with an empty database. The tests create the views they need themselves (with unique names) and never rely on an empty database, so they can run repeatedly against the same environment.
 - You can also run the tests against any other backend with `CYPRESS_backendUrl=http://host:port npm run e2e`. They leave their views and images behind (the backend has no delete endpoint), so don't point them at a backend with data you care about.
@@ -112,6 +112,7 @@ In scheduled pipelines it fails the pipeline: create a schedule (*Build → Pipe
 
 The backend image is the one the backend's pipeline pushes to its container registry: `$CI_REGISTRY/$CI_PROJECT_NAMESPACE/controlpage-backend:latest`.
 
-- To test against the image of another backend branch, run a pipeline with the variable `BACKEND_IMAGE` set.
+- To test against another backend image, run a pipeline with the variable `BACKEND_IMAGE` set. Only the default branch
+  of the backend publishes an image.
 - If the backend project is private, add this project to its *Settings → CI/CD → Job token permissions* allowlist, so the jobs can pull the image.
 - The services need to reach each other, which the jobs enable with `FF_NETWORK_PER_BUILD` (Docker executor).

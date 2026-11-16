@@ -1,25 +1,34 @@
-# Builds the frontend image (see Dockerfile) and pushes it to this project's container registry:
-#   <registry>/<this project>:<branch>   on every branch
-#   <registry>/<this project>:latest     additionally on the default branch
-# The deployment examples in controlpage-releases use this image.
+# Docker image of the frontend (see Dockerfile).
 #
+# - default branch: publish-image builds it and pushes <registry>/<this project>:latest, which the deployment
+#   examples in controlpage-releases use.
+# - other branches: build-image only builds it, so a broken image build fails before the merge. Nothing is pushed:
+#   branch images would stay in the registry for good.
+#
+# Both run after the test stage, so an image is only published if the e2e tests pass.
 # The runner mounts the host's Docker socket into the job, so the image is built by the host's Docker daemon
 # (no Docker-in-Docker service). Its layer cache and the npm cache of the Dockerfile persist between builds.
-# (not "image": at the top level that is the keyword for the global default image, not a job)
-publish-image:
+# (no job is called "image": at the top level that is the keyword for the global default image)
+.docker-image:
   stage: build
   image: docker:27
-  # runs after the test stage: an image is only published if the e2e tests pass
-  variables:
-    IMAGE: "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+
+publish-image:
+  extends: .docker-image
   script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
-    - docker build --pull -t "$IMAGE" .
-    - docker push "$IMAGE"
-    - |
-      if [ "$CI_COMMIT_BRANCH" = "$CI_DEFAULT_BRANCH" ]; then
-        docker tag "$IMAGE" "$CI_REGISTRY_IMAGE:latest"
-        docker push "$CI_REGISTRY_IMAGE:latest"
-      fi
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:latest" .
+    - docker push "$CI_REGISTRY_IMAGE:latest"
   rules:
-    - if: '$CI_COMMIT_BRANCH'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+
+build-image:
+  extends: .docker-image
+  variables:
+    # a tag of its own: the Docker daemon is shared with other jobs
+    IMAGE: "controlpage-frontend:ci-job-$CI_JOB_ID"
+  script:
+    - docker build --pull -t "$IMAGE" .
+    - docker image rm "$IMAGE"
+  rules:
+    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
