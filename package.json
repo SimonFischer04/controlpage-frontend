@@ -36,7 +36,7 @@
     "zone.js": "^0.13.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^16.2.0",
+    "@angular-devkit/build-angular": "^21.2.30",
     "@angular-eslint/builder": "16.1.0",
     "@angular-eslint/eslint-plugin": "16.1.0",
     "@angular-eslint/eslint-plugin-template": "16.1.0",
@@ -53,7 +53,7 @@
     "cypress": "^13.17.0",
     "cypress-multi-reporters": "^2.1.0",
     "eslint": "^8.44.0",
-    "mocha": "^10.8.2",
+    "mocha": "^12.0.3",
     "mocha-junit-reporter": "^2.2.1",
     "openapi-typescript-codegen": "^0.25.0",
     "typescript": "^5.1.6"
