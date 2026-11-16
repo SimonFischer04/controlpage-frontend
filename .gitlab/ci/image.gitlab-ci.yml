@@ -24,5 +24,3 @@ docker-image:
       fi
   after_script:
     - docker image rm "$IMAGE" || true
-  rules:
-    - if: '$CI_COMMIT_BRANCH'
