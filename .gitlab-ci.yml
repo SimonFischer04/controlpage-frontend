@@ -1,0 +1,15 @@
+stages:
+  - test
+  - build
+
+default:
+  # All jobs are interruptable by default
+  interruptible: true
+
+variables:
+  # The backend is not built here. Its own pipeline publishes an image, which the jobs run as a service.
+  # Override BACKEND_IMAGE (e.g. when running a pipeline manually) to test against another backend image.
+  BACKEND_IMAGE: "$CI_REGISTRY/$CI_PROJECT_NAMESPACE/controlpage-backend:latest"
+
+include:
+  - local: .gitlab/ci/*.gitlab-ci.yml

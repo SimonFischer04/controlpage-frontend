@@ -1,0 +1,14 @@
+.git
+.github
+.gitlab
+.gitlab-ci.yml
+.angular
+.idea
+.vscode
+node_modules
+dist
+cypress
+cypress.config.ts
+custom
+docker-compose.e2e.yml
+*.md

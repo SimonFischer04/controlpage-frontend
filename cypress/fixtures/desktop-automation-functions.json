@@ -1,0 +1,7 @@
+{
+  "functions": [
+    {"name": "playPause", "params": []},
+    {"name": "nextTrack", "params": []},
+    {"name": "volumeUp", "params": []}
+  ]
+}

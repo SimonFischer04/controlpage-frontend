@@ -101,6 +101,27 @@
               "src/**/*.html"
             ]
           }
+        },
+        "e2e": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "devServerTarget": "controlpage-frontend:serve",
+            "watch": false,
+            "headless": true
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "controlpage-frontend:serve:production"
+            }
+          }
+        },
+        "cypress-open": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "devServerTarget": "controlpage-frontend:serve",
+            "watch": true,
+            "headless": false
+          }
         }
       }
     }
