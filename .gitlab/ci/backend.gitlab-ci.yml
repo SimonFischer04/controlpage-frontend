@@ -2,7 +2,7 @@
 # Locally the same environment is provided by docker-compose.e2e.yml (npm run e2e:env:up).
 .backend:
   services:
-    - name: postgres:17
+    - name: postgres:18
       alias: postgres
     - name: $BACKEND_IMAGE
       alias: backend

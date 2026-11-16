@@ -18,13 +18,14 @@ name: controlpage-e2e
 
 services:
   db:
-    image: postgres:17
+    image: postgres:18
     environment:
       POSTGRES_DB: controlpage
       POSTGRES_USER: controlpage
       POSTGRES_PASSWORD: controlpage-e2e
     tmpfs:
-      - /var/lib/postgresql/data
+      # since PostgreSQL 18 the image keeps its data below /var/lib/postgresql (in 18/docker)
+      - /var/lib/postgresql
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "controlpage", "-d", "controlpage"]
       interval: 2s
