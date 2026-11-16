@@ -37,25 +37,21 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "^21.2.30",
     "@angular-devkit/core": "^21.2.30",
-    "@angular-eslint/builder": "21.4.0",
-    "@angular-eslint/eslint-plugin": "21.4.0",
-    "@angular-eslint/eslint-plugin-template": "21.4.0",
-    "@angular-eslint/schematics": "21.4.0",
-    "@angular-eslint/template-parser": "21.4.0",
     "@angular/cli": "^21.2.30",
     "@angular/compiler-cli": "^21.2.26",
     "@angular/language-service": "^21.2.26",
     "@cypress/schematic": "^2.5.2",
+    "@eslint/js": "^10.0.1",
     "@types/deep-equal": "^1.0.1",
     "@types/node": "^18.17.5",
-    "@typescript-eslint/eslint-plugin": "^7.2.0",
-    "@typescript-eslint/parser": "^7.2.0",
+    "angular-eslint": "^21.4.0",
     "cypress": "^13.17.0",
     "cypress-multi-reporters": "^2.1.0",
-    "eslint": "^8.57.0",
+    "eslint": "^10.15.0",
     "mocha": "^10.8.2",
     "mocha-junit-reporter": "^2.2.1",
     "openapi-typescript-codegen": "^0.25.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.73.0"
   }
 }
