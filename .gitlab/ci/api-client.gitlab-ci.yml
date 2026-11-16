@@ -32,6 +32,10 @@ api-client:
       - api-client.patch
       - openapi.json
   rules:
+    # only in branch pipelines, like the other jobs: otherwise an extra merge request pipeline with only this job is
+    # created, and the merge request shows that one instead of the branch pipeline
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       allow_failure: false
     - allow_failure: true
