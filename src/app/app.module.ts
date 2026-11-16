@@ -13,7 +13,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule} from '@angular/material/form-field';
 import {MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {RestService} from './services/rest/rest.service';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
@@ -64,7 +64,6 @@ import { BackgroundImageRendererComponent } from './sites/view-page/global/backg
     MatToolbarModule,
     MatIconModule,
     MatCardModule,
-    HttpClientModule,
     MatFormFieldModule,
     FormsModule,
     MatInputModule,
@@ -81,6 +80,7 @@ import { BackgroundImageRendererComponent } from './sites/view-page/global/backg
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {floatLabel: 'auto'}},
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}},
     {provide: HTTP_INTERCEPTORS, useClass: RestService, multi: true},
+    provideHttpClient(withInterceptorsFromDi()),
   ],
   bootstrap: [AppComponent]
 })
