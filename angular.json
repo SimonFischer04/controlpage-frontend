@@ -77,14 +77,14 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "controlpage-frontend:build"
+            "buildTarget": "controlpage-frontend:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "controlpage-frontend:build:production"
+              "buildTarget": "controlpage-frontend:build:production"
             },
             "development": {
-              "browserTarget": "controlpage-frontend:build:development"
+              "buildTarget": "controlpage-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -92,7 +92,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "controlpage-frontend:build"
+            "buildTarget": "controlpage-frontend:build"
           }
         },
         "lint": {
