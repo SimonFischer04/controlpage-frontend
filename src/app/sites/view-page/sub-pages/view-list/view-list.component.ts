@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ChangeDetectionStrategy, OnInit} from '@angular/core';
 import {RestService} from '../../../../services/rest/rest.service';
 import {Router} from '@angular/router';
 import {BasicView} from "../../../../../gen";
@@ -7,6 +7,7 @@ import {BasicView} from "../../../../../gen";
   selector: 'app-view-list',
   templateUrl: './view-list.component.html',
   styleUrls: ['./view-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ViewListComponent implements OnInit {

@@ -1,4 +1,4 @@
-import {Component, HostListener, Input} from '@angular/core';
+import {Component, ChangeDetectionStrategy, HostListener, Input} from '@angular/core';
 import {ActionType} from '../../../../../types/action-type';
 import {getEnumKeyNames} from '../../../../../utils/enum-utils';
 import {DummyUtils} from '../../../../../utils/dummy-utils';
@@ -14,6 +14,7 @@ import {RestService} from "../../../../../services/rest/rest.service";
   selector: 'app-field-edit-section',
   templateUrl: './field-edit-section.component.html',
   styleUrls: ['./field-edit-section.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class FieldEditSectionComponent  {

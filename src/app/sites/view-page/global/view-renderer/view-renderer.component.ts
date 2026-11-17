@@ -1,4 +1,4 @@
-import {Component, DoCheck, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild} from '@angular/core';
+import {Component, ChangeDetectionStrategy, DoCheck, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild} from '@angular/core';
 import {ViewUtilsService} from '../../../../services/view-utils/view-utils.service';
 import {ActionFieldRendererParameter} from '../../../../types/field-renderer-parameter/action-field-renderer-parameter';
 import {EditFieldRendererParameter} from '../../../../types/field-renderer-parameter/edit-field-renderer-parameter';
@@ -10,6 +10,7 @@ import {FieldDTO, FullViewDTO} from "../../../../../gen";
   selector: 'app-view-renderer',
   templateUrl: './view-renderer.component.html',
   styleUrls: ['./view-renderer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ViewRendererComponent implements  DoCheck {

@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, ChangeDetectionStrategy, Input} from '@angular/core';
 import {ActionFieldRendererParameter} from '../../../../../types/field-renderer-parameter/action-field-renderer-parameter';
 import {ViewUtilsService} from '../../../../../services/view-utils/view-utils.service';
 import {FieldDTO} from "../../../../../../gen";
@@ -7,6 +7,7 @@ import {FieldDTO} from "../../../../../../gen";
   selector: 'app-action-field-render',
   templateUrl: './action-field-render.component.html',
   styleUrls: ['./action-field-render.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ActionFieldRenderComponent {

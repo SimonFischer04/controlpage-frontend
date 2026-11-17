@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, ChangeDetectionStrategy, Input} from '@angular/core';
 import {ImageUtilsService} from '../../../../services/image-utils/image-utils.service';
 import {FrontendField} from "../../../../types/frontend-wrapper/frontend-field";
 
@@ -6,6 +6,7 @@ import {FrontendField} from "../../../../types/frontend-wrapper/frontend-field";
   selector: 'app-background-image-renderer',
   templateUrl: './background-image-renderer.component.html',
   styleUrls: ['./background-image-renderer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class BackgroundImageRendererComponent {

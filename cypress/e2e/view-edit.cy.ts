@@ -19,10 +19,21 @@ describe('View page - edit mode', () => {
   /**
    * The headless browser does not grant access to the system clipboard:
    * hand the "Paste" button what "Copy" / "Cut" wrote to it.
+   *
+   * "Copy" / "Cut" copy with the CDK Clipboard: it selects the text in a hidden textarea and calls
+   * document.execCommand('copy'). The browser only runs that command for a real user gesture, which a Cypress
+   * click is not (since Cypress 16), so record what the app copies instead.
    */
   const bridgeClipboard = () => cy.window().then(win => {
     let clipboard = '';
-    win.document.addEventListener('copy', () => clipboard = (win.document.activeElement as HTMLTextAreaElement).value, true);
+    const execCommand = win.document.execCommand.bind(win.document);
+    cy.stub(win.document, 'execCommand').callsFake((command: string, showUI?: boolean, value?: string) => {
+      if (command !== 'copy') {
+        return execCommand(command, showUI, value);
+      }
+      clipboard = (win.document.activeElement as HTMLTextAreaElement).value;
+      return true;
+    });
     cy.stub(win.navigator.clipboard, 'readText').callsFake(() => win.Promise.resolve(clipboard));
   });
 

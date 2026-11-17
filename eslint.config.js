@@ -34,10 +34,12 @@ module.exports = defineConfig([
           style: "kebab-case",
         },
       ],
-      // The app still uses NgModules and constructor injection. Moving to standalone components and inject()
-      // is a refactoring of its own, not part of keeping the dependencies up to date.
+      // The app still uses NgModules, constructor injection and the default (now "Eager") change detection.
+      // Moving to standalone components, inject() and OnPush is a refactoring of its own, not part of keeping
+      // the dependencies up to date.
       "@angular-eslint/prefer-standalone": "off",
       "@angular-eslint/prefer-inject": "off",
+      "@angular-eslint/prefer-on-push-component-change-detection": "off",
     },
   },
   {

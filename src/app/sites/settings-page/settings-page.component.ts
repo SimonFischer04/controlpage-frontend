@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {UserPreferencesService} from '../../services/user-preferences/user-preferences.service';
 import {getEnumKeyNames} from "../../utils/enum-utils";
 import {FieldStyle} from "../../types/field-style";
@@ -7,6 +7,7 @@ import {FieldStyle} from "../../types/field-style";
   selector: 'app-settings-page',
   templateUrl: './settings-page.component.html',
   styleUrls: ['./settings-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SettingsPageComponent  {
