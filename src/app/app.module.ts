@@ -31,7 +31,7 @@ import {FieldEditSectionComponent} from './sites/view-page/sub-pages/view-edit/f
 import {ViewEditSectionComponent} from './sites/view-page/sub-pages/view-edit/view-edit-section/view-edit-section.component';
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MAT_BUTTON_TOGGLE_DEFAULT_OPTIONS, MatButtonToggleModule} from '@angular/material/button-toggle';
 import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
 import {NgOptimizedImage} from "@angular/common";
 import { BackgroundImageRendererComponent } from './sites/view-page/global/background-image-renderer/background-image-renderer.component';
@@ -77,6 +77,8 @@ import { BackgroundImageRendererComponent } from './sites/view-page/global/backg
   providers: [
     {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {floatLabel: 'auto'}},
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}},
+    // since Material 17 the selected toggle shows a checkmark instead of its icon: keep the icons visible
+    {provide: MAT_BUTTON_TOGGLE_DEFAULT_OPTIONS, useValue: {hideSingleSelectionIndicator: true}},
     {provide: HTTP_INTERCEPTORS, useClass: RestService, multi: true},
     provideHttpClient(withXhr(), withInterceptorsFromDi()),
   ],
