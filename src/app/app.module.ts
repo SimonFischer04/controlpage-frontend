@@ -3,7 +3,6 @@ import {NgModule} from '@angular/core';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './components/app-component/app.component';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ViewPageComponent} from './sites/view-page/view-page.component';
 import {HomePageComponent} from './sites/home-page/home-page.component';
 import {TopBarComponent} from './components/top-bar/top-bar.component';
@@ -59,7 +58,6 @@ import { BackgroundImageRendererComponent } from './sites/view-page/global/backg
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule,
     MatButtonModule,
     MatToolbarModule,
     MatIconModule,
