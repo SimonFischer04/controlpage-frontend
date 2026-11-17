@@ -1,7 +1,7 @@
 # End-to-end tests: the frontend against the real backend and a real PostgreSQL (see .backend).
 e2e:
   stage: test
-  image: cypress/base:18.20.3
+  image: cypress/base:24.22.1
   extends: .backend
   variables:
     npm_config_cache: "$CI_PROJECT_DIR/.npm"
