@@ -16,7 +16,8 @@ This is the frontend part of the ControlPage application. For more information s
 
 ---
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.3.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.3 and is now on Angular 22.
+It needs Node.js `^22.22.3` or `^24.15.0` (the Docker image and the CI jobs use Node 24).
 
 ## Development server
 
@@ -28,11 +29,7 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/controlpage-frontend/` directory. The default configuration is the production build, use `ng build --configuration development` for a development build.
 
 ## Running end-to-end tests
 
