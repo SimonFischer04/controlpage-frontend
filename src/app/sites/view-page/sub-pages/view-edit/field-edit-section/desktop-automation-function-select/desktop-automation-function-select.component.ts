@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, ChangeDetectionStrategy, Input, OnInit} from '@angular/core';
 import {ControlPageFunctionsResponse} from '../../../../../../types/desktop-automation-interface/ControlPageFunctionsResponse';
 import {RestService} from '../../../../../../services/rest/rest.service';
 import {FormControl} from '@angular/forms';
@@ -9,7 +9,9 @@ import {DesktopAutomationAction} from "../../../../../../../gen";
 @Component({
     selector: 'app-desktop-automation-function-select',
     templateUrl: './desktop-automation-function-select.component.html',
-    styleUrls: ['./desktop-automation-function-select.component.scss']
+    styleUrls: ['./desktop-automation-function-select.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class DesktopAutomationFunctionSelectComponent implements OnInit {
     @Input() public action: DesktopAutomationAction;

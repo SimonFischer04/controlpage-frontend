@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {ViewUtilsService} from '../../../../../services/view-utils/view-utils.service';
 import deepEqual from 'deep-equal';
 import {RestService} from '../../../../../services/rest/rest.service';
@@ -11,7 +11,9 @@ import {FrontendField} from "../../../../../types/frontend-wrapper/frontend-fiel
 @Component({
   selector: 'app-view-edit-section',
   templateUrl: './view-edit-section.component.html',
-  styleUrls: ['./view-edit-section.component.scss']
+  styleUrls: ['./view-edit-section.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
 })
 export class ViewEditSectionComponent implements  OnChanges {
   @Input() private view: FrontendFullView;

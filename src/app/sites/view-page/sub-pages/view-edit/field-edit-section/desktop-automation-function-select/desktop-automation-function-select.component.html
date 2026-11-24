@@ -3,8 +3,10 @@
     <mat-option>
       <ngx-mat-select-search [formControl]="functionFilterCtr"></ngx-mat-select-search>
     </mat-option>
-    <mat-option *ngFor="let func of filteredFunctions | async" [value]="func">
-      {{func.name}}
-    </mat-option>
+    @for (func of filteredFunctions | async; track func) {
+      <mat-option [value]="func">
+        {{func.name}}
+      </mat-option>
+    }
   </mat-select>
 </mat-form-field>

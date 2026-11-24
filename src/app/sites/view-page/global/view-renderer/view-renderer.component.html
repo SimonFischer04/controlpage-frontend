@@ -3,31 +3,41 @@
   {{view.name}}
   <!--  <div id="fieldContainer" #fieldContainer>-->
   <div id="fieldsContainer" class="column-wrapper" #fieldsContainer>
-    <div class="padded-field-row column-wrapper" *ngFor="let fieldsRow of view.fields; let y = index">
-      <div class="field-row row-wrapper">
-        <div class="padded-field row-wrapper" *ngFor="let field of fieldsRow; let x = index">
-          <div class="field" [ngStyle]="{'width.px': getFieldWidth(), 'height.px': getFieldHeight()}">
-            <app-edit-field-render
-              *ngIf="isEditMode"
-              [field]="field"
-              (click)="onFieldPress(field)"
-              [params]="getEditFieldRendererParameter()"
-              class="renderComponent"
-            />
+    @for (fieldsRow of view.fields; track fieldsRow; let y = $index) {
+      <div class="padded-field-row column-wrapper">
+        <div class="field-row row-wrapper">
+          @for (field of fieldsRow; track field; let x = $index) {
+            <div class="padded-field row-wrapper">
+              <div class="field" [ngStyle]="{'width.px': getFieldWidth(), 'height.px': getFieldHeight()}">
+                @if (isEditMode) {
+                  <app-edit-field-render
+                    [field]="field"
+                    (click)="onFieldPress(field)"
+                    [params]="getEditFieldRendererParameter()"
+                    class="renderComponent"
+                  />
+                }
 
-            <app-action-field-render
-              *ngIf="!isEditMode"
-              [field]="field"
-              (click)="onFieldPress(field)"
-              [params]="getActionFieldRendererParameter()"
-              class="renderComponent"
-            />
-          </div>
-          <div *ngIf="x !== fieldsRow.length-1" [ngStyle]="{'width.px': preferences.spaceBetweenFields}" style="background-color: darkblue"></div>
+                @if (!isEditMode) {
+                  <app-action-field-render
+                    [field]="field"
+                    (click)="onFieldPress(field)"
+                    [params]="getActionFieldRendererParameter()"
+                    class="renderComponent"
+                  />
+                }
+              </div>
+              @if (x !== fieldsRow.length-1) {
+                <div [ngStyle]="{'width.px': preferences.spaceBetweenFields}" style="background-color: darkblue"></div>
+              }
+            </div>
+          }
         </div>
+        @if (y !== view.fields.length-1) {
+          <div [ngStyle]="{'height.px': preferences.spaceBetweenFields}" style="background-color: aqua"></div>
+        }
       </div>
-      <div *ngIf="y !== view.fields.length-1" [ngStyle]="{'height.px': preferences.spaceBetweenFields}" style="background-color: aqua"></div>
-    </div>
+    }
   </div>
   <!--</mat-card>-->
 </div>

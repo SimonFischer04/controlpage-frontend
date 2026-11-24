@@ -24,9 +24,10 @@ export default defineConfig({
       mochaFile: 'cypress/results/junit-[hash].xml'
     }
   },
-  env: {
+  expose: {
     // Base url of the backend the tests run against: `npm run e2e:env:up` starts one together with its database.
     // Override with e.g. CYPRESS_backendUrl=http://localhost:42001
-    backendUrl: 'http://localhost:42000'
+    // (since Cypress 16, CYPRESS_* variables no longer reach the specs by themselves: read it here)
+    backendUrl: process.env['CYPRESS_backendUrl'] ?? 'http://localhost:42000'
   }
 });

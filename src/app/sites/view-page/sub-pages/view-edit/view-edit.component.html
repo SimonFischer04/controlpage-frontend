@@ -3,30 +3,33 @@
 <div id="viewEditContent">
   <div class="row-wrapper">
     <div id="editViewDisplay">
-      <app-view-renderer
-        *ngIf="view"
-        [view]="view"
-        [isEditMode]="true"
-        (fieldPress)="onEditFieldPress($event)"
-        [fieldRenderParameter]="fieldParams"
-      />
+      @if (view) {
+        <app-view-renderer
+          [view]="view"
+          [isEditMode]="true"
+          (fieldPress)="onEditFieldPress($event)"
+          [fieldRenderParameter]="fieldParams"
+        />
+      }
     </div>
 
     <span class="flex-fill-space"></span>
 
-    <div
-      *ngIf="view"
-      id="editSection"
-    >
-      <app-view-edit-section
-        [view]="view"
-      />
+    @if (view) {
+      <div
+        id="editSection"
+      >
+        <app-view-edit-section
+          [view]="view"
+        />
 
-      <app-field-edit-section
-        *ngIf="selectedField"
-        [selectedField]="selectedField"
-      />
-    </div>
+        @if (selectedField) {
+          <app-field-edit-section
+            [selectedField]="selectedField"
+          />
+        }
+      </div>
+    }
   </div>
 
   <div style="height: 50px"></div>
@@ -34,12 +37,13 @@
   <div>
     <div>Preview</div>
     <div id="previewViewDisplay">
-      <app-view-renderer
-        *ngIf="view"
-        [view]="view"
-        [isEditMode]="false"
-        (fieldPress)="onActionFieldPress($event)"
-      />
+      @if (view) {
+        <app-view-renderer
+          [view]="view"
+          [isEditMode]="false"
+          (fieldPress)="onActionFieldPress($event)"
+        />
+      }
     </div>
   </div>
 </div>

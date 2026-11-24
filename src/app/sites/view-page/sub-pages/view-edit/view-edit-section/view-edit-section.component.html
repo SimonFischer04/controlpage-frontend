@@ -7,7 +7,9 @@
     <button mat-button (click)="removeColumn()">Delete Column</button>
   </div>
 
-  <div style="background-color: red" *ngIf="hasUnsavedChanges()">unsaved-view-changes!!!</div>
+  @if (hasUnsavedChanges()) {
+    <div style="background-color: red">unsaved-view-changes!!!</div>
+  }
 
   <div>
     <button mat-button (click)="save()">Save View</button>

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ChangeDetectionStrategy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RestService} from '../../services/rest/rest.service';
 import {GlobalEventsService} from "../../services/global-events/global-events.service";
@@ -7,7 +7,9 @@ import {FullViewDTO} from "../../../gen";
 @Component({
   selector: 'app-action-page',
   templateUrl: './view-page.component.html',
-  styleUrls: ['./view-page.component.scss']
+  styleUrls: ['./view-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
 })
 export class ViewPageComponent implements OnInit {
   public selectedView: FullViewDTO;

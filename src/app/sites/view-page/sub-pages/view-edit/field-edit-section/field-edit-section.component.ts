@@ -1,4 +1,4 @@
-import {Component, HostListener, Input} from '@angular/core';
+import {Component, ChangeDetectionStrategy, HostListener, Input} from '@angular/core';
 import {ActionType} from '../../../../../types/action-type';
 import {getEnumKeyNames} from '../../../../../utils/enum-utils';
 import {DummyUtils} from '../../../../../utils/dummy-utils';
@@ -13,7 +13,9 @@ import {RestService} from "../../../../../services/rest/rest.service";
 @Component({
   selector: 'app-field-edit-section',
   templateUrl: './field-edit-section.component.html',
-  styleUrls: ['./field-edit-section.component.scss']
+  styleUrls: ['./field-edit-section.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
 })
 export class FieldEditSectionComponent  {
   @Input() public selectedField: FrontendField;
@@ -126,7 +128,7 @@ export class FieldEditSectionComponent  {
   }
 
   @HostListener('window:keydown', ['$event'])
-  private onKeyPress($event: KeyboardEvent) {
+  protected onKeyPress($event: KeyboardEvent) {
     if (this.preferences.fieldKeybindingEnabled) {
       // console.error("key", $event.key, $event.code);
       if (($event.ctrlKey) && $event.key === 'c') {

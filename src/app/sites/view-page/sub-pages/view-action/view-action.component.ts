@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, ViewChild} from '@angular/core';
+import {Component, ChangeDetectionStrategy, ElementRef, Input, ViewChild} from '@angular/core';
 import {ActionService} from '../../../../services/action/action.service';
 // noinspection SpellCheckingInspection
 import screenfull from 'screenfull';
@@ -7,7 +7,9 @@ import {FieldDTO, FullViewDTO} from "../../../../../gen";
 @Component({
   selector: 'app-view-action',
   templateUrl: './view-action.component.html',
-  styleUrls: ['./view-action.component.scss']
+  styleUrls: ['./view-action.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
 })
 export class ViewActionComponent  {
   @Input() view: FullViewDTO;

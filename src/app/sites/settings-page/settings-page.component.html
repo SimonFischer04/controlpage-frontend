@@ -22,7 +22,9 @@
     <mat-form-field class="settings-field">
       <mat-label>Field-Style</mat-label>
       <mat-select [(ngModel)]="preferences.fieldStyle">
-        <mat-option *ngFor="let fieldStyle of fieldStyles" [value]="fieldStyle">{{fieldStyle}}</mat-option>
+        @for (fieldStyle of fieldStyles; track fieldStyle) {
+          <mat-option [value]="fieldStyle">{{fieldStyle}}</mat-option>
+        }
       </mat-select>
     </mat-form-field>
 

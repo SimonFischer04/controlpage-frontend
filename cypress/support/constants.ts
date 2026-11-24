@@ -24,7 +24,7 @@ export type Preferences = Partial<{
 }>;
 
 /** Base url of the real backend the tests run against (see docker-compose.e2e.yml). */
-export const BACKEND_URL: string = String(Cypress.env('backendUrl')).replace(/\/$/, '');
+export const BACKEND_URL: string = String(Cypress.expose('backendUrl')).replace(/\/$/, '');
 
 /** A backend host nothing listens on, to test how the app deals with an unreachable backend. */
 export const UNREACHABLE_BACKEND_URL = 'http://localhost:42999';

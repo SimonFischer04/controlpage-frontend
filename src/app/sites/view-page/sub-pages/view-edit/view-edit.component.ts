@@ -1,4 +1,4 @@
-import {Component,  Input, OnChanges,  SimpleChanges} from '@angular/core';
+import {Component, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {EditFieldRendererParameter} from '../../../../types/field-renderer-parameter/edit-field-renderer-parameter';
 import {ActionService} from '../../../../services/action/action.service';
 import {FieldDTO, FullViewDTO} from "../../../../../gen";
@@ -6,7 +6,9 @@ import {FieldDTO, FullViewDTO} from "../../../../../gen";
 @Component({
   selector: 'app-view-edit',
   templateUrl: './view-edit.component.html',
-  styleUrls: ['./view-edit.component.scss']
+  styleUrls: ['./view-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  standalone: false
 })
 export class ViewEditComponent implements  OnChanges {
   @Input() public view: FullViewDTO;

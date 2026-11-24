@@ -7,7 +7,7 @@
 # To fix: run `npm run gen` against a running backend (or apply the api-client.patch artifact of this job) and commit.
 api-client:
   stage: test
-  image: node:18
+  image: node:24
   extends: .backend
   variables:
     npm_config_cache: "$CI_PROJECT_DIR/.npm"
